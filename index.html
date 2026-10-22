@@ -1,0 +1,3754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="税务政策问答：用一句话找到政策依据与条款原文">
+<meta name="copyright" content="© 版权所有：默笙夏夏の知書房">
+<link rel="icon" href="data:,">
+<title>税务政策问答</title>
+<style>/* TaxSync 问答应用 · 全部样式（无 webfont、无外部资源） */
+
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --panel-2: #f0f2f5;
+  --text: #1a1d21;
+  --text-2: #5b6270;
+  --text-3: #646b78;
+  --line: #e3e6eb;
+  --brand: #b03a52;
+  --brand-weak: #fbebee;
+  --ok: #1f7a4d;
+  --ok-weak: #e6f4ec;
+  --warn: #8a5a00;
+  --warn-weak: #fdf3e0;
+  --bad: #9b2c2c;
+  --bad-weak: #fbeaea;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-control: 10px;
+  --control-h: 44px;
+  --control-h-touch: 44px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 8px 24px rgba(16, 24, 40, .06);
+  --maxw: 920px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a;
+    --panel: #1c1f25;
+    --panel-2: #23272e;
+    --text: #e8eaed;
+    --text-2: #a8aeb8;
+    --text-3: #9aa2ad;
+    --line: #2c3138;
+    --brand: #e8798f;
+    --brand-weak: #3a2029;
+    --ok: #6dd39b;
+    --ok-weak: #1b3328;
+    --warn: #e3b341;
+    --warn-weak: #332a17;
+    --bad: #f08a8a;
+    --bad-weak: #38201f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* .drawer 等组件用 display:flex 覆盖了浏览器默认的 [hidden]{display:none}，
+   导致“隐藏”的抽屉仍拦截点击。显式兜底，避免看不见的遮罩吞掉交互。 */
+[hidden] { display: none !important; }
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+.skip-link:focus { top: 12px; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input { font: inherit; color: inherit; }
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- 顶栏 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: max(16px, calc((100vw - var(--maxw)) / 2 + 16px), env(safe-area-inset-left));
+  padding-right: max(16px, calc((100vw - var(--maxw)) / 2 + 16px), env(safe-area-inset-right));
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+.logo {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 9px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.brand-text { min-width: 0; }
+.brand h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brand .sub {
+  margin: 1px 0 0;
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+
+.icon-btn {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-2);
+  border-radius: 9px;
+  min-height: var(--control-h);
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.icon-btn:hover { background: var(--panel-2); color: var(--text); }
+
+/* ---------------------------------------------------------------- 主体 */
+#main {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 16px 160px;
+}
+
+.hero { padding: 42px 0 28px; }
+
+.hero-title {
+  margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.hero-sub {
+  margin: 0 0 24px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+  box-shadow: var(--shadow);
+  transition: border-color .15s;
+}
+.search-form:focus-within { border-color: var(--brand); }
+
+.search-form input,
+.composer-inner input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 10px 12px;
+  font-size: 16px;      /* ≥16px 防止 iOS 聚焦自动放大 */
+}
+
+.primary {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: var(--radius-control);
+  min-height: var(--control-h-touch);
+  padding: 10px 20px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter .15s;
+}
+.primary:hover { filter: brightness(1.06); }
+.primary:disabled { opacity: .55; cursor: default; }
+.primary.small { padding: 7px 14px; font-size: 13px; border-radius: 8px; }
+
+.ghost {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-2);
+  border-radius: 9px;
+  min-height: var(--control-h);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.ghost:hover { background: var(--panel-2); }
+.ghost.small { padding: 7px 12px; font-size: 13px; }
+
+.chip-group { margin-top: 14px; }
+.chip-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-2);
+  border-radius: 999px;
+  min-height: 36px;
+  padding: 6px 13px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .15s, color .15s, background-color .15s;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-weak); }
+.chip .cnt { color: var(--text-3); margin-left: 4px; font-size: 12px; }
+
+/* ---------------------------------------------------------------- 对话流 */
+.stream { display: flex; flex-direction: column; gap: 26px; }
+
+.turn { display: flex; flex-direction: column; gap: 14px; }
+
+.turn-user { align-items: flex-end; }
+
+.bubble-user {
+  max-width: 86%;
+  background: var(--brand);
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 14px 14px 4px 14px;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.answer { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+
+.answer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.answer-head .count { font-weight: 600; color: var(--text); }
+
+.answer-body { padding: 4px 0; }
+
+/* AI 块 */
+.ai-block {
+  margin: 12px 16px 4px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--brand-weak);
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+  font-size: 15px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ai-block .ai-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 8px;
+  letter-spacing: .02em;
+}
+.ai-block .cite {
+  display: inline-block;
+  border: 0;
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  color: var(--brand);
+  border-radius: 5px;
+  padding: 0 5px;
+  margin: 0 1px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: 1px;
+}
+.ai-block .cite:hover { background: color-mix(in srgb, var(--brand) 30%, transparent); }
+.ai-block .ai-check,
+.ai-block .ai-usage {
+  display: block;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed color-mix(in srgb, var(--brand) 24%, transparent);
+  font-size: 12px;
+  color: var(--text-3);
+}
+.ai-block .ai-check.warn { color: var(--bad); }
+
+.ai-state {
+  margin: 12px 16px 4px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  background: var(--panel-2);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ai-state.error { background: var(--bad-weak); color: var(--bad); }
+.ai-state .dot-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--brand);
+  animation: pulse 1.1s ease-in-out infinite;
+  flex: 0 0 auto;
+}
+@keyframes pulse { 0%, 100% { opacity: .25; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.15); } }
+
+/* 结果列表 */
+.result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+  transition: background .12s;
+}
+.result:first-of-type { border-top: 0; }
+.result:hover { background: var(--panel-2); }
+.result-title {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.result-title:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.result h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.result-meta .docno { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+.badge {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge.ok { background: var(--ok-weak); color: var(--ok); }
+.badge.warn { background: var(--warn-weak); color: var(--warn); }
+.badge.bad { background: var(--bad-weak); color: var(--bad); }
+.badge.mute { background: var(--panel-2); color: var(--text-3); }
+.badge.llm { background: var(--brand-weak); color: var(--brand); }
+
+.result p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+mark {
+  background: color-mix(in srgb, var(--warn) 26%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+.answer-foot {
+  padding: 10px 16px 14px;
+  font-size: 12px;
+  color: var(--text-3);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.empty {
+  padding: 26px 16px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.empty ul { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.empty li button {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-2);
+  width: 100%;
+  text-align: left;
+}
+.empty li button:hover { border-color: var(--brand); color: var(--brand); }
+
+/* 骨架 */
+.skeleton { padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sk-line {
+  height: 11px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--panel-2) 25%, var(--line) 37%, var(--panel-2) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.3s ease infinite;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+/* ---------------------------------------------------------------- 输入区 */
+.composer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  padding: 8px 16px calc(10px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-top: 1px solid var(--line);
+}
+.composer-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+.composer-inner:focus-within { border-color: var(--brand); }
+
+.composer-foot {
+  max-width: var(--maxw);
+  margin: 6px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.ai-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.ai-toggle input { accent-color: var(--brand); }
+.foot-note { text-align: right; }
+
+/* ---------------------------------------------------------------- 抽屉 */
+.scrim {
+  position: fixed; inset: 0;
+  background: rgba(10, 12, 16, .45);
+  z-index: 45;
+  animation: fade .18s ease;
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(460px, 92vw);
+  z-index: 50;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  animation: slide-in .22s cubic-bezier(.22, .61, .36, 1);
+}
+@keyframes slide-in { from { transform: translateX(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+
+.drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+.drawer-head h3 { margin: 0; font-size: 15px; line-height: 1.5; }
+
+.drawer-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  font-size: 14px;
+}
+.drawer-body h4 {
+  margin: 20px 0 8px;
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.drawer-body h4:first-child { margin-top: 0; }
+.drawer-body p { margin: 0 0 10px; color: var(--text-2); }
+.drawer-body .clause { white-space: pre-wrap; color: var(--text); font-size: 13.5px; line-height: 1.75; }
+.drawer-body .meta-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.drawer-body .meta-list li { display: flex; gap: 8px; }
+.drawer-body .meta-list .k { color: var(--text-3); flex: 0 0 66px; }
+.drawer-body .meta-list .v { color: var(--text); flex: 1 1 auto; word-break: break-word; }
+.drawer-body .alt-list { margin: 0; padding: 0; list-style: none; font-size: 12.5px; display: flex; flex-direction: column; gap: 6px; }
+.drawer-body .alt-list a { color: var(--brand); text-decoration: none; word-break: break-all; }
+
+.drawer-foot {
+  flex: 0 0 auto;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 8px;
+  background: var(--panel);
+}
+.drawer-foot .primary { flex: 1 1 auto; text-align: center; text-decoration: none; }
+
+/* ---------------------------------------------------------------- 设置 */
+.settings {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  color: var(--text);
+  padding: 0;
+  width: min(460px, 92vw);
+  max-height: 86vh;
+  box-shadow: var(--shadow);
+}
+.settings::backdrop { background: rgba(10, 12, 16, .45); }
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+}
+.settings-head h3 { margin: 0; font-size: 15px; }
+.settings-body { padding: 16px; overflow-y: auto; max-height: 70vh; }
+.field { margin-bottom: 22px; }
+.field:last-child { margin-bottom: 0; }
+.field label, .field h4 { display: block; margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.field input[type=text], .field input[type=password] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 9px 12px;
+  background: var(--bg);
+  outline: none;
+}
+.field input:focus { border-color: var(--brand); }
+.key-row { display: flex; gap: 8px; }
+.key-row input { flex: 1 1 auto; }
+.key-actions { display: flex; gap: 8px; margin-top: 10px; }
+.hint { margin: 8px 0 0; font-size: 12px; color: var(--text-3); line-height: 1.55; }
+.kv { margin: 0 0 12px; font-size: 13px; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; }
+.kv dt { color: var(--text-3); }
+.kv dd { margin: 0; color: var(--text); word-break: break-all; }
+.usage-list { margin: 6px 0 10px; }
+.usage-list .hint { margin: 2px 0; font-size: 12.5px; }
+.legal { border-top: 1px solid var(--line); padding-top: 14px; }
+.legal p { margin: 0 0 8px; font-size: 12px; color: var(--text-3); line-height: 1.6; }
+
+/* ---------------------------------------------------------------- 原文链接 */
+.orig-dialog {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  color: var(--text);
+  padding: 0;
+  width: min(520px, 92vw);
+  box-shadow: var(--shadow);
+}
+.orig-dialog::backdrop { background: rgba(10, 12, 16, .45); }
+.orig-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.orig-head h3 { margin: 0; font-size: 15px; }
+.orig-body { padding: 16px; }
+.orig-url {
+  display: block;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.55;
+  word-break: break-all;
+  user-select: text;
+}
+.orig-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+
+/* ---------------------------------------------------------------- 提示 */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 60;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 13px;
+  max-width: 86vw;
+  text-align: center;
+  box-shadow: var(--shadow);
+  animation: fade .18s ease;
+}
+
+/* ---------------------------------------------------------------- 断点 */
+@media (max-width: 900px) {
+  .drawer { width: min(420px, 94vw); }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .brand .sub { display: none; }
+  .brand h1 { font-size: 15px; }
+  .hero { padding: 26px 0 18px; }
+  .hero-title { font-size: 22px; }
+  .hero-sub { font-size: 13px; margin-bottom: 18px; }
+  .search-form input { font-size: 16px; padding: 9px 10px; }
+  .primary { padding: 9px 16px; }
+  .top-actions .icon-btn { min-height: var(--control-h-touch); }
+  .icon-btn, .ghost { min-height: var(--control-h-touch); }
+  .chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { min-height: var(--control-h-touch); }
+  .filter-bar { padding: 8px 14px 0; }
+  .filter-toggle { min-height: var(--control-h-touch); }
+  .filters { width: calc(100% - 28px); padding: 12px; }
+  .filter { flex: 1 1 calc(50% - 6px); }
+  .filter select, .filter-btn { min-height: var(--control-h-touch); }
+  .bubble-user { max-width: 100%; }
+  .result { padding: 13px 14px; }
+  .result h4 { font-size: 15px; }
+  .result p { font-size: 14px; }
+  .answer-head { padding: 10px 14px; }
+  .ai-block, .ai-state { margin-left: 14px; margin-right: 14px; }
+  .answer-foot { padding: 10px 14px 13px; }
+  #main { padding: 0 14px 180px; }
+  body[data-client-safe="1"] #main { padding-bottom: 110px; }
+
+  /* 抽屉 → 底部 sheet */
+  .drawer {
+    top: auto;
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    max-height: 92vh;
+    height: 92vh;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 16px 16px 0 0;
+    animation: sheet-up .24s cubic-bezier(.22, .61, .36, 1);
+  }
+  @keyframes sheet-up { from { transform: translateY(40px); opacity: .7; } to { transform: none; opacity: 1; } }
+  .drawer-head { padding: 12px 14px; }
+  .drawer-head h3 { font-size: 14px; }
+  .drawer-body { padding: 14px; }
+  .settings, .orig-dialog { width: 100%; max-height: 92vh; }
+}
+
+@media (max-width: 380px) {
+  .hero-title { font-size: 20px; }
+  .top-actions .icon-btn { padding: 7px 9px; font-size: 12px; }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* ---------------------------------------------------------------- 页签 / 筛选 / 看板 */
+.tabs {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  padding-left: max(16px, calc((100vw - var(--maxw)) / 2 + 16px), env(safe-area-inset-left));
+  padding-right: max(16px, calc((100vw - var(--maxw)) / 2 + 16px), env(safe-area-inset-right));
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+  scroll-padding-inline: 16px;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: var(--control-h-touch);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-2);
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text); }
+.tab.active { background: transparent; border-color: transparent; color: var(--text); }
+.tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--brand);
+}
+.tab .cnt { font-size: 12px; opacity: .8; font-variant-numeric: tabular-nums; }
+
+/* 数据新鲜度：把「源站未更新」「同步失败」「数据过期」显式区分开 */
+.freshness {
+  padding: 7px max(16px, calc((100vw - var(--maxw)) / 2 + 16px), env(safe-area-inset-left));
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  color: var(--text-3);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.freshness.amber { background: var(--warn-weak); color: var(--warn); }
+.freshness.red { background: var(--bad-weak); color: var(--bad); }
+
+.filter-bar {
+  position: sticky;
+  top: 68px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 8px 16px 0;
+  background: var(--bg);
+}
+.filter-toggle {
+  min-height: var(--control-h);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-2);
+  border-radius: var(--radius-control);
+  padding: 7px 13px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.filter-toggle.active,
+.filter-toggle[aria-expanded="true"] {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-weak);
+}
+.filter-summary { font-size: 12px; color: var(--text-3); }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: flex-end;
+  width: calc(100% - 32px);
+  max-width: calc(var(--maxw) - 32px);
+  margin: 8px auto 0;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.filter { display: flex; flex: 1 1 120px; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-3); }
+.filter select {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  min-height: var(--control-h);
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.filter-btn {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-2);
+  border-radius: 8px;
+  min-height: var(--control-h);
+  padding: 7px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.filter-btn.active { background: var(--brand-weak); border-color: var(--brand); color: var(--brand); }
+.badge.fav { background: var(--warn-weak); color: var(--warn); }
+.note { color: var(--bad); font-size: 13px; }
+.dash-title { margin: 6px 0 4px; font-size: 20px; }
+.dash-list { margin: 4px 0 14px; padding-left: 18px; }
+.dash-list li { margin: 2px 0; }
+.linklike {
+  border: 0; background: none; padding: 0; color: var(--brand);
+  cursor: pointer; text-align: left; font-size: 14px;
+}
+
+/* 打印：导出为 PDF 时去掉交互元素 */
+@media print {
+  .topbar, .composer, .drawer, .scrim, .settings, .toast,
+  .tabs, .filters, #hero, .answer-foot { display: none !important; }
+  #main { padding: 0; max-width: none; }
+  .answer { break-inside: avoid; }
+
+  /* 详情打印：只输出抽屉正文，不打印结果列表 */
+  body.printing-detail #main,
+  body.printing-detail .topbar,
+  body.printing-detail .tabs,
+  body.printing-detail .filters,
+  body.printing-detail .composer { display: none !important; }
+  body.printing-detail .drawer {
+    display: block !important;
+    position: static;
+    width: auto;
+    height: auto;
+    max-height: none;
+    border: 0;
+    box-shadow: none;
+  }
+  body.printing-detail .drawer-head .icon-btn,
+  body.printing-detail .drawer-foot { display: none !important; }
+  body.printing-detail .drawer-body { padding: 0; overflow: visible; }
+}
+
+/* 客户安全版：隐藏整个 AI 区块与底部说明，避免空标签和误导 */
+body[data-client-safe="1"] .ai-only,
+body[data-client-safe="1"] .ai-toggle,
+body[data-client-safe="1"] #key-input,
+body[data-client-safe="1"] #key-save,
+body[data-client-safe="1"] #key-clear,
+body[data-client-safe="1"] #key-toggle,
+body[data-client-safe="1"] #key-hint,
+body[data-client-safe="1"] .composer-foot { display: none !important; }
+body[data-client-safe="1"] #main { padding-bottom: 110px; }
+
+/* 移动端最终覆盖：上面的通用筛选样式在文件后部，需在这里保证触控高度 */
+@media (max-width: 640px) {
+  .icon-btn,
+  .ghost,
+  .chip,
+  .filter-toggle,
+  .filter select,
+  .filter-btn {
+    min-height: var(--control-h-touch);
+  }
+  .filter { flex: 1 1 calc(50% - 6px); }
+  .filters { width: calc(100% - 28px); padding: 12px; }
+  .filter-bar { padding: 8px 14px 0; }
+}
+</style>
+</head>
+<body data-mode="online" data-client-safe="1">
+<a class="skip-link" href="#main">跳到主要内容</a>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">税</span>
+      <div class="brand-text">
+        <h1>税务政策问答</h1>
+        <p class="sub" id="subline">正在载入政策库…</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="btn-print" class="icon-btn" type="button" title="打印当前结果">打印</button>
+      <button id="btn-export" class="icon-btn" type="button" title="导出本次会话">导出</button>
+      <button id="btn-settings" class="icon-btn" type="button" title="设置">设置</button>
+    </div>
+  </header>
+
+  <nav id="tabs" class="tabs" role="tablist" aria-label="内容体系"></nav>
+  <div id="freshness" class="freshness" role="status" hidden></div>
+  <div id="filter-bar" class="filter-bar" hidden>
+    <button id="filter-toggle" class="filter-toggle" type="button"
+            aria-expanded="false" aria-controls="filters">筛选</button>
+    <span id="filter-summary" class="filter-summary">按税种、年份、效力筛选</span>
+  </div>
+  <div id="filters" class="filters" role="group" aria-label="筛选条件" hidden></div>
+
+  <main id="main" role="tabpanel" tabindex="-1">
+    <section id="hero" class="hero">
+      <h2 class="hero-title">问一句，找到政策依据</h2>
+      <p class="hero-sub">覆盖增值税、企业所得税、个人所得税、发票征管等全部门类<br>每条结果都可点回原文，结论有据可查</p>
+      <form id="hero-form" class="search-form" autocomplete="off">
+        <input id="hero-input" type="search" enterkeyhint="search"
+               placeholder="例如：建筑业跨区域施工在哪预缴增值税？"
+               aria-label="输入你的问题">
+        <button type="submit" class="primary">提问</button>
+      </form>
+      <div class="chip-group">
+        <span class="chip-label">试试这些</span>
+        <div class="chips" id="examples"></div>
+      </div>
+      <div class="chip-group">
+        <span class="chip-label">按税种浏览</span>
+        <div class="chips cats" id="cats"></div>
+      </div>
+    </section>
+
+    <div id="stream" class="stream" aria-live="polite"></div>
+  </main>
+
+  <form id="composer" class="composer" autocomplete="off" hidden>
+    <div class="composer-inner">
+      <input id="composer-input" type="search" enterkeyhint="search"
+             placeholder="继续提问…" aria-label="继续提问">
+      <button type="submit" class="primary">提问</button>
+    </div>
+    <div class="composer-foot">
+      <label class="ai-toggle">
+        <input type="checkbox" id="ai-toggle">
+        <span>AI 综述</span>
+      </label>
+      <span class="foot-note">结果来自离线政策库，引用请以原文为准</span>
+    </div>
+  </form>
+</div>
+
+<aside id="drawer" class="drawer" role="dialog" aria-modal="true"
+       aria-labelledby="drawer-title" hidden>
+  <div class="drawer-head">
+    <h3 id="drawer-title">政策详情</h3>
+    <button id="drawer-close" class="icon-btn" type="button" aria-label="关闭">关闭</button>
+  </div>
+  <div id="drawer-body" class="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</aside>
+<div id="scrim" class="scrim" hidden></div>
+
+<dialog id="settings" class="settings" aria-labelledby="settings-title">
+  <form method="dialog" class="settings-head">
+    <h3 id="settings-title">设置</h3>
+    <button class="icon-btn" value="close" type="submit" aria-label="关闭">关闭</button>
+  </form>
+  <div class="settings-body">
+    <section class="field ai-only">
+      <label for="key-input">ARK API Key（可选）</label>
+      <div class="key-row">
+        <input id="key-input" type="password" autocomplete="off" spellcheck="false"
+               placeholder="留空则仅用本地检索">
+        <button id="key-toggle" class="ghost" type="button">显示</button>
+      </div>
+      <p class="hint" id="key-hint">Key 只保存在你这台设备的浏览器里，本文件不含 Key；发给别人时对方打开是空的。</p>
+      <div class="key-actions">
+        <button id="key-save" class="primary small" type="button">保存</button>
+        <button id="key-clear" class="ghost small" type="button">清除 Key</button>
+      </div>
+    </section>
+    <section class="field ai-only">
+      <label for="model-input">模型</label>
+      <input id="model-input" type="text" autocomplete="off" spellcheck="false">
+      <p class="hint">默认 deepseek-v4-pro-260425；如需更换请填模型名。</p>
+    </section>
+    <section class="field" id="usage-section">
+      <h4>使用观察</h4>
+      <p class="hint">仅记录本机打开/收藏“实务解读”的次数与卡片标题，不记录搜索词、政策正文或 Key，不发网络请求，也不代表全体用户。</p>
+      <dl class="kv" id="usage-summary"></dl>
+      <div id="usage-top" class="usage-list"></div>
+      <p class="hint">清空只删除本机观察事件，不会清除收藏。</p>
+      <div class="key-actions">
+        <button id="usage-export" class="ghost small" type="button">导出使用记录 JSON</button>
+        <button id="usage-clear" class="ghost small" type="button">清空本机记录</button>
+      </div>
+    </section>
+    <section class="field">
+      <h4>数据版本</h4>
+      <dl class="kv" id="version-info"></dl>
+      <button id="btn-refresh" class="ghost small" type="button">检查更新</button>
+    </section>
+    <section class="field legal">
+      <p>本应用为政策条款摘录与结构化摘要，<strong>不含法规权威全文</strong>，引用前请以原文链接为准。</p>
+      <p>“实务解读”由本项目基于官方法律法规、公告编辑整理，属于编辑解读而非官方原文；其他扩展模块来自官方公开渠道。不再收录第三方公众号专栏内容。</p>
+      <p>© 版权所有：默笙夏夏の知書房</p>
+    </section>
+  </div>
+</dialog>
+
+<dialog id="orig-dialog" class="orig-dialog" aria-label="打开原文">
+  <div class="orig-head">
+    <h3>打开原文</h3>
+    <button id="orig-close" class="icon-btn" type="button" aria-label="关闭">关闭</button>
+  </div>
+  <div class="orig-body">
+    <p class="hint">原文链接：</p>
+    <code id="orig-url" class="orig-url"></code>
+    <p class="hint" id="orig-wechat" hidden>微信原文可能要求在微信中打开；如页面空白，请复制链接到微信。</p>
+  </div>
+  <div class="orig-actions">
+    <button id="orig-new" class="primary small" type="button">新标签页打开</button>
+    <button id="orig-same" class="ghost small" type="button">当前页打开</button>
+    <button id="orig-copy" class="ghost small" type="button">复制链接</button>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+<script id="boot" type="application/json">{"dataUrl":"data.json.gz","buildAt":"2026-10-22T22:22:39+0800"}</script>
+
+
+
+<script>/* ---- core.js ---- */
+/* core.js —— 工具、数据解码、存储、DOM 构造
+ *
+ * 三条硬约束（必须一直遵守）：
+ *   1. 绝不用 innerHTML 处理数据 —— 唯一 DOM 入口是 el()，文本走 textContent
+ *   2. 单文件版不发任何本地请求（file:// 下 fetch 被禁）
+ *   3. 不用 ES module / Service Worker（file:// 下不可用）
+ */
+'use strict';
+
+var TS = window.TS || {};
+window.TS = TS;
+
+/* ---------------------------------------------------------------- AI 端点白名单
+ * 数据包由 CDN/仓库分发，可能被篡改；若前端无条件采用 meta.ai.base，
+ * 用户填的 ARK Key 会被发往攻击者地址。故只允许明确的 ARK host。
+ */
+TS.AI_DEFAULT_BASE = 'https://ark.cn-beijing.volces.com/api/v3';
+TS.ALLOWED_AI_HOSTS = ['ark.cn-beijing.volces.com'];
+TS.isAllowedBase = function (base) {
+  try {
+    var u = new URL(String(base || ''));
+    return u.protocol === 'https:' && TS.ALLOWED_AI_HOSTS.indexOf(u.hostname) >= 0;
+  } catch (e) {
+    return false;
+  }
+};
+
+/* ---------------------------------------------------------------- DOM */
+/** 唯一 DOM 构造入口。props 里 text 走 textContent，html 一律忽略。 */
+TS.el = function (tag, props) {
+  var node = document.createElement(tag);
+  if (props) {
+    Object.keys(props).forEach(function (k) {
+      var v = props[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'text') { node.textContent = String(v); return; }
+      if (k === 'class') { node.className = String(v); return; }
+      if (k === 'dataset') { Object.keys(v).forEach(function (d) { node.dataset[d] = v[d]; }); return; }
+      if (k.indexOf('on') === 0 && typeof v === 'function') {
+        node.addEventListener(k.slice(2).toLowerCase(), v); return;
+      }
+      if (k === 'href' || k === 'src') {
+        // 只允许 http(s)，防 javascript: 注入
+        if (!/^https?:\/\//i.test(String(v))) return;
+        node.setAttribute(k, v); return;
+      }
+      node.setAttribute(k, v === true ? '' : String(v));
+    });
+  }
+  for (var i = 2; i < arguments.length; i++) {
+    var ch = arguments[i];
+    if (ch === null || ch === undefined || ch === false) continue;
+    if (Array.isArray(ch)) { ch.forEach(function (c) { if (c) node.appendChild(c); }); continue; }
+    node.appendChild(typeof ch === 'string' ? document.createTextNode(ch) : ch);
+  }
+  return node;
+};
+
+TS.clear = function (node) { while (node.firstChild) node.removeChild(node.firstChild); };
+
+/* ---------------------------------------------------------------- 文本 */
+/** NFKC + 小写 + 去标点。必须与 taxsync/search.py 的 norm() 一致。 */
+TS.norm = function (s) {
+  if (!s) return '';
+  var t = String(s);
+  if (t.normalize) t = t.normalize('NFKC');
+  return t.toLowerCase().replace(
+    /[\s，。、；：？！"'“”‘’（）《》【】…—·,.;:?!'"()\[\]<>/\\|~@#$%^&*+=`]/g, '');
+};
+
+TS.esc = function (s) { return String(s == null ? '' : s); };
+
+/** 截断并加省略号。 */
+TS.clip = function (s, n) {
+  s = String(s == null ? '' : s);
+  return s.length > n ? s.slice(0, n) + '…' : s;
+};
+
+/** 版权文本：统一从页面 meta 读，避免 JS 与模板各写一份。 */
+TS.COPYRIGHT_TEXT = (function () {
+  var m = document.querySelector('meta[name="copyright"]');
+  return (m && m.getAttribute('content')) || '© 版权所有：默笙夏夏の知書房';
+})();
+
+TS.fmtDate = function (d) {
+  if (!d) return '';
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
+  return m ? (m[1] + '-' + m[2] + '-' + m[3]) : d;
+};
+
+/** 把命中片段切成 [文本, 命中?] 段，供 mark 高亮。 */
+TS.highlight = function (text, grams) {
+  // 必须返回 [文本, 是否命中] 的统一形状；直接返回字符串会让调用方
+  // pair[0]/pair[1] 索引到字符，导致标题只显示第一个字（真实事故）。
+  if (!text || !grams || !grams.length) return [[text || '', false]];
+  var low = text.toLowerCase();
+  var flags = new Array(text.length);
+  for (var i = 0; i < grams.length; i++) {
+    var g = grams[i];
+    if (!g) continue;
+    var from = 0;
+    while (true) {
+      var at = low.indexOf(g, from);
+      if (at < 0) break;
+      for (var j = at; j < at + g.length && j < flags.length; j++) flags[j] = true;
+      from = at + 1;               // 重叠命中也要标
+    }
+  }
+  var out = [], buf = '', cur = false;
+  for (var k = 0; k < text.length; k++) {
+    var f = !!flags[k];
+    if (k === 0) { cur = f; buf = text[0]; continue; }
+    if (f === cur) { buf += text[k]; }
+    else { out.push([buf, cur]); cur = f; buf = text[k]; }
+  }
+  if (buf) out.push([buf, cur]);
+  return out;
+};
+
+/* ---------------------------------------------------------------- 存储 */
+/** localStorage 在 file:// 或隐私模式下可能抛异常 → 自动降级为内存。 */
+TS.store = (function () {
+  var mem = {};
+  var usable = false;
+  try {
+    var probe = '__ts_probe__';
+    window.localStorage.setItem(probe, '1');
+    window.localStorage.removeItem(probe);
+    usable = true;
+  } catch (e) { usable = false; }
+
+  return {
+    usable: usable,
+    get: function (k) {
+      try { return usable ? window.localStorage.getItem(k) : (mem[k] || null); }
+      catch (e) { return mem[k] || null; }
+    },
+    set: function (k, v) {
+      try { if (usable) { window.localStorage.setItem(k, v); return true; } } catch (e) { /* 配额满等 */ }
+      mem[k] = v; return !usable ? true : false;
+    },
+    del: function (k) {
+      try { if (usable) window.localStorage.removeItem(k); } catch (e) { /* ignore */ }
+      delete mem[k];
+    }
+  };
+})();
+
+TS.KEY_KEY = 'taxqa.key.v1';
+TS.CFG_KEY = 'taxqa.cfg.v1';
+TS.CACHE_KEY = 'taxqa.cache.v1';
+
+/* ---------------------------------------------------------------- IndexedDB 缓存 */
+/** 在线版把数据包存本地，二次打开秒开且断网可用。失败一律静默降级。 */
+TS.cache = {
+  _db: null,
+  _failed: false,
+  _open: function () {
+    if (TS.cache._db) return Promise.resolve(TS.cache._db);
+    if (TS.cache._failed) return Promise.resolve(null);
+    return new Promise(function (resolve) {
+      if (!window.indexedDB) { TS.cache._failed = true; resolve(null); return; }
+      var settled = false;
+      var done = function (val) {
+        if (settled) return;
+        settled = true;
+        resolve(val);
+      };
+      // 有些环境（隐私模式 / 内嵌 WebView / 存储被禁）open 会永久挂起，
+      // 不设超时会让整个启动流程卡死 —— 必须兜底成"无缓存"。
+      var timer = setTimeout(function () {
+        TS.cache._failed = true;
+        done(null);
+      }, 2500);
+
+      var req;
+      try { req = window.indexedDB.open('taxqa', 1); }
+      catch (e) { clearTimeout(timer); TS.cache._failed = true; done(null); return; }
+
+      req.onupgradeneeded = function () {
+        try { req.result.createObjectStore('kv'); } catch (e) { /* ignore */ }
+      };
+      req.onsuccess = function () {
+        clearTimeout(timer);
+        TS.cache._db = req.result;
+        done(req.result);
+      };
+      req.onerror = function () {
+        clearTimeout(timer);
+        TS.cache._failed = true;
+        done(null);
+      };
+      req.onblocked = function () {
+        clearTimeout(timer);
+        TS.cache._failed = true;
+        done(null);
+      };
+    });
+  },
+  get: function (key) {
+    return TS.cache._open().then(function (db) {
+      if (!db) return null;
+      return new Promise(function (resolve) {
+        try {
+          var tx = db.transaction('kv', 'readonly');
+          var r = tx.objectStore('kv').get(key);
+          r.onsuccess = function () { resolve(r.result || null); };
+          r.onerror = function () { resolve(null); };
+        } catch (e) { resolve(null); }
+      });
+    });
+  },
+  put: function (key, val) {
+    return TS.cache._open().then(function (db) {
+      if (!db) return false;
+      return new Promise(function (resolve) {
+        try {
+          var tx = db.transaction('kv', 'readwrite');
+          tx.objectStore('kv').put(val, key);
+          tx.oncomplete = function () { resolve(true); };
+          tx.onerror = function () { resolve(false); };
+        } catch (e) { resolve(false); }
+      });
+    });
+  },
+  clear: function () {
+    return TS.cache._open().then(function (db) {
+      if (!db) return false;
+      return new Promise(function (resolve) {
+        try {
+          var tx = db.transaction('kv', 'readwrite');
+          tx.objectStore('kv').clear();
+          tx.oncomplete = function () { resolve(true); };
+          tx.onerror = function () { resolve(false); };
+        } catch (e) { resolve(false); }
+      });
+    });
+  }
+};
+
+/* ---------------------------------------------------------------- 数据解码 */
+/** base64 → Uint8Array（不用 atob 的逐字符循环，速度更快） */
+TS.b64ToBytes = function (b64) {
+  var bin = window.atob(b64);
+  var len = bin.length;
+  var out = new Uint8Array(len);
+  for (var i = 0; i < len; i++) out[i] = bin.charCodeAt(i);
+  return out;
+};
+
+/** gzip 解压（DecompressionStream）。不可用时抛 NO_GZIP 由上层给指引。 */
+TS.gunzip = function (bytes) {
+  if (typeof window.DecompressionStream === 'undefined') {
+    return Promise.reject(new Error('NO_GZIP'));
+  }
+  var stream = new Blob([bytes]).stream()
+    .pipeThrough(new window.DecompressionStream('gzip'));
+  return new Response(stream).text();
+};
+
+/** 读取内嵌 payload（单文件版）。 */
+TS.readInline = function () {
+  return TS._readScriptPayload('payload');
+};
+
+/** 读取内嵌扩展模块 payload（单文件版）。 */
+TS.readInlineLibrary = function () {
+  return TS._readScriptPayload('library-payload');
+};
+
+TS._readScriptPayload = function (id) {
+  var node = document.getElementById(id);
+  if (!node || !node.textContent.trim()) return Promise.resolve(null);
+  var enc = node.dataset.enc || 'json';
+  var text = node.textContent.trim();
+  if (enc === 'json') return Promise.resolve(JSON.parse(text));
+  return TS.gunzip(TS.b64ToBytes(text)).then(function (t) { return JSON.parse(t); });
+};
+
+/** 读取 meta（单文件版内嵌 / 在线版 manifest）。 */
+TS.readInlineMeta = function () {
+  var node = document.getElementById('meta');
+  if (!node) return null;
+  try { return JSON.parse(node.textContent); } catch (e) { return null; }
+};
+
+/* ---------------------------------------------------------------- 网络 */
+/** 带超时的 fetch（AbortController）；返回 Response。 */
+TS.fetchWithTimeout = function (url, opts, ms) {
+  var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = null;
+  var o = Object.assign({}, opts || {});
+  if (ctrl) {
+    o.signal = ctrl.signal;
+    timer = setTimeout(function () { ctrl.abort(); }, ms || 20000);
+  }
+  return fetch(url, o).then(function (r) {
+    if (timer) clearTimeout(timer);
+    return r;
+  }, function (e) {
+    if (timer) clearTimeout(timer);
+    throw e;
+  });
+};
+
+TS.sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+
+/* ---- search.js ---- */
+/* search.js —— 中文 bigram 检索（与 taxsync/search.py 公式严格同构）
+ *
+ * 为什么不建倒排索引：11,475 条 × 约 290 字 ≈ 330 万字符，双遍全扫描在桌面
+ * 60-120ms、中端手机 250-450ms；而预建倒排要 100MB+ 内存和 2-4 秒启动。
+ */
+'use strict';
+
+(function (TS) {
+
+  var STOP = {
+    '请问': 1, '如何': 1, '怎么': 1, '什么': 1, '哪些': 1, '多少': 1, '是否': 1,
+    '可以': 1, '需要': 1, '我们': 1, '这个': 1, '一个': 1, '现在': 1, '最新': 1,
+    '有关': 1, '关于': 1, '对于': 1, '以及': 1, '的话': 1, '吗': 1, '呢': 1,
+    '的': 1, '了': 1, '是': 1, '在': 1, '有': 1, '和': 1, '与': 1, '或': 1
+  };
+
+  var SYNONYMS = {
+    '高新企业': '高新技术企业', '高企': '高新技术企业',
+    '个税': '个人所得税', '企税': '企业所得税', '增税': '增值税',
+    '专票': '增值税专用发票', '普票': '增值税普通发票',
+    '留抵': '留抵退税', '小微': '小型微利', '附加税': '城市维护建设税',
+    '红冲': '红字发票', '数电票': '数字化电子发票', '全电票': '数字化电子发票',
+    '建筑业': '建筑服务', '建安': '建筑服务', '分包': '建筑服务', '预缴': '预缴',
+    '加计': '加计扣除', '研发费': '研发费用', '残保金': '残疾人就业保障金',
+    '环保税': '环境保护税', '土增税': '土地增值税', '房土': '房产税',
+    '购销合同': '买卖合同', '印花': '印花税'
+  };
+
+  var QUERY_FILLERS = [
+    '帮我查一下', '帮我查一查', '帮我查询', '帮我查', '帮忙查一下', '帮忙查',
+    '帮忙', '帮我', '请问', '请', '麻烦', '我想知道', '我想了解', '我想',
+    '我要', '查一下', '查一查', '查下', '了解一下', '咨询一下', '问一下',
+    '有哪些', '有什么', '看看', '告诉我', '给我'
+  ];
+  var QUERY_TAIL = /(?:的)?(?:相关|有关|最新)?(?:政策|规定|通知|公告|文件|内容)$/;
+  var QUESTION_TAIL = /(?:怎么算|如何算|怎么处理|如何办理|是多少|有哪些|是什么|怎么办|吗|呢|的)+$/;
+  var QUERY_CANON = {
+    '高新企业': '高新技术企业', '高企': '高新技术企业'
+  };
+
+  function canonicalQuery(t) {
+    var keys = Object.keys(QUERY_CANON).sort(function (a, b) { return b.length - a.length; });
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i], v = QUERY_CANON[k];
+      if (t.indexOf(k) >= 0 && t.indexOf(v) < 0) t = t.split(k).join(v);
+    }
+    return t;
+  }
+
+  function prepareQuery(text) {
+    var t = TS.norm(text || '');
+    if (!t) return '';
+    var stripped = false;
+    for (var n = 0; n < 4; n++) {
+      var hit = false;
+      for (var i = 0; i < QUERY_FILLERS.length; i++) {
+        var f = QUERY_FILLERS[i];
+        if (t.indexOf(f) === 0) { t = t.slice(f.length); stripped = true; hit = true; break; }
+      }
+      if (!hit) break;
+    }
+    if (stripped) {
+      t = t.replace(QUERY_TAIL, '').replace(QUESTION_TAIL, '').replace(/的+$/, '');
+    }
+    t = canonicalQuery(t);
+    return t;
+  }
+
+  var W_DOCNO = 9, W_TITLE = 6, W_SUMMARY = 3, W_TAX = 2, W_CLAUSE = 1;
+
+  /** 切成字符 bigram（去重、去停用）。 */
+  function bigrams(text, limit) {
+    var t = TS.norm(text || '').slice(0, limit || 60);
+    if (t.length <= 1) return t ? [t] : [];
+    var out = [], seen = {};
+    for (var i = 0; i < t.length - 1; i++) {
+      var g = t.substr(i, 2);
+      if (STOP[g] || seen[g]) continue;
+      seen[g] = 1;
+      out.push(g);
+    }
+    return out;
+  }
+
+  /* 核心短语分析：连续 3-4 字，支持度在 0.02%-12% 之间。
+     规则必须与 taxsync/search.py 逐项一致。 */
+  var MIN_PHRASE_LEN = 3, MAX_PHRASE_LEN = 4, MAX_QUERY_CHARS = 30;
+  var MIN_PHRASE_SUPPORT_RATIO = 0.0002, MAX_PHRASE_SUPPORT_RATIO = 0.12;
+  var MIN_PHRASE_SUPPORT_FLOOR = 3;
+  var GENERIC_PHRASE_PARTS = ['政策', '相关', '有关', '通知', '公告', '规定', '税收',
+    '关于', '对于', '以及', '和', '与', '及', '或'];
+  var GENERIC_PHRASE_ENDINGS = ['政策', '规定', '通知', '公告', '税收'];
+
+  function hasAnyPart(p, parts) {
+    for (var i = 0; i < parts.length; i++) {
+      if (p.indexOf(parts[i]) >= 0) return true;
+    }
+    return false;
+  }
+
+  function hasAnyEnding(p, endings) {
+    for (var i = 0; i < endings.length; i++) {
+      var e = endings[i];
+      if (p.slice(-e.length) === e) return true;
+    }
+    return false;
+  }
+
+  function queryPhrases(q) {
+    var t = (q || '').slice(0, MAX_QUERY_CHARS);
+    var out = [], seen = {};
+    for (var size = MIN_PHRASE_LEN; size <= Math.min(MAX_PHRASE_LEN, t.length); size++) {
+      for (var i = 0; i + size <= t.length; i++) {
+        var p = t.substr(i, size);
+        if (STOP[p] || /^[0-9]+$/.test(p) || seen[p]) continue;
+        if (hasAnyPart(p, GENERIC_PHRASE_PARTS)) continue;
+        if (hasAnyEnding(p, GENERIC_PHRASE_ENDINGS)) continue;
+        if (p.indexOf('的') >= 0) continue;
+        seen[p] = 1;
+        out.push(p);
+      }
+    }
+    return out;
+  }
+
+  function hasPhrase(p, phrase) {
+    if (!phrase) return false;
+    return p.all.indexOf(phrase) >= 0;
+  }
+
+  function hasPhraseMain(p, phrase) {
+    if (!phrase) return false;
+    return p.main.indexOf(phrase) >= 0;
+  }
+
+  function pickRequiredPhrase(prepped, phrases, q) {
+    var N = prepped.length;
+    if (!phrases.length || N < 1) return null;
+    var minSupport = Math.max(MIN_PHRASE_SUPPORT_FLOOR,
+      Math.round(N * MIN_PHRASE_SUPPORT_RATIO));
+    var maxSupport = Math.max(minSupport, Math.floor(N * MAX_PHRASE_SUPPORT_RATIO));
+    var valid = [];
+    for (var i = 0; i < phrases.length; i++) {
+      var p = phrases[i], df = 0;
+      for (var j = 0; j < N; j++) {
+        if (hasPhraseMain(prepped[j], p)) df++;
+      }
+      if (df < minSupport || df > maxSupport) continue;
+      valid.push({ phrase: p, df: df });
+    }
+    if (!valid.length) return null;
+    for (var size = Math.min(MAX_PHRASE_LEN, q.length); size >= MIN_PHRASE_LEN; size--) {
+      var pref = q.slice(0, size);
+      for (var k = 0; k < valid.length; k++) {
+        if (valid[k].phrase === pref) return valid[k];
+      }
+    }
+    // 没有合格的开头短语时，不拿中段片段硬过滤；退回普通打分。
+    return null;
+  }
+
+  /** 3 字行业名（建筑业/制造业/金融业…）。行业名与税目名（建筑服务）
+   *  不互为文档必有词，不能作为硬过滤条件，只能加分。 */
+  function isIndustryPhrase(p) {
+    return p.length === 3 && p.slice(-1) === '业';
+  }
+
+  function countOcc(text, g) {
+    if (!text || !g) return 0;
+    var n = 0, from = 0;
+    while (true) {
+      var at = text.indexOf(g, from);
+      if (at < 0) return n;
+      n++; from = at + 1;
+    }
+  }
+
+  function boost(item) {
+    var b = 1;
+    var v = item.w || '';
+    if (v === '全文有效') b *= 1.05;
+    else if (v === '全文失效') b *= 0.80;
+    if ((item.d || '') >= '2023-01-01') b *= 1.03;
+    return b;
+  }
+
+  /** 预处理：为每条预先算好归一化字段，避免每次查询重复 norm。 */
+  function prep(items) {
+    return items.map(function (it) {
+      var n = TS.norm(it.n), t = TS.norm(it.t), s = TS.norm(it.s);
+      var x = TS.norm((it.x || '') + (it.c || '')), k = TS.norm(it.k);
+      var main = n + '\u0000' + t + '\u0000' + s;
+      return {
+        it: it,
+        n: n, t: t, s: s, x: x, k: k,
+        main: main,
+        all: main + '\u0000' + x + '\u0000' + k,
+        b: boost(it)
+      };
+    });
+  }
+
+  function scoreOne(p, grams, idf, required) {
+    var total = 0, hit = 0;
+    for (var i = 0; i < grams.length; i++) {
+      var g = grams[i];
+      var w = idf[g];
+      if (!w) continue;
+      var tf = 0;
+      tf += W_DOCNO * Math.min(countOcc(p.n, g), 3);
+      tf += W_TITLE * Math.min(countOcc(p.t, g), 3);
+      tf += W_SUMMARY * Math.min(countOcc(p.s, g), 3);
+      tf += W_TAX * Math.min(countOcc(p.x, g), 3);
+      tf += W_CLAUSE * Math.min(countOcc(p.k, g), 3);
+      if (tf <= 0) continue;
+      hit++;
+      total += w * tf;
+    }
+    if (total <= 0) return 0;
+    // 覆盖率惩罚：1.5 次幂是实测最优，决定 top-1 是否被"擦边"文档抢走
+    total *= Math.pow(hit / Math.max(1, grams.length), 1.5);
+    // 核心短语加权：标题命中优先于正文顺带提及。
+    if (required && hasPhrase(p, required)) {
+      if (p.t.indexOf(required) >= 0) total += 10;
+      else if (p.n.indexOf(required) >= 0 || p.s.indexOf(required) >= 0) total += 4;
+      else if (p.x.indexOf(required) >= 0) total += 2;
+      else total += 1;
+    }
+    return total * p.b;
+  }
+
+  function run(queryText, minRatio, topk, prepped, useRequired) {
+    var N = prepped.length;
+    var required = null;
+    if (useRequired !== false) {
+      required = pickRequiredPhrase(prepped, queryPhrases(queryText), queryText);
+    }
+    var industry = !!required && isIndustryPhrase(required.phrase);
+    if (industry) {
+      // 行业名不硬过滤：税目多写作“建筑服务”，追加同义词参与打分。
+      queryText = expand(queryText);
+    }
+    var grams = bigrams(queryText);
+    if (!grams.length) return [];
+    var pool = prepped;
+    if (required && !industry) {
+      var filtered = [];
+      for (var fi = 0; fi < N; fi++) {
+        if (hasPhrase(prepped[fi], required.phrase)) filtered.push(prepped[fi]);
+      }
+      // 过窄的必须条件会清空结果；过滤后不足 3 条时退回普通检索。
+      if (filtered.length >= 3) pool = filtered;
+      else required = null;
+    }
+
+    // 第一遍：算 df（用全量语料，保持 idf 稳定）
+    var df = {};
+    for (var i = 0; i < grams.length; i++) df[grams[i]] = 0;
+    for (var j = 0; j < N; j++) {
+      var p = prepped[j];
+      for (var g = 0; g < grams.length; g++) {
+        var gram = grams[g];
+        if (p.all.indexOf(gram) >= 0) {
+          df[gram]++;
+        }
+      }
+    }
+
+    // 第二遍：算分
+    var idf = {};
+    for (var q = 0; q < grams.length; q++) {
+      var gm = grams[q];
+      idf[gm] = Math.log(1 + (N - df[gm] + 0.5) / (df[gm] + 0.5));
+    }
+    var scored = [];
+    for (var m = 0; m < pool.length; m++) {
+      var sc = scoreOne(pool[m], grams, idf, required ? required.phrase : null);
+      if (sc > 0) scored.push({ item: pool[m].it, score: sc, grams: grams });
+    }
+    scored.sort(function (a, b) { return b.score - a.score; });
+    if (!scored.length) return [];
+    var cutoff = scored[0].score * minRatio;
+    var out = [];
+    for (var k = 0; k < scored.length && out.length < topk; k++) {
+      if (scored[k].score >= cutoff) out.push(scored[k]);
+    }
+    return out;
+  }
+
+  function expand(query) {
+    var q = query;
+    Object.keys(SYNONYMS).forEach(function (k) {
+      if (query.indexOf(k) >= 0 && query.indexOf(SYNONYMS[k]) < 0) q += ' ' + SYNONYMS[k];
+    });
+    return q;
+  }
+
+  /** 主入口。ctx 由 ui.js 建一次并复用（缓存预处理结果）。 */
+  TS.search = {
+    /** 预建检索上下文；数据换版时重建。 */
+    make: function (items) {
+      var t0 = (window.performance && performance.now()) ? performance.now() : 0;
+      var prepped = prep(items || []);
+      var ms = 0;
+      if (t0) ms = Math.round(performance.now() - t0);
+      return { prepped: prepped, size: prepped.length, prepMs: ms };
+    },
+
+    query: function (ctx, rawQuery, limit) {
+      if (!ctx || !ctx.prepped || !ctx.prepped.length) return [];
+      var q = prepareQuery(rawQuery);
+      if (!q) return [];
+      var topk = limit || 5;
+
+      var out = run(q, 0.08, topk, ctx.prepped, true);
+      if (out.length >= 3) return out;
+
+      // 二级：放宽阈值
+      out = run(q, 0, topk, ctx.prepped, true);
+      if (out.length >= 3) return out;
+
+      // 三级：同义词扩展，不再强制核心短语
+      var out2 = run(expand(q), 0, topk, ctx.prepped, false);
+      if (out2.length > out.length) out = out2;
+      if (out.length) return out;
+
+      // 四级：最长片段粗召回
+      if (q.length >= 2) {
+        var sizes = [Math.min(6, q.length), 4, 3, 2];
+        for (var si = 0; si < sizes.length; si++) {
+          var size = sizes[si];
+          for (var i = 0; i + size <= q.length; i++) {
+            var frag = q.substr(i, size);
+            if (STOP[frag]) continue;
+            var c = run(frag, 0, topk, ctx.prepped, false);
+            if (c.length) return c;
+          }
+        }
+      }
+      return out;
+    },
+
+    bigrams: bigrams,
+    prepareQuery: prepareQuery,
+    expand: expand
+  };
+
+})(window.TS);
+
+/* ---- ui.js ---- */
+/* ui.js —— 状态机、对话流、抽屉、设置、导出
+ *
+ * 三条不变量（改代码时必须守住）：
+ *   1. 先渲染本地结果，再发 AI 请求；AI 只增改 AI 块，永不替换结果列表
+ *   2. 每次提问自增 seq，异步回调校验 seq 防串话
+ *   3. AI 失败只影响 AI 块，results 保持不变
+ */
+'use strict';
+
+(function (TS) {
+
+  var state = {
+    phase: 'idle',        // idle | searching | results | ai_pending | ai_done | ai_error
+    seq: 0,
+    meta: null,
+    items: null,
+    ctx: null,
+    aiOn: false,
+    aiNoticeShown: false,
+    key: '',
+    model: '',
+    base: '',
+    aborter: null,
+    turns: [],            // 供导出
+    tab: 'policy',        // policy | lib kind | dash
+    lib: null,
+    libLoading: null,
+    filters: { x: '', c: '', p: '', year: '', w: '', ind: '' },
+    sort: 'rel',
+    favOnly: false,
+    lastQuery: '',
+    browsing: false,
+    filtersOpen: false
+  };
+
+  var FAV_KEY = 'taxqa.fav.v1';
+
+  function favKey(it) {
+    return (it.y || 'policy') + '|' + (it.t || '') + '|' + (it.u || '');
+  }
+  function favSet() {
+    try {
+      var arr = JSON.parse(TS.store.get(FAV_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function isFav(it) { return favSet().indexOf(favKey(it)) >= 0; }
+  function toggleFav(it) {
+    var arr = favSet(), k = favKey(it), i = arr.indexOf(k);
+    if (i >= 0) arr.splice(i, 1); else arr.push(k);
+    TS.store.set(FAV_KEY, JSON.stringify(arr));
+    if (it && it.y === 'own') usageRecord(i >= 0 ? 'unfav' : 'fav', it);
+    toast(i >= 0 ? '已取消收藏' : '已收藏');
+  }
+
+  /* ---------------------------------------------------------------- 本机使用观察 */
+  var USAGE_KEY = 'taxqa.usage.v1';
+  var USAGE_LIMIT = 500;
+
+  function usageLog() {
+    try {
+      var arr = JSON.parse(TS.store.get(USAGE_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+
+  function usageRecord(event, it) {
+    if (!it || it.y !== 'own') return;
+    var log = usageLog();
+    log.push({
+      t: new Date().toISOString(),
+      e: event,
+      id: it.uid || '',
+      title: (it.t || '').slice(0, 80),
+      tab: state.tab || ''
+    });
+    if (log.length > USAGE_LIMIT) log = log.slice(log.length - USAGE_LIMIT);
+    TS.store.set(USAGE_KEY, JSON.stringify(log));
+  }
+
+  function usageStats() {
+    var log = usageLog();
+    var now = Date.now();
+    var last30 = 0, opens = 0, top = {};
+    log.forEach(function (r) {
+      var ts = Date.parse(r.t);
+      if (!isNaN(ts) && now - ts <= 30 * 86400000) last30++;
+      if (r.e === 'open') {
+        opens++;
+        var k = r.id || r.title || '未知';
+        top[k] = top[k] || { title: r.title || k, n: 0 };
+        top[k].n++;
+      }
+    });
+    var favs = favSet().filter(function (k) { return k.indexOf('own|') === 0; }).length;
+    var topList = Object.keys(top).map(function (k) { return top[k]; })
+      .sort(function (a, b) { return b.n - a.n; }).slice(0, 5);
+    return { events: log.length, opens: opens, last30: last30, favs: favs, top: topList };
+  }
+
+  function renderUsage() {
+    var summary = $('usage-summary');
+    var box = $('usage-top');
+    if (!summary || !box) return;
+    var s = usageStats();
+    TS.clear(summary);
+    [
+      ['本机打开', String(s.opens)],
+      ['近 30 天事件', String(s.last30)],
+      ['本机收藏', String(s.favs)],
+      ['记录事件', String(s.events)]
+    ].forEach(function (r) {
+      summary.appendChild(TS.el('div', {},
+        TS.el('dt', { text: r[0] }), TS.el('dd', { text: r[1] })));
+    });
+    TS.clear(box);
+    if (!s.top.length) {
+      box.appendChild(TS.el('p', { class: 'hint', text: '还没有本机打开记录。' }));
+      return;
+    }
+    s.top.forEach(function (x, i) {
+      box.appendChild(TS.el('p', {
+        class: 'hint',
+        text: (i + 1) + '. ' + x.title + '（' + x.n + ' 次）'
+      }));
+    });
+  }
+
+  function exportUsage() {
+    var payload = {
+      exported_at: new Date().toISOString(),
+      note: '仅本机使用记录，不代表全体用户；不含政策正文、Key 或账号信息。',
+      events: usageLog()
+    };
+    var stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    downloadText('taxsync-usage-' + stamp + '.json',
+      JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
+    toast('使用记录已导出');
+  }
+
+  function clearUsage() {
+    if (typeof window.confirm === 'function'
+        && !window.confirm('清空本机的实务解读使用记录？此操作不可恢复。')) return;
+    TS.store.del(USAGE_KEY);
+    renderUsage();
+    toast('本机使用记录已清空');
+  }
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function isClientSafe() {
+    return document.body && document.body.dataset.clientSafe === '1';
+  }
+
+  function filterCount() {
+    var n = 0, f = state.filters;
+    Object.keys(f).forEach(function (k) { if (f[k]) n++; });
+    if (state.favOnly) n++;
+    return n;
+  }
+
+  function updateFilterBar() {
+    var bar = $('filter-bar');
+    var btn = $('filter-toggle');
+    var summary = $('filter-summary');
+    if (!bar) return;
+    var visible = state.tab !== 'dash' && (!!state.lastQuery || state.browsing);
+    bar.hidden = !visible;
+    if (!visible) return;
+    var n = filterCount();
+    if (btn) {
+      btn.textContent = n ? ('筛选 ' + n) : '筛选';
+      btn.setAttribute('aria-expanded', state.filtersOpen ? 'true' : 'false');
+      btn.classList.toggle('active', state.filtersOpen || n > 0);
+    }
+    if (summary) {
+      summary.textContent = n ? ('已选 ' + n + ' 项') : '按税种、年份、效力筛选';
+    }
+  }
+
+  /* ---------------------------------------------------------------- 数据新鲜度 */
+  function renderFreshness() {
+    var el = $('freshness');
+    if (!el) return;
+    var m = state.meta;
+    if (!m) { el.hidden = true; return; }
+    var level = m.freshness || 'unknown';
+    var days = m.stale_days;
+    var maxd = m.source_maxd || m.maxd || '';
+    var sync = m.sync_state || 'unknown';
+    var text = '';
+    var ago = (days === 0) ? '今天' : ((days === null || days === undefined) ? '' : (days + ' 天前'));
+    if (sync === 'failed') {
+      level = 'red';
+      text = '本次同步失败：线上仍是上一版数据'
+        + (maxd ? ('（截至 ' + maxd + '）') : '')
+        + '，不能据此判断政策没有更新。';
+    } else if (sync === 'skipped') {
+      text = '本次构建未执行同步'
+        + (maxd ? ('；数据截至 ' + maxd + (ago ? '（' + ago + '）' : '')) : '') + '。';
+    } else if (level === 'unknown') {
+      text = '数据日期未知，请以原站为准。';
+    } else if (level === 'fresh') {
+      text = '数据截至 ' + maxd + (ago ? '（' + ago + '）' : '');
+    } else if (level === 'amber') {
+      text = '数据截至 ' + maxd + '，已 ' + days + ' 天未见新政策（源站可能未更新）。';
+    } else {
+      text = '数据截至 ' + maxd + '，已 ' + days + ' 天未更新，数据可能过期。';
+    }
+    el.className = 'freshness ' + level;
+    el.textContent = text;
+    el.hidden = false;
+  }
+
+  /* ---------------------------------------------------------------- toast */
+  var toastTimer = null;
+  function toast(msg, ms) {
+    var node = $('toast');
+    if (!node) return;
+    node.textContent = msg;
+    node.hidden = false;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { node.hidden = true; }, ms || 2600);
+  }
+  TS.toast = toast;
+
+  /* ---------------------------------------------------------------- 载入数据 */
+  function setSubline(text) {
+    var n = $('subline');
+    if (n) n.textContent = text;
+  }
+
+  function renderChips(meta) {
+    var box = $('cats');
+    if (!box) return;
+    TS.clear(box);
+    var cats = (meta && meta.cats) || [];
+    cats.forEach(function (pair) {
+      var name = pair[0], cnt = pair[1];
+      box.appendChild(TS.el('button', {
+        type: 'button', class: 'chip' + (state.filters.c === name ? ' active' : ''),
+        onclick: function () {
+          state.filters.c = (state.filters.c === name ? '' : name);
+          state.filters.x = '';
+          renderFilters();
+          refreshView();
+        }
+      }, name, TS.el('span', { class: 'cnt', text: String(cnt) })));
+    });
+  }
+
+  var EXAMPLES = [
+    '建筑业跨区域施工在哪预缴增值税？',
+    '小规模纳税人月销售额多少免税？',
+    '研发费用加计扣除比例是多少？',
+    '增值税留抵退税需要什么条件？',
+    '数电票开错了怎么红冲？',
+    '小型微利企业所得税优惠'
+  ];
+
+  function renderExamples() {
+    var box = $('examples');
+    if (!box) return;
+    TS.clear(box);
+    EXAMPLES.forEach(function (q) {
+      box.appendChild(TS.el('button', {
+        type: 'button', class: 'chip', text: q,
+        onclick: function () { submit(q); }
+      }));
+    });
+  }
+
+  /* ---------------------------------------------------------------- 页签 / 扩展模块 */
+  function tabDefs() {
+    var defs = [{ id: 'policy', label: '政策法规' }];
+    var lib = (state.meta && state.meta.lib) || [];
+    // 单文件版只内嵌 own（实务解读）；其他扩展模块仅在线版可见。
+    lib.forEach(function (x) {
+      if (document.body.dataset.mode === 'standalone' && x.kind !== 'own') return;
+      defs.push({ id: x.kind, label: x.label, n: x.n });
+    });
+    defs.push({ id: 'dash', label: '时效看板' });
+    return defs;
+  }
+
+  function renderTabs() {
+    var box = $('tabs');
+    if (!box) return;
+    var hadTabFocus = !!(document.activeElement
+      && document.activeElement.classList
+      && document.activeElement.classList.contains('tab'));
+    TS.clear(box);
+    var defs = tabDefs();
+    defs.forEach(function (t, i) {
+      var active = state.tab === t.id;
+      var node = TS.el('button', {
+        type: 'button', id: 'tab-' + t.id,
+        class: 'tab' + (active ? ' active' : ''),
+        role: 'tab',
+        'aria-selected': active ? 'true' : 'false',
+        'aria-controls': 'main',
+        tabindex: active ? '0' : '-1',
+        onclick: function () { switchTab(t.id, true); }
+      }, t.label);
+      node.addEventListener('keydown', function (e) {
+        var key = e.key;
+        if (key !== 'ArrowRight' && key !== 'ArrowLeft'
+            && key !== 'Home' && key !== 'End') return;
+        e.preventDefault();
+        var next = i;
+        if (key === 'ArrowRight') next = (i + 1) % defs.length;
+        if (key === 'ArrowLeft') next = (i - 1 + defs.length) % defs.length;
+        if (key === 'Home') next = 0;
+        if (key === 'End') next = defs.length - 1;
+        switchTab(defs[next].id, true);
+      });
+      if (t.n) node.appendChild(TS.el('span', { class: 'cnt', text: String(t.n) }));
+      box.appendChild(node);
+    });
+    var main = $('main');
+    if (main) main.setAttribute('aria-labelledby', 'tab-' + state.tab);
+    if (hadTabFocus) {
+      var act = $('tab-' + state.tab);
+      if (act) act.focus();
+    }
+  }
+
+  function loadLibrary() {
+    if (state.lib) return Promise.resolve(state.lib);
+    if (state.libLoading) return state.libLoading;
+    var mode = document.body.dataset.mode;
+    if (mode === 'standalone') {
+      state.libLoading = TS.readInlineLibrary().then(function (data) {
+        state.lib = data || { m: {}, d: [] };
+        if (!data) toast('离线单文件版未内置扩展模块；请使用在线版查看官方解读/问答/知识库。', 6000);
+        return state.lib;
+      });
+      return state.libLoading;
+    }
+    state.libLoading = TS.fetchWithTimeout('library.json.gz?_=' + Date.now(), {}, 25000)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.arrayBuffer();
+      })
+      .then(function (buf) {
+        return TS.gunzip(new Uint8Array(buf)).then(function (text) {
+          state.lib = JSON.parse(text);
+          return state.lib;
+        });
+      })
+      .catch(function (e) {
+        state.lib = { m: {}, d: [] };
+        toast('扩展模块载入失败：' + (e.message || e));
+        return state.lib;
+      });
+    return state.libLoading;
+  }
+
+  function libraryItems(kind) {
+    if (!state.lib) return [];
+    return (state.lib.d || []).filter(function (it) { return it.y === kind; });
+  }
+
+  function toSearchItem(it) {
+    if (!it.y) return it;
+    return Object.assign({}, it, {
+      n: (it.c || '') + ' ' + (it.s || ''),
+      // 保留原始子类；s 用于检索/结果摘要，不能覆盖详情里的“子类”。
+      sub: it.s || '',
+      s: it.m || it.q || '',
+      x: (it.c || '') + ' ' + (it.s || ''),
+      k: it.q || ''
+    });
+  }
+
+  function activeItems() {
+    if (state.tab === 'policy' || state.tab === 'dash') return state.items || [];
+    return libraryItems(state.tab).map(toSearchItem);
+  }
+
+  function filterMatches(it) {
+    var f = state.filters;
+    if (state.favOnly && !isFav(it)) return false;
+    if (f.x && it.x !== f.x) return false;
+    if (f.c && it.c !== f.c) return false;
+    if (f.p && it.p !== f.p) return false;
+    if (f.w && it.w !== f.w) return false;
+    if (f.year && String(it.d || '').slice(0, 4) !== f.year) return false;
+    if (f.ind) {
+      var ind = it.ind || [];
+      if (ind.indexOf(f.ind) < 0) return false;
+    }
+    return true;
+  }
+
+  function filteredItems() {
+    return activeItems().filter(filterMatches);
+  }
+
+  function sortHits(hits) {
+    var out = hits.slice();
+    if (state.sort === 'date') {
+      out.sort(function (a, b) { return String(b.item.d || '').localeCompare(String(a.item.d || '')); });
+    } else if (state.sort === 'title') {
+      out.sort(function (a, b) { return String(a.item.t || '').localeCompare(String(b.item.t || ''), 'zh'); });
+    }
+    return out;
+  }
+
+  function addOption(sel, value, label, current) {
+    var o = TS.el('option', { value: value, text: label });
+    if (value === current) o.setAttribute('selected', '');
+    sel.appendChild(o);
+  }
+
+  function makeSelect(label, key, pairs) {
+    var wrap = TS.el('label', { class: 'filter' }, TS.el('span', { text: label }));
+    var sel = TS.el('select', {});
+    addOption(sel, '', '全部', state.filters[key] || '');
+    (pairs || []).forEach(function (p) {
+      addOption(sel, p[0], p[0] + (p[1] ? '（' + p[1] + '）' : ''), state.filters[key] || '');
+    });
+    sel.addEventListener('change', function () {
+      state.filters[key] = sel.value;
+      updateFilterBar();
+      refreshView();
+    });
+    wrap.appendChild(sel);
+    return wrap;
+  }
+
+  function renderFilters() {
+    var box = $('filters');
+    if (!box) return;
+    TS.clear(box);
+    if (state.tab === 'dash') { box.hidden = true; updateFilterBar(); return; }
+    box.hidden = !state.filtersOpen;
+    var m = state.meta || {};
+    var facets = m.facets || {};
+    if (state.tab === 'policy') {
+      box.appendChild(makeSelect('税种', 'x', (facets.tax || [])));
+      box.appendChild(makeSelect('分类', 'c', (m.cats || [])));
+      box.appendChild(makeSelect('地区', 'p', (facets.regions || [])));
+      box.appendChild(makeSelect('年份', 'year', (facets.years || [])));
+      box.appendChild(makeSelect('效力', 'w', (facets.status || [])));
+      box.appendChild(makeSelect('行业', 'ind', (facets.industries || [])));
+    } else {
+      var cats = {}, arr = [];
+      activeItems().forEach(function (it) {
+        var c = it.c || '';
+        if (c && !cats[c]) { cats[c] = 1; arr.push([c, 0]); }
+      });
+      box.appendChild(makeSelect('分类', 'c', arr));
+    }
+    var sort = TS.el('label', { class: 'filter' }, TS.el('span', { text: '排序' }));
+    var ss = TS.el('select', {});
+    addOption(ss, 'rel', '相关度', state.sort);
+    addOption(ss, 'date', '发布日期', state.sort);
+    addOption(ss, 'title', '标题', state.sort);
+    ss.addEventListener('change', function () { state.sort = ss.value; refreshView(); });
+    sort.appendChild(ss);
+    box.appendChild(sort);
+
+    var fav = TS.el('button', {
+      type: 'button', class: 'filter-btn' + (state.favOnly ? ' active' : ''),
+      text: state.favOnly ? '只看收藏 ✓' : '只看收藏',
+      onclick: function () {
+        state.favOnly = !state.favOnly;
+        renderFilters();
+        refreshView();
+      }
+    });
+    box.appendChild(fav);
+    updateFilterBar();
+  }
+
+  function refreshView() {
+    if (state.tab === 'dash') { renderDashboard(); return; }
+    if (state.lastQuery) submit(state.lastQuery);
+    else showBrowse();
+  }
+
+  function showBrowse() {
+    state.browsing = true;
+    var items = filteredItems();
+    var hits = items.map(function (it) { return { item: it, score: 0 }; });
+    if (state.sort === 'date') {
+      hits.sort(function (a, b) { return String(b.item.d || '').localeCompare(String(a.item.d || '')); });
+    } else if (state.sort === 'title') {
+      hits.sort(function (a, b) { return String(a.item.t || '').localeCompare(String(b.item.t || ''), 'zh'); });
+    }
+    // 实务解读扩到 50 条后，浏览列表上限同步放宽，避免最后 10 张卡不可见。
+    hits = hits.slice(0, 60);
+    var hero = $('hero'); if (hero) hero.hidden = true;
+    var composer = $('composer'); if (composer) composer.hidden = false;
+    updateFilterBar();
+    var stream = $('stream'); TS.clear(stream);
+    var t = pushTurn(state.tab === 'policy' ? '浏览政策法规' : '浏览' + (tabDefs().filter(function (x) { return x.id === state.tab; })[0] || {}).label);
+    state.turns.push(t);
+    t.hits = hits;
+    var head = TS.el('div', { class: 'answer-head' },
+      TS.el('span', {}, TS.el('span', { class: 'count', text: String(items.length) }),
+        document.createTextNode(' 条内容')), TS.el('span', { text: '筛选结果' }));
+    t.answer.appendChild(head);
+    t.answer.appendChild(renderResultList(hits, []));
+  }
+
+  function renderDashboard() {
+    var hero = $('hero'); if (hero) hero.hidden = true;
+    var composer = $('composer'); if (composer) composer.hidden = false;
+    updateFilterBar();
+    var stream = $('stream'); TS.clear(stream);
+    var wrap = TS.el('div', { class: 'answer' });
+    wrap.appendChild(TS.el('h2', { class: 'dash-title', text: '时效看板' }));
+    var facets = (state.meta && state.meta.facets) || {};
+    var status = facets.status || [];
+    var years = facets.years || [];
+    wrap.appendChild(TS.el('h4', { text: '按效力状态' }));
+    var ul = TS.el('ul', { class: 'dash-list' });
+    status.forEach(function (p) {
+      ul.appendChild(TS.el('li', {}, TS.el('button', {
+        type: 'button', class: 'linklike', text: p[0] + '：' + p[1],
+        onclick: function () { state.filters.w = p[0]; state.tab = 'policy'; renderTabs(); renderFilters(); showBrowse(); }
+      })));
+    });
+    wrap.appendChild(ul);
+    wrap.appendChild(TS.el('h4', { text: '按年份' }));
+    var ul2 = TS.el('ul', { class: 'dash-list' });
+    years.slice(0, 12).forEach(function (p) {
+      ul2.appendChild(TS.el('li', {}, TS.el('button', {
+        type: 'button', class: 'linklike', text: p[0] + '：' + p[1],
+        onclick: function () { state.filters.year = p[0]; state.tab = 'policy'; renderTabs(); renderFilters(); showBrowse(); }
+      })));
+    });
+    wrap.appendChild(ul2);
+    var exp = (state.items || []).filter(function (it) { return it.ep; });
+    wrap.appendChild(TS.el('h4', { text: '有明确执行期限（前 20 条）' }));
+    var ul3 = TS.el('ul', { class: 'dash-list' });
+    exp.slice(0, 20).forEach(function (it) {
+      ul3.appendChild(TS.el('li', {}, TS.el('button', {
+        type: 'button', class: 'linklike', text: (it.ep || '') + ' · ' + (it.t || ''),
+        onclick: function () { openDetail({ item: it }, 0); }
+      })));
+    });
+    wrap.appendChild(ul3);
+
+    // HLS META：源站下发的分类体系。年度/行业/事项/税种树可映射到现有
+    // 筛选键，做成可点击的看板入口；公文类别/地区无 item 字段可映射，
+    // 只做只读展示，避免“死载荷”。
+    var hls = (state.meta && state.meta.hls) || {};
+    var items = state.items || [];
+    function goFilter(key, val) {
+      state.filters[key] = val;
+      state.tab = 'policy';
+      renderTabs();
+      renderFilters();
+      showBrowse();
+    }
+    function countYear(y) {
+      return items.filter(function (it) { return String(it.d || '').slice(0, 4) === y; }).length;
+    }
+    function countInd(v) {
+      return items.filter(function (it) { return (it.ind || []).indexOf(v) >= 0; }).length;
+    }
+    function countTax(v) {
+      return items.filter(function (it) { return it.x === v; }).length;
+    }
+    var hy = hls.docYears || [];
+    if (hy.length) {
+      wrap.appendChild(TS.el('h4', { text: 'HLS 年度（源站分类）' }));
+      var ulh = TS.el('ul', { class: 'dash-list' });
+      hy.slice(0, 12).forEach(function (y) {
+        ulh.appendChild(TS.el('li', {}, TS.el('button', {
+          type: 'button', class: 'linklike', text: y + '：' + countYear(y),
+          onclick: function () { goFilter('year', y); }
+        })));
+      });
+      wrap.appendChild(ulh);
+    }
+    var inds = hls.industries || {};
+    ['行业', '事项'].forEach(function (group) {
+      var vals = inds[group] || [];
+      if (!vals.length) return;
+      wrap.appendChild(TS.el('h4', { text: 'HLS ' + group }));
+      var uli = TS.el('ul', { class: 'dash-list' });
+      vals.slice(0, 12).forEach(function (v) {
+        uli.appendChild(TS.el('li', {}, TS.el('button', {
+          type: 'button', class: 'linklike', text: v + '：' + countInd(v),
+          onclick: function () { goFilter('ind', v); }
+        })));
+      });
+      wrap.appendChild(uli);
+    });
+    var tree = hls['税种树'] || {};
+    Object.keys(tree).forEach(function (grp) {
+      var leaves = tree[grp] || [];
+      if (!leaves.length) return;
+      wrap.appendChild(TS.el('h4', { text: 'HLS 税种树 · ' + grp }));
+      var ult = TS.el('ul', { class: 'dash-list' });
+      leaves.forEach(function (v) {
+        ult.appendChild(TS.el('li', {}, TS.el('button', {
+          type: 'button', class: 'linklike', text: v + '：' + countTax(v),
+          onclick: function () { goFilter('x', v); }
+        })));
+      });
+      wrap.appendChild(ult);
+    });
+    var cats = hls.docCats || [];
+    if (cats.length) {
+      wrap.appendChild(TS.el('h4', { text: 'HLS 公文类别（源站分类，只读）' }));
+      wrap.appendChild(TS.el('p', { class: 'hint', text: cats.join(' · ') }));
+    }
+    if (Array.isArray(hls.regions) && !hls.regions.length) {
+      wrap.appendChild(TS.el('p', { class: 'hint', text: 'HLS 地区：源站未下发地区列表，暂不提供地区筛选。' }));
+    }
+    stream.appendChild(wrap);
+  }
+
+  function switchTab(id, focusTab) {
+    state.tab = id;
+    state.filters = { x: '', c: '', p: '', year: '', w: '', ind: '' };
+    state.favOnly = false;
+    state.filtersOpen = false;
+    renderTabs();
+    if (focusTab) {
+      var act = $('tab-' + id);
+      if (act) act.focus();
+    }
+    if (id === 'policy' || id === 'dash') {
+      renderFilters();
+      if (id === 'dash') renderDashboard();
+      else if (state.lastQuery) submit(state.lastQuery); else showBrowse();
+      return;
+    }
+    renderFilters();
+    setSubline('正在载入扩展模块…');
+    loadLibrary().then(function (lib) {
+      var n = (lib && lib.d) ? lib.d.length : 0;
+      setSubline(n
+        ? ('扩展模块已载入 · 共 ' + n.toLocaleString('zh-CN') + ' 条')
+        : '扩展模块未载入 · 可继续使用政策法规');
+      renderTabs();
+      renderFilters();
+      if (state.lastQuery) submit(state.lastQuery); else showBrowse();
+    });
+  }
+
+  /* ---------------------------------------------------------------- 结果渲染 */
+  function badgeFor(item) {
+    var v = item.w || '';
+    if (v === '全文有效') return { cls: 'ok', text: '全文有效' };
+    if (v === '部分失效') return { cls: 'warn', text: '部分失效' };
+    if (v === '全文失效') return { cls: 'bad', text: '全文失效' };
+    if (v === '尚未生效') return { cls: 'warn', text: '尚未生效' };
+    return null;
+  }
+
+  function highlightNode(text, grams) {
+    var segs = TS.highlight(text, grams);
+    var frag = document.createDocumentFragment();
+    segs.forEach(function (pair) {
+      if (pair[1]) frag.appendChild(TS.el('mark', { text: pair[0] }));
+      else frag.appendChild(document.createTextNode(pair[0]));
+    });
+    return frag;
+  }
+
+  function resultNode(hit, idx, grams) {
+    var it = hit.item;
+    var meta = TS.el('div', { class: 'result-meta' });
+    if (it.n) meta.appendChild(TS.el('span', { class: 'docno', text: it.n }));
+    if (it.d) meta.appendChild(TS.el('span', { text: it.d }));
+    if (it.x) meta.appendChild(TS.el('span', { text: it.x }));
+    if (it.y) meta.appendChild(TS.el('span', { class: 'badge', text: it.c || it.y }));
+    var b = badgeFor(it);
+    if (b) meta.appendChild(TS.el('span', { class: 'badge ' + b.cls, text: b.text }));
+    if (!it.y && it.s) meta.appendChild(TS.el('span', { class: 'badge llm', text: isClientSafe() ? '摘要' : 'AI 摘要' }));
+    if (isFav(it)) meta.appendChild(TS.el('span', { class: 'badge fav', text: '已收藏' }));
+
+    var open = function (e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      openDetail(hit, idx + 1);
+    };
+    var titleBtn = TS.el('button', {
+      type: 'button', class: 'result-title',
+      'aria-label': '查看详情：' + (it.t || '无标题'),
+      onclick: open
+    });
+    titleBtn.appendChild(highlightNode(it.t || '(无标题)', grams || []));
+    var h4 = TS.el('h4', {}, titleBtn);
+
+    var preview = it.y
+      ? (it.m || it.q || '（本条未收录正文，请查看原文）')
+      : (it.s || it.k || '（本条未收录正文，请查看原文）');
+    var p = TS.el('p');
+    p.appendChild(highlightNode(TS.clip(preview, 220), grams || []));
+
+    var card = TS.el('article', {
+      class: 'result', dataset: { idx: String(idx) },
+      onclick: open
+    }, h4, meta, p);
+    return card;
+  }
+
+  function renderResultList(hits, grams) {
+    var body = TS.el('div', { class: 'answer-body' });
+    if (!hits.length) {
+      body.appendChild(TS.el('div', { class: 'empty' },
+        TS.el('p', { text: '没有检索到相关政策。可以换个说法，或试试下面这些方向：' }),
+        TS.el('ul', {}, EXAMPLES.slice(0, 3).map(function (q) {
+          return TS.el('li', {}, TS.el('button', {
+            type: 'button', text: q, onclick: function () { submit(q); }
+          }));
+        }))
+      ));
+      return body;
+    }
+    hits.forEach(function (h, i) { body.appendChild(resultNode(h, i, grams)); });
+    return body;
+  }
+
+  /* ---------------------------------------------------------------- AI 块 */
+  function aiBlockNode(text, hits, usage) {
+    var block = TS.el('div', { class: 'ai-block' });
+    block.appendChild(TS.el('span', { class: 'ai-label', text: 'AI 综述 · 请核对引用' }));
+
+    // 按 [n] 切分文本，引用做成可点按钮；绝不用 innerHTML
+    var re = /\[(\d{1,2})\]/g;
+    var last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) {
+        block.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      (function (num) {
+        block.appendChild(TS.el('button', {
+          type: 'button', class: 'cite', text: '[' + num + ']',
+          title: '查看第 ' + num + ' 条依据',
+          onclick: function () {
+            var target = hits[num - 1];
+            if (target) openDetail(target, num);
+            else toast('该引用不在本次结果中');
+          }
+        }));
+      })(parseInt(m[1], 10));
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) block.appendChild(document.createTextNode(text.slice(last)));
+
+    var check = TS.validateAiNumbers ? TS.validateAiNumbers(text, hits) : null;
+    if (check && check.checked) {
+      var note = TS.el('div', {
+        class: 'ai-check' + (check.unsupported.length ? ' warn' : ''),
+        text: check.unsupported.length
+          ? ('数字核对：' + check.unsupported.length + ' 项在引用资料中未找到（'
+             + check.unsupported.slice(0, 4).join('、') + '），请以原文为准。')
+          : ('数字核对：' + check.checked + ' 项均可在引用资料中找到。')
+      });
+      block.appendChild(note);
+    }
+    if (usage && (usage.prompt_tokens || usage.completion_tokens)) {
+      block.appendChild(TS.el('div', {
+        class: 'ai-usage',
+        text: '本次用量：输入 ' + (usage.prompt_tokens || 0)
+          + ' / 输出 ' + (usage.completion_tokens || 0) + ' tokens'
+      }));
+    }
+    return block;
+  }
+
+  function aiStateNode(kind, text, onRetry) {
+    var node = TS.el('div', { class: 'ai-state' + (kind === 'error' ? ' error' : '') });
+    if (kind === 'pending') node.appendChild(TS.el('span', { class: 'dot-pulse' }));
+    node.appendChild(TS.el('span', { text: text }));
+    if (kind === 'error' && onRetry) {
+      node.appendChild(TS.el('button', {
+        type: 'button', class: 'ghost small', text: '重试',
+        onclick: onRetry
+      }));
+    }
+    return node;
+  }
+
+  /* ---------------------------------------------------------------- 提问主流程 */
+  function pushTurn(question) {
+    var turn = TS.el('div', { class: 'turn' });
+    var userRow = TS.el('div', { class: 'turn turn-user' },
+      TS.el('div', { class: 'bubble-user', text: question }));
+    var answer = TS.el('div', { class: 'answer' });
+    turn.appendChild(userRow);
+    turn.appendChild(answer);
+    $('stream').appendChild(turn);
+    return { root: turn, answer: answer, question: question, aiText: '', hits: [] };
+  }
+
+  function submit(rawQuery) {
+    var q = (rawQuery || '').trim();
+    if (!q) return;
+
+    var seq = ++state.seq;
+    state.phase = 'searching';
+    state.lastQuery = q;
+    state.browsing = true;
+    updateFilterBar();
+    var hero = $('hero');
+    if (hero) hero.hidden = true;
+    var composer = $('composer');
+    if (composer) composer.hidden = false;
+
+    var t = pushTurn(q);
+    state.turns.push(t);
+
+    // 骨架屏
+    var sk = TS.el('div', { class: 'skeleton' });
+    [92, 74, 86, 60].forEach(function (w) {
+      sk.appendChild(TS.el('div', { class: 'sk-line', style: 'width:' + w + '%' }));
+    });
+    t.answer.appendChild(sk);
+
+    // 让浏览器先画出「检索中」，再进同步计算（避免白屏）
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        if (seq !== state.seq) return;
+        var t0 = (window.performance && performance.now()) ? performance.now() : Date.now();
+        var hits, allHits;
+        try {
+          var pool = filteredItems();
+          state.ctx = TS.search.make(pool);
+          // 先取全部命中用于计数与“显示全部”，默认只渲染前 6 条，避免首屏过长。
+          allHits = sortHits(TS.search.query(state.ctx, q, 200));
+          hits = allHits.slice(0, 6);
+        } catch (e) {
+          hits = [];
+          allHits = [];
+          toast('检索出错：' + e.message);
+        }
+        var ms = Math.round(((window.performance && performance.now()) ? performance.now() : Date.now()) - t0);
+        if (seq !== state.seq) return;
+
+        t.hits = hits;
+        t.allHits = allHits;
+        TS.clear(t.answer);
+
+        var head = TS.el('div', { class: 'answer-head' });
+        var capped = allHits.length >= 200;
+        head.appendChild(TS.el('span', {},
+          TS.el('span', { class: 'count', text: capped ? '200+' : String(allHits.length) }),
+          document.createTextNode(state.tab === 'policy' ? ' 条相关政策' : ' 条内容')));
+        head.appendChild(TS.el('span', { text: ms + ' ms' }));
+        t.answer.appendChild(head);
+
+        if (hits.length && state.aiOn && state.tab === 'policy') {
+          t.answer.appendChild(aiStateNode('pending', 'AI 正在综述…'));
+        }
+
+        var grams = TS.search.bigrams(TS.search.prepareQuery(q));
+        var list = renderResultList(hits, grams);
+        t.answer.appendChild(list);
+        if (allHits.length > hits.length) {
+          var more = TS.el('button', {
+            type: 'button', class: 'ghost small',
+            text: capped ? '显示更多（前 200 条）' : ('显示全部 ' + allHits.length + ' 条')
+          });
+          more.addEventListener('click', function () {
+            var full = renderResultList(allHits, grams);
+            TS.clear(list);
+            while (full.firstChild) list.appendChild(full.firstChild);
+            if (more.parentNode) more.parentNode.removeChild(more);
+          });
+          t.answer.appendChild(more);
+        }
+
+        var foot = TS.el('div', { class: 'answer-foot' },
+          TS.el('span', { text: '结果来自离线政策库，引用请以原文为准' }),
+          TS.el('span', { text: state.meta ? ('数据截至 ' + (state.meta.maxd || '—')) : '' }));
+        t.answer.appendChild(foot);
+
+        state.phase = 'results';
+        // 滚到本轮结果标题，而不是整页底部；让筛选入口留在可视区上方。
+        var target = t.answer;
+        var targetTop = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+
+        if (hits.length && state.aiOn && state.tab === 'policy') runAI(t, seq);
+      }, 0);
+    });
+  }
+  TS.submit = submit;
+
+  /* ---------------------------------------------------------------- AI */
+  function runAI(t, seq) {
+    if (isClientSafe()) {
+      replaceAIState(t, aiStateNode('error', '客户安全版不发送任何内容'));
+      state.phase = 'ai_error';
+      return;
+    }
+    if (!state.key) {
+      replaceAIState(t, aiStateNode('error', '未填写 API Key，仅显示本地检索结果'));
+      state.phase = 'ai_error';
+      return;
+    }
+    // 首次发送前知情确认：明确告诉用户会发出多少条、发什么、不带 Key。
+    if (!state.aiNoticeShown) {
+      var n = Math.min(6, t.hits.length);
+      var msg = '将把本次检索的 ' + n + ' 条标题、文号与摘要发送到 AI 服务'
+        + '（不含 API Key，也不会上传整库）。是否继续？';
+      var ok = (typeof window.confirm === 'function') ? window.confirm(msg) : true;
+      if (!ok) {
+        state.aiOn = false;
+        var tgl = $('ai-toggle');
+        if (tgl) tgl.checked = false;
+        replaceAIState(t, aiStateNode('error', '已取消 AI 发送，仅保留本地检索结果'));
+        state.phase = 'ai_error';
+        return;
+      }
+      state.aiNoticeShown = true;
+    }
+    state.phase = 'ai_pending';
+    var started = Date.now();
+
+    // 计时器：让用户知道还在跑
+    var ticker = setInterval(function () {
+      if (seq !== state.seq) { clearInterval(ticker); return; }
+      var node = t.answer.querySelector('.ai-state');
+      if (node) {
+        var span = node.querySelector('span:not(.dot-pulse)');
+        if (span) span.textContent = 'AI 正在综述（已 ' + Math.round((Date.now() - started) / 1000) + ' 秒）…';
+      }
+    }, 1000);
+
+    if (state.aborter) { try { state.aborter.abort(); } catch (e) { /* ignore */ } }
+    state.aborter = typeof AbortController !== 'undefined' ? new AbortController() : null;
+
+    var usage = null;
+    TS.askAI(t.question, t.hits, {
+      key: state.key, model: state.model, base: state.base,
+      meta: state.meta, externalSignal: state.aborter ? state.aborter.signal : null,
+      onUsage: function (u) { usage = u; }
+    }).then(function (text) {
+      clearInterval(ticker);
+      if (seq !== state.seq) return;
+      t.aiText = text;
+      state.phase = 'ai_done';
+      replaceAIState(t, aiBlockNode(text, t.hits, usage));
+    }, function (err) {
+      clearInterval(ticker);
+      if (seq !== state.seq) return;
+      state.phase = 'ai_error';
+      replaceAIState(t, aiStateNode('error', err.message || 'AI 调用失败',
+        function () { runAI(t, seq); }));
+    });
+  }
+
+  function replaceAIState(t, node) {
+    var old = t.answer.querySelector('.ai-state');
+    if (old) old.parentNode.replaceChild(node, old);
+    else {
+      var head = t.answer.querySelector('.answer-head');
+      if (head && head.nextSibling) t.answer.insertBefore(node, head.nextSibling);
+      else t.answer.insertBefore(node, t.answer.firstChild);
+    }
+  }
+
+  /* ---------------------------------------------------------------- 抽屉 */
+  var currentDetail = null;
+  var detailReturnFocus = null;
+
+  function setMainInert(on) {
+    var main = $('main');
+    if (!main) return;
+    if ('inert' in main) {
+      main.inert = !!on;
+    } else if (on) {
+      main.setAttribute('aria-hidden', 'true');
+    } else {
+      main.removeAttribute('aria-hidden');
+    }
+  }
+
+  function focusables(root) {
+    if (!root) return [];
+    var nodes = root.querySelectorAll(
+      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
+      'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])');
+    return Array.prototype.filter.call(nodes, function (n) {
+      return !!(n.offsetWidth || n.offsetHeight || n.getClientRects().length);
+    });
+  }
+
+  function trapTab(container, e) {
+    var items = focusables(container);
+    if (!items.length) return false;
+    var first = items[0], last = items[items.length - 1];
+    if (container.contains(document.activeElement)) {
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    } else {
+      e.preventDefault(); first.focus();
+    }
+    return true;
+  }
+
+  function restoreDrawerModal() {
+    var d = $('drawer');
+    if (d && !d.hidden) d.setAttribute('aria-modal', 'true');
+  }
+
+  function openDrawer() {
+    var d = $('drawer');
+    if (d && d.hidden) {
+      detailReturnFocus = document.activeElement;
+    }
+    if (d) {
+      d.hidden = false;
+      d.setAttribute('aria-modal', 'true');
+    }
+    var s = $('scrim');
+    if (s) s.hidden = false;
+    setMainInert(true);
+    var close = $('drawer-close');
+    if (close) close.focus();
+  }
+
+  function openDetail(hit, num) {
+    var it = hit.item;
+    if (it.y) return openLibraryDetail(it);
+    currentDetail = it;
+    $('drawer-title').textContent = it.t || '政策详情';
+    var body = $('drawer-body');
+    TS.clear(body);
+
+    if (num) body.appendChild(TS.el('h4', { text: '引用编号 [' + num + ']' }));
+
+    var list = TS.el('ul', { class: 'meta-list' });
+    var rows = [
+      ['文号', it.n || '—'],
+      ['发布', it.d || '—'],
+      ['发文机关', it.o || '—'],
+      ['税种', it.x || '—'],
+      ['分类', it.c || '—'],
+      ['效力', it.w || '—']
+    ];
+    if (it.p) rows.push(['地区', it.p]);
+    if (it.ep) rows.push(['执行期限', it.ep]);
+    if (it.ws) rows.push(['期限状态', it.ws]);
+    if (it.pr) rows.push(['期限来源', it.pr]);
+    if (it.ind && it.ind.length) rows.push(['行业与事项', it.ind.join(' · ')]);
+    rows.forEach(function (r) {
+      list.appendChild(TS.el('li', {},
+        TS.el('span', { class: 'k', text: r[0] }),
+        TS.el('span', { class: 'v', text: r[1] })));
+    });
+    body.appendChild(list);
+
+    if (it.s) {
+      body.appendChild(TS.el('h4', { text: isClientSafe() ? '摘要' : 'AI 摘要' }));
+      body.appendChild(TS.el('p', { text: it.s }));
+      var prov = [];
+      if (it.sm) prov.push('生成：' + it.sm);
+      if (it.su) prov.push('时间：' + it.su);
+      if (it.sv) prov.push('模板：' + it.sv);
+      if (it.sh) prov.push('内容指纹：' + it.sh);
+      if (prov.length) {
+        body.appendChild(TS.el('p', { class: 'hint', text: prov.join(' · ') }));
+      }
+      body.appendChild(TS.el('p', {
+        class: 'hint',
+        text: '数字、期限与适用条件请以原文为准；摘要不替代政策原文。'
+      }));
+    }
+    if (it.k) {
+      body.appendChild(TS.el('h4', { text: '关键条款摘录' }));
+      body.appendChild(TS.el('div', { class: 'clause', text: it.k }));
+    } else {
+      body.appendChild(TS.el('h4', { text: '关键条款摘录' }));
+      body.appendChild(TS.el('p', { text: '本条源站未提供正文，请点击下方「查看原文」查阅官方文件。' }));
+    }
+    if (it.g && it.g.length) {
+      body.appendChild(TS.el('h4', { text: '标签' }));
+      body.appendChild(TS.el('p', { text: it.g.join(' · ') }));
+    }
+    if (it.on) {
+      body.appendChild(TS.el('h4', { text: '官方注释' }));
+      body.appendChild(TS.el('p', { class: 'note', text: it.on }));
+    }
+    if (it.at && it.at.length) {
+      body.appendChild(TS.el('h4', { text: '附件（' + it.at.length + '）' }));
+      var atts = TS.el('ul', { class: 'alt-list' });
+      it.at.forEach(function (a) {
+        var name = a[0] || '附件', link = a[1] || '';
+        atts.appendChild(TS.el('li', {}, link
+          ? TS.el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: name })
+          : TS.el('span', { text: name })));
+      });
+      body.appendChild(atts);
+    }
+    if (it.a && it.a.length) {
+      body.appendChild(TS.el('h4', { text: '同一文件的其它发布地址（' + it.a.length + '）' }));
+      var ul = TS.el('ul', { class: 'alt-list' });
+      it.a.forEach(function (u, i) {
+        if (i >= 6) return;
+        ul.appendChild(TS.el('li', {}, TS.el('a', {
+          href: u, target: '_blank', rel: 'noopener noreferrer',
+          text: u.length > 72 ? u.slice(0, 72) + '…' : u
+        })));
+      });
+      body.appendChild(ul);
+      if (it.a.length > 6) body.appendChild(TS.el('p', { class: 'hint', text: '仅显示前 6 条，其余 ' + (it.a.length - 6) + ' 条见原文站点。' }));
+    }
+
+    appendDetailActions($('drawer-foot'), it, function () {
+      toggleFav(it); openDetail({ item: it }, num);
+    }, 'policy');
+
+    openDrawer();
+  }
+
+  function closeDetail() {
+    var d = $('drawer');
+    var s = $('scrim');
+    if (d) d.hidden = true;
+    if (s) s.hidden = true;
+    setMainInert(false);
+    currentDetail = null;
+    var back = detailReturnFocus;
+    detailReturnFocus = null;
+    if (back && back.focus) {
+      try { back.focus(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function appendDetailActions(foot, it, onFav, prefix) {
+    TS.clear(foot);
+    var urls = (it.us && it.us.length) ? it.us : (it.u ? [it.u] : []);
+    urls.forEach(function (u, i) {
+      foot.appendChild(TS.el('button', {
+        type: 'button', class: 'primary small',
+        text: urls.length > 1 ? '查看原文' + (i + 1) : '查看原文',
+        onclick: function () { openOriginal(u); }
+      }));
+    });
+    foot.appendChild(TS.el('button', {
+      type: 'button', class: 'ghost small', text: isFav(it) ? '取消收藏' : '收藏',
+      onclick: onFav
+    }));
+    foot.appendChild(TS.el('button', {
+      type: 'button', class: 'ghost small', text: '复制摘要',
+      onclick: function () { copyDetail(it); }
+    }));
+    foot.appendChild(TS.el('button', {
+      type: 'button', class: 'ghost small', text: '下载 Markdown',
+      onclick: function () { downloadText((it.t || prefix) + '.md', detailToText(it)); }
+    }));
+    foot.appendChild(TS.el('button', {
+      type: 'button', class: 'ghost small', text: '打印',
+      onclick: function () { printDetail(); }
+    }));
+  }
+
+  var origLink = '';
+
+  function openOriginal(url) {
+    if (!url) { toast('本条没有收录原文链接'); return; }
+    origLink = url;
+    var u = $('orig-url');
+    if (u) u.textContent = url;
+    var wx = $('orig-wechat');
+    if (wx) wx.hidden = !/^https?:\/\/mp\.weixin\.qq\.com\//i.test(url);
+    var dlg = $('orig-dialog');
+    if (!dlg) { window.open(url, '_blank'); return; }
+    var drawer = $('drawer');
+    if (drawer && !drawer.hidden) drawer.setAttribute('aria-modal', 'false');
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  function printDetail() {
+    // 默认打印样式会隐藏抽屉；这里临时切到“只打印详情”模式。
+    document.body.classList.add('printing-detail');
+    var cleanup = function () {
+      document.body.classList.remove('printing-detail');
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+    setTimeout(cleanup, 3000);
+    window.print();
+  }
+
+  function openLibraryDetail(it, skipUsage) {
+    currentDetail = it;
+    $('drawer-title').textContent = it.t || '扩展内容';
+    var body = $('drawer-body');
+    TS.clear(body);
+    var def = tabDefs().filter(function (x) { return x.id === it.y; })[0];
+    var list = TS.el('ul', { class: 'meta-list' });
+    var rows = [
+      ['类型', it.c || it.y || '—'],
+      ['子类', (it.sub !== undefined ? it.sub : it.s) || '—'],
+      ['日期', it.d || '—'],
+      ['来源', it.src || (def ? def.label : (it.y || '—'))]
+    ];
+    if (it.y === 'own') {
+      if (it.sa) rows.push(['依据', it.sa]);
+      if (it.srv) rows.push(['复核', it.srv]);
+      if (it.sow) rows.push(['责任', it.sow]);
+    }
+    rows.forEach(function (r) {
+      list.appendChild(TS.el('li', {},
+        TS.el('span', { class: 'k', text: r[0] }),
+        TS.el('span', { class: 'v', text: r[1] })));
+    });
+    body.appendChild(list);
+    if (it.y === 'own') {
+      if (it.m) {
+        body.appendChild(TS.el('h4', { text: '结论' }));
+        body.appendChild(TS.el('p', { text: it.m }));
+      }
+      if (it.b) {
+        body.appendChild(TS.el('h4', { text: '解读正文' }));
+        body.appendChild(TS.el('div', { class: 'clause', text: it.b }));
+      }
+      body.appendChild(TS.el('p', {
+        class: 'hint',
+        text: '编辑解读，非官方原文；数字、期限与适用条件请以原文为准。'
+      }));
+    } else {
+      if (it.m) {
+        body.appendChild(TS.el('h4', { text: '摘要' }));
+        body.appendChild(TS.el('p', { text: it.m }));
+      }
+      if (it.q) {
+        body.appendChild(TS.el('h4', { text: '内容摘录' }));
+        body.appendChild(TS.el('div', { class: 'clause', text: it.q }));
+      }
+    }
+    if (it.g && it.g.length) {
+      body.appendChild(TS.el('h4', { text: '标签' }));
+      body.appendChild(TS.el('p', { text: it.g.join(' · ') }));
+    }
+    appendDetailActions($('drawer-foot'), it, function () {
+      toggleFav(it); openLibraryDetail(it, true);
+    }, 'content');
+    if (it.y === 'own' && !skipUsage) usageRecord('open', it);
+    openDrawer();
+    }
+
+  function detailToText(it) {
+    var lines = ['# ' + (it.t || '')];
+    if (it.n) lines.push('文号：' + it.n);
+    if (it.d) lines.push('发布日期：' + it.d);
+    if (it.o) lines.push('发文机关：' + it.o);
+    if (it.w) lines.push('效力状态：' + it.w);
+    if (it.ep) lines.push('执行期限：' + it.ep);
+    if (it.ws) lines.push('期限状态：' + it.ws);
+    if (it.pr) lines.push('期限来源：' + it.pr);
+    if (it.ind && it.ind.length) lines.push('行业与事项：' + it.ind.join('、'));
+    if (it.c) lines.push('分类：' + it.c);
+    if (it.y) {
+      var sub = it.sub !== undefined ? it.sub : it.s;
+      if (sub) lines.push('子类：' + sub);
+      if (it.y === 'own') {
+        if (it.sa) lines.push('依据：' + it.sa);
+        if (it.srv) lines.push('复核日期：' + it.srv);
+        if (it.sow) lines.push('责任：' + it.sow);
+        if (it.m) lines.push('', '## 结论', it.m);
+        if (it.b) lines.push('', '## 解读正文', it.b);
+      } else if (it.q) {
+        lines.push('', '## 内容摘录', it.q);
+      }
+    } else {
+      if (it.s) lines.push('', '## 摘要', it.s);
+      if (it.k) lines.push('', '## 关键条款摘录', it.k);
+      if (it.on) lines.push('', '## 官方注释', it.on);
+    }
+    if (it.at && it.at.length) {
+      lines.push('', '## 附件');
+      it.at.forEach(function (a) {
+        lines.push('- ' + (a[0] || '附件') + (a[1] ? '：' + a[1] : ''));
+      });
+    }
+    var srcUrls = (it.us && it.us.length) ? it.us : (it.u ? [it.u] : []);
+    srcUrls.forEach(function (u, i) {
+      lines.push('', (srcUrls.length > 1 ? '原文' + (i + 1) : '原文') + '：' + u);
+    });
+    if (it.y === 'own') {
+      lines.push('', '— 编辑解读，非官方原文；数字、期限与适用条件请以原文为准。'
+        + TS.COPYRIGHT_TEXT);
+    } else {
+      lines.push('', '— 本内容为条款摘录，引用请以原文为准。' + TS.COPYRIGHT_TEXT);
+    }
+    return lines.join('\n');
+  }
+
+  function downloadText(filename, text, mime) {
+    try {
+      var blob = new Blob([text], { type: mime || 'text/markdown;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    } catch (e) {
+      toast('下载失败：' + (e.message || e));
+    }
+  }
+
+  function copyDetail(it) {
+    copyText(detailToText(it), '摘要已复制');
+  }
+
+  function copyText(text, okMsg) {
+    var done = function () { toast(okMsg || '已复制'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+
+  function fallbackCopy(text, done) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) done(); else toast('复制失败，请手动选择文本');
+    } catch (e) {
+      toast('复制失败，请手动选择文本');
+    }
+  }
+
+  /* ---------------------------------------------------------------- 导出会话 */
+  function exportSession() {
+    if (!state.turns.length) { toast('还没有对话可导出'); return; }
+    var out = ['# 税务政策问答 · 会话记录', '',
+      '导出时间：' + new Date().toLocaleString('zh-CN'),
+      state.meta ? ('数据截至：' + (state.meta.maxd || '—') + '｜收录 ' + state.meta.n + ' 份') : '',
+      ''];
+    state.turns.forEach(function (t, i) {
+      out.push('## ' + (i + 1) + '. ' + t.question, '');
+      if (t.aiText) {
+        out.push('### AI 综述', '', t.aiText, '');
+      }
+      if (t.hits && t.hits.length) {
+        out.push('### 相关政策（' + t.hits.length + '）', '');
+        t.hits.forEach(function (h, j) {
+          var it = h.item;
+          out.push((j + 1) + '. **' + (it.t || '') + '**');
+          var meta = [];
+          if (it.n) meta.push(it.n);
+          if (it.d) meta.push(it.d);
+          if (it.w) meta.push(it.w);
+          if (meta.length) out.push('   ' + meta.join('｜'));
+          if (it.s) out.push('   ' + it.s);
+          var srcUrls = (it.us && it.us.length) ? it.us : (it.u ? [it.u] : []);
+          srcUrls.forEach(function (u, k) {
+            out.push('   ' + (srcUrls.length > 1 ? '原文' + (k + 1) : '原文') + '：' + u);
+          });
+          out.push('');
+        });
+      }
+      out.push('---', '');
+    });
+    out.push('> 本记录为政策条款摘录与检索结果，不含法规权威全文，引用请以原文链接为准。');
+    out.push('> ' + TS.COPYRIGHT_TEXT);
+
+    var text = out.filter(function (l) { return l !== undefined; }).join('\n');
+    var d = new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var name = '税务问答-' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate())
+      + '-' + p(d.getHours()) + p(d.getMinutes()) + '.md';
+
+    try {
+      var blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
+      toast('会话已导出');
+    } catch (e) {
+      copyText(text, '导出失败，已复制到剪贴板');
+    }
+  }
+
+  /* ---------------------------------------------------------------- 设置 */
+  function loadConfig() {
+    state.key = TS.store.get(TS.KEY_KEY) || '';
+    var cfgRaw = TS.store.get(TS.CFG_KEY);
+    var cfg = {};
+    if (cfgRaw) { try { cfg = JSON.parse(cfgRaw) || {}; } catch (e) { cfg = {}; } }
+    state.model = cfg.model || (state.meta && state.meta.ai && state.meta.ai.model) || TS.AI_DEFAULT_MODEL;
+    var candidateBase = cfg.base || (state.meta && state.meta.ai && state.meta.ai.base) || TS.AI_DEFAULT_BASE;
+    // 数据包可被 CDN/仓库篡改：只有 host 在白名单内才采用，否则回退到固定 ARK 端点。
+    state.base = (TS.isAllowedBase && TS.isAllowedBase(candidateBase))
+      ? candidateBase : TS.AI_DEFAULT_BASE;
+    state.aiOn = !!cfg.aiOn && !!state.key;
+    // 客户安全版：即使 localStorage 残留 aiOn=true，也不启用 AI/上传。
+    if (document.body && document.body.dataset.clientSafe === '1') {
+      state.aiOn = false;
+      state.key = '';
+    }
+    var tgl = $('ai-toggle');
+    if (tgl) tgl.checked = state.aiOn;
+  }
+
+  function saveConfig() {
+    TS.store.set(TS.CFG_KEY, JSON.stringify({
+      model: state.model, base: state.base, aiOn: state.aiOn
+    }));
+  }
+
+  function refreshSettings() {
+    var ki = $('key-input');
+    if (ki) {
+      ki.value = state.key ? (state.key.slice(0, 3) + '…' + state.key.slice(-4)) : '';
+      ki.placeholder = state.key ? '已保存（输入新值可替换）' : '留空则仅用本地检索';
+    }
+    var mi = $('model-input');
+    if (mi) mi.value = state.model;
+    var hint = $('key-hint');
+    if (hint) {
+      hint.textContent = TS.store.usable
+        ? 'Key 只保存在你这台设备的浏览器里，本文件不含 Key；发给别人时对方打开是空的。'
+        : '当前浏览器禁止本地存储，Key 仅本次会话有效（关闭页面即失效）。';
+    }
+    var info = $('version-info');
+    if (info && state.meta) {
+      TS.clear(info);
+      var m = state.meta;
+      var rows = [
+        ['收录', (m.n || 0).toLocaleString('zh-CN') + ' 份'],
+        ['原始记录', (m.r || 0).toLocaleString('zh-CN') + ' 条'],
+        ['同文合并', (m.mg || 0).toLocaleString('zh-CN') + ' 条'],
+        ['数据截至', m.maxd || '—'],
+        ['构建时间', (m.b || '').replace('T', ' ').slice(0, 16)],
+        ['模式', m.standalone ? '离线单文件' : '在线版']
+      ];
+      rows.forEach(function (r) {
+        info.appendChild(TS.el('dt', { text: r[0] }));
+        info.appendChild(TS.el('dd', { text: r[1] }));
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------------- 事件绑定 */
+  function bind() {
+    var hf = $('hero-form');
+    if (hf) hf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = $('hero-input').value;
+      submit(v);
+      $('hero-input').value = '';
+    });
+
+    var cf = $('composer');
+    if (cf) cf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = $('composer-input').value;
+      submit(v);
+      $('composer-input').value = '';
+    });
+
+    var tgl = $('ai-toggle');
+    if (tgl) tgl.addEventListener('change', function () {
+      if (tgl.checked && !state.key) {
+        tgl.checked = false;
+        toast('请先在设置里填写 API Key');
+        openSettings();
+        return;
+      }
+      state.aiOn = tgl.checked;
+      saveConfig();
+    });
+
+    var bs = $('btn-settings');
+    if (bs) bs.addEventListener('click', openSettings);
+    var ue = $('usage-export');
+    if (ue) ue.addEventListener('click', exportUsage);
+    var uc = $('usage-clear');
+    if (uc) uc.addEventListener('click', clearUsage);
+    var ft = $('filter-toggle');
+    if (ft) ft.addEventListener('click', function () {
+      state.filtersOpen = !state.filtersOpen;
+      renderFilters();
+      if (state.filtersOpen) {
+        var first = document.querySelector('#filters select');
+        if (first) first.focus();
+      }
+    });
+    var be = $('btn-export');
+    if (be) be.addEventListener('click', exportSession);
+    var bp = $('btn-print');
+    if (bp) bp.addEventListener('click', function () { window.print(); });
+    var dc = $('drawer-close');
+    if (dc) dc.addEventListener('click', closeDetail);
+    var sc = $('scrim');
+    if (sc) sc.addEventListener('click', closeDetail);
+
+    var od = $('orig-dialog');
+    if (od) {
+      var on = $('orig-new');
+      if (on) on.addEventListener('click', function () {
+        var w = null;
+        try { w = window.open(origLink, '_blank'); } catch (e) { w = null; }
+        if (w) { try { w.opener = null; } catch (e) { /* ignore */ } }
+        else toast('新标签页被拦截，请用“当前页打开”或复制链接');
+      });
+      var os = $('orig-same');
+      if (os) os.addEventListener('click', function () {
+        if (origLink) location.href = origLink;
+      });
+      var oc = $('orig-copy');
+      if (oc) oc.addEventListener('click', function () {
+        if (origLink) copyText(origLink, '原文链接已复制');
+      });
+      var ox = $('orig-close');
+      if (ox) ox.addEventListener('click', function () {
+        if (od.close) od.close(); else od.removeAttribute('open');
+      });
+      if (od.addEventListener) od.addEventListener('close', restoreDrawerModal);
+    }
+    var settingsDlg = $('settings');
+    if (settingsDlg && settingsDlg.addEventListener) {
+      settingsDlg.addEventListener('close', restoreDrawerModal);
+    }
+
+    var kt = $('key-toggle');
+    if (kt) kt.addEventListener('click', function () {
+      var ki = $('key-input');
+      if (!ki) return;
+      if (ki.type === 'password') { ki.type = 'text'; kt.textContent = '隐藏'; }
+      else { ki.type = 'password'; kt.textContent = '显示'; }
+    });
+
+    var ks = $('key-save');
+    if (ks) ks.addEventListener('click', function () {
+      var ki = $('key-input');
+      var v = (ki.value || '').trim();
+      if (!v || v.indexOf('…') >= 0) { toast('请输入新的 API Key'); return; }
+      state.key = v;
+      TS.store.set(TS.KEY_KEY, v);
+      saveConfig();
+      refreshSettings();
+      toast('已保存到本机');
+    });
+
+    var kc = $('key-clear');
+    if (kc) kc.addEventListener('click', function () {
+      state.key = '';
+      TS.store.del(TS.KEY_KEY);
+      state.aiOn = false;
+      saveConfig();
+      var t = $('ai-toggle');
+      if (t) t.checked = false;
+      refreshSettings();
+      toast('已清除 Key');
+    });
+
+    var mi = $('model-input');
+    if (mi) mi.addEventListener('change', function () {
+      state.model = (mi.value || '').trim() || TS.AI_DEFAULT_MODEL;
+      saveConfig();
+      toast('模型已更新');
+    });
+
+    var br = $('btn-refresh');
+    if (br) br.addEventListener('click', checkUpdate);
+
+    document.addEventListener('keydown', function (e) {
+      var d = $('drawer');
+      // 抽屉里的“查看原文”/设置是原生 <dialog>，打开时把焦点交给它，
+      // 抽屉的焦点陷阱必须让位；Esc 也只关最上层。
+      var modal = document.querySelector('dialog[open]');
+      if (e.key === 'Tab') {
+        // 最上层优先：原生 dialog 打开时只陷阱它，不能让抽屉抢焦点。
+        if (modal) { if (trapTab(modal, e)) return; }
+        else if (d && !d.hidden) { if (trapTab(d, e)) return; }
+      }
+      if (e.key === 'Escape') {
+        if (modal) return;
+        if (d && !d.hidden) { closeDetail(); return; }
+        if (state.filtersOpen) {
+          state.filtersOpen = false;
+          renderFilters();
+          var ft = $('filter-toggle');
+          if (ft) ft.focus();
+        }
+      }
+    });
+  }
+
+  function openSettings() {
+    refreshSettings();
+    renderUsage();
+    var dlg = $('settings');
+    var title = dlg && dlg.querySelector('.settings-head h3');
+    if (title) title.textContent = isClientSafe() ? '关于与版本' : '设置';
+    var drawer = $('drawer');
+    if (drawer && !drawer.hidden) drawer.setAttribute('aria-modal', 'false');
+    if (dlg && dlg.showModal) dlg.showModal();
+  }
+
+  /* ---------------------------------------------------------------- 在线版更新检查 */
+  function checkUpdate() {
+    if (!state.meta || state.meta.standalone) {
+      toast('离线单文件版无法自更新，请向提供方索取新文件');
+      return;
+    }
+    toast('正在检查更新…');
+    TS.fetchWithTimeout('manifest.json?_=' + Date.now(), { cache: 'no-store' }, 12000)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (man) {
+        if (!man) { toast('检查失败，请稍后再试'); return; }
+        if (man.b === state.meta.b) { toast('已是最新版本'); return; }
+        boot(true).then(function () { toast('已更新到最新版本'); });
+      }).catch(function () { toast('检查失败，请检查网络'); });
+  }
+
+  /* ---------------------------------------------------------------- 启动 */
+  function loadData() {
+    var mode = document.body.dataset.mode;
+    if (mode === 'standalone') {
+      return TS.readInline().then(function (data) {
+        if (!data) throw new Error('内嵌数据缺失');
+        return data;
+      });
+    }
+    // 在线版：manifest 比对 → IndexedDB 命中则直接用 → 否则下载
+    var bootNode = document.getElementById('boot');
+    var dataUrl = 'data.json.gz';
+    try {
+      var b = JSON.parse(bootNode.textContent);
+      if (b && b.dataUrl) dataUrl = b.dataUrl;
+    } catch (e) { /* ignore */ }
+
+    return TS.fetchWithTimeout('manifest.json?_=' + Date.now(), { cache: 'no-store' }, 20000)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (man) {
+        if (!man) throw new Error('无法读取版本信息，请检查网络后重试');
+        return TS.cache.get(TS.CACHE_KEY).then(function (cached) {
+          if (cached && cached.build === man.b && cached.data) {
+            return cached.data;
+          }
+          // 双源：jsDelivr 国内更快，失败回退同源
+          var v = encodeURIComponent(man.b || String(Date.now()));
+          var cdn = 'https://cdn.jsdelivr.net/gh/' + (man.repo || 'Vane1981-2011/tax-policy-qa')
+            + '@gh-pages/' + dataUrl + '?v=' + v;
+          var tryFetch = function (url, timeout) {
+            return TS.fetchWithTimeout(url, { cache: 'default' }, timeout).then(function (r) {
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              return r.arrayBuffer();
+            });
+          };
+          // 同源优先，失败回退 jsDelivr：jsDelivr 对分支可能长期缓存旧数据，
+          // 不能让它成为首屏数据源；双源仍保留，供同源不可达时兜底。
+          var local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+          var decode = function (buf) {
+            return TS.gunzip(new Uint8Array(buf)).then(function (text) {
+              return JSON.parse(text);
+            });
+          };
+          // 兜底源若仍返回旧构建号，再回源同源取一次；仍失败则用旧数据但不写缓存。
+          var accept = function (data) {
+            if (!local && man.b && data && data.m && data.m.b && data.m.b !== man.b) {
+              return tryFetch(dataUrl + '?_=' + v, 25000)
+                .then(decode)
+                .catch(function () { return data; });
+            }
+            return data;
+          };
+          return tryFetch(dataUrl + '?_=' + v, 45000)
+            .catch(function () { return tryFetch(cdn, 20000); })
+            .then(decode)
+            .then(accept)
+            .then(function (data) {
+              if (!man.b || !data || !data.m || !data.m.b || data.m.b === man.b) {
+                TS.cache.put(TS.CACHE_KEY, { build: man.b, data: data });
+              }
+              return data;
+            });
+        });
+      });
+  }
+
+  function boot(isReload) {
+    setSubline('正在载入政策库…');
+    // 首次下载约 2.8MB；3 秒后给出明确进度，避免用户以为页面卡死。
+    var slowTimer = setTimeout(function () {
+      setSubline('正在下载政策库（约 2.8MB，首次较慢）…');
+    }, 3000);
+    var clearSlow = function () { if (slowTimer) { clearTimeout(slowTimer); slowTimer = null; } };
+    // 整体超时：任一环节（IndexedDB / 网络 / 解压）挂起时，不能让页面停在"正在载入"。
+    // 30s 在实测网络下不足（manifest 4s + data 15s + 解压/缓存），故放宽到 60s；
+    // 仍超时则明确失败，不静默留白。
+    var timeout = new Promise(function (_, reject) {
+      setTimeout(function () { reject(new Error('载入超时，请检查网络后刷新重试')); }, 60000);
+    });
+    return Promise.race([loadData(), timeout]).then(function (data) {
+      clearSlow();
+      state.meta = data.m;
+      // 单文件版的 meta 在内嵌 script 里，data.m 已足够；如需 standalone 标记则合并
+      var inlineMeta = TS.readInlineMeta();
+      if (inlineMeta) state.meta = Object.assign({}, inlineMeta, data.m);
+
+      state.items = data.d || [];
+      state.ctx = TS.search.make(state.items);
+
+      var line = '收录 ' + (state.meta.n || 0).toLocaleString('zh-CN') + ' 份'
+        + (state.meta.mg ? ('（同文合并 ' + state.meta.mg.toLocaleString('zh-CN') + ' 条）') : '')
+        + ' · 数据截至 ' + (state.meta.maxd || '—');
+      setSubline(line);
+      renderChips(state.meta);
+      renderExamples();
+      renderTabs();
+      renderFreshness();
+      renderFilters();
+      loadConfig();
+
+      if (!isReload) {
+        var hero = $('hero');
+        if (hero) hero.hidden = false;
+      }
+      return state.meta;
+    }).catch(function (err) {
+      clearSlow();
+      throw err;
+    });
+  }
+
+  /* ---------------------------------------------------------------- 自测入口 */
+  function selftest() {
+    var golden = [
+      ['小规模纳税人月销售额多少可以免征增值税', ['小规模', '免税']],
+      ['研发费用加计扣除比例是多少', ['研发', '加计扣除']],
+      ['增值税留抵退税需要满足什么条件', ['留抵退税']],
+      ['建筑企业跨区域提供建筑服务在哪里预缴增值税', ['跨区域', '预缴']],
+      ['小型微利企业所得税优惠', ['小型微利']]
+    ];
+    var top1 = 0, top5 = 0;
+    golden.forEach(function (pair) {
+      var hits = TS.search.query(state.ctx, pair[0], 5);
+      var texts = hits.map(function (h) { return (h.item.t || '') + (h.item.s || ''); });
+      var ok1 = texts.length && pair[1].some(function (e) { return texts[0].indexOf(e) >= 0; });
+      var ok5 = texts.some(function (t) {
+        return pair[1].some(function (e) { return t.indexOf(e) >= 0; });
+      });
+      if (ok1) top1++;
+      if (ok5) top5++;
+      console.log((ok5 ? '✓' : '✗') + ' ' + pair[0] + ' → ' +
+        hits.slice(0, 2).map(function (h) { return h.item.t; }).join(' | '));
+    });
+    console.log('top1 ' + top1 + '/' + golden.length + ' · top5 ' + top5 + '/' + golden.length
+      + ' · 准备耗时 ' + state.ctx.prepMs + 'ms');
+  }
+
+  /* ---------------------------------------------------------------- init */
+  document.addEventListener('DOMContentLoaded', function () {
+    bind();
+    boot(false).then(function () {
+      if (location.search.indexOf('selftest=1') >= 0) selftest();
+      var hero = $('hero');
+      if (hero) hero.hidden = false;
+    }).catch(function (err) {
+      setSubline('载入失败');
+      var hero = $('hero');
+      if (hero) hero.hidden = false;
+      var msg = err && err.message === 'NO_GZIP'
+        ? '当前浏览器版本过低，无法解压数据。请用 Chrome / Edge，或 Safari 16.4+ 打开；也可向提供方索取明文版。'
+        : (err && err.message) || '载入失败，请刷新重试';
+      toast(msg, 9000);
+      var stream = $('stream');
+      if (stream) {
+        TS.clear(stream);
+        stream.appendChild(TS.el('div', { class: 'answer' },
+          TS.el('div', { class: 'empty' },
+            TS.el('p', { text: msg }),
+            TS.el('ul', {}, [TS.el('li', {}, TS.el('button', {
+              type: 'button', text: '重新加载', onclick: function () { location.reload(); }
+            }))])
+          )));
+      }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && state.meta && !state.meta.standalone) {
+        TS.fetchWithTimeout('manifest.json?_=' + Date.now(), { cache: 'no-store' }, 8000)
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (man) {
+            if (man && state.meta && man.b !== state.meta.b) {
+              toast('检测到新版本，正在更新…');
+              boot(true).catch(function () { toast('更新失败，请刷新页面'); });
+            }
+          }).catch(function () { /* 静默 */ });
+      }
+    });
+  });
+
+})(window.TS);
+
+/* ---- ai.js ---- */
+/* ai.js —— ARK 直连综述
+ *
+ * 关键约束（与 llm.py 保持一致）：
+ *   1. 只取 choices[0].message.content，绝不读 reasoning_content
+ *   2. 任何失败都不得影响已渲染的检索结果
+ *   3. 45 秒超时 + AbortController，新提问先取消上一个
+ */
+'use strict';
+
+(function (TS) {
+
+  var DEFAULT_BASE = TS.AI_DEFAULT_BASE || 'https://ark.cn-beijing.volces.com/api/v3';
+  var DEFAULT_MODEL = 'deepseek-v4-pro-260425';
+
+  var SYSTEM = '你是严谨的财税政策检索助手。你只能依据用户消息中给出的「政策资料」作答，'
+    + '不得使用资料之外的知识，不得编造文号、条款号、税率、金额或日期。';
+
+  function clientSafe() {
+    var body = (typeof document !== 'undefined') ? document.body : null;
+    return !!(body && body.dataset && body.dataset.clientSafe === '1');
+  }
+
+  function todayStr() {
+    var d = new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+
+  function clip(s, n) {
+    s = String(s == null ? '' : s);
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+
+  /** 组装 prompt：只喂 top-K，每篇摘要 ≤120 字、条款 ≤250 字。 */
+  TS.buildPrompt = function (question, hits, meta) {
+    var K = Math.min(6, hits.length);
+    var parts = [];
+    for (var i = 0; i < K; i++) {
+      var it = hits[i].item;
+      var lines = ['[' + (i + 1) + '] ' + (it.t || '')];
+      var info = [];
+      if (it.n) info.push('文号：' + it.n);
+      if (it.d) info.push('发布：' + it.d);
+      if (it.w) info.push('效力：' + it.w);
+      if (it.x) info.push('税种：' + it.x);
+      if (info.length) lines.push(info.join('｜'));
+      if (it.s) lines.push('摘要：' + clip(it.s, 120));
+      if (it.k) lines.push('条款摘录：' + clip(it.k, 250));
+      parts.push(lines.join('\n'));
+    }
+    var dataDate = (meta && (meta.source_maxd || meta.maxd)) || '未知';
+    return '今天是 ' + todayStr() + '。资料库为离线快照，数据截至 ' + dataDate + '。\n\n'
+      + '【用户问题】\n' + question + '\n\n'
+      + '【政策资料】（编号仅本次回答有效）\n' + parts.join('\n\n') + '\n\n'
+      + '【回答要求】\n'
+      + '1. 先写「结论」：2-4 句，直接回答用户的问题（能/不能、多少、怎么办）。\n'
+      + '2. 再写「依据」：逐条列出，每条以 [编号] 开头；引用资料原话时用「」括起。\n'
+      + '3. 只能引用上面出现过的编号。资料中未出现的文号、条款号、税率、期限、金额一律不得写入。\n'
+      + '4. 资料不足以判断时，明确写「现有资料不足以判断」，并说明还需要补充哪类文件。\n'
+      + '5. 多份资料口径不一致时，指出差异，并说明以哪份为准（优先「全文有效」且发布更晚者）。\n'
+      + '6. 不使用 Markdown 表格；总字数不超过 500 字。\n'
+      + '7. 最后单独一行：以上为政策检索结果，具体适用请以主管税务机关口径为准。';
+  };
+
+  /** 把 ARK 的 HTTP 错误翻译成用户能懂的话。 */
+  TS.mapError = function (status, detail) {
+    if (status === 401 || status === 403) return 'Key 无效或未开通该模型';
+    if (status === 404) return '模型名不存在，请在设置里核对';
+    if (status === 429) return '请求过于频繁，请稍后再试';
+    if (status >= 500) return '服务端暂时不可用（HTTP ' + status + '）';
+    if (status === 0) return '网络被拦截（可能是公司网络或浏览器插件）';
+    return '调用失败（HTTP ' + status + '）' + (detail ? '：' + clip(detail, 80) : '');
+  };
+
+  /** 把 AI 回答里的百分比/金额/日期与引用资料做 token 对照。 */
+  TS.validateAiNumbers = function (text, hits) {
+    var src = (hits || []).map(function (h) {
+      var it = (h && h.item) || {};
+      return [it.t, it.n, it.d, it.ep, it.ws, it.s, it.k].filter(Boolean).join('\n');
+    }).join('\n');
+    var srcNorm = String(src).replace(/\s+/g, '');
+    var clean = String(text || '').replace(/\[\d{1,2}\]/g, ' ');
+    var patterns = [
+      /\d{4}年\d{1,2}月\d{1,2}日/g,
+      /\d{4}-\d{1,2}-\d{1,2}/g,
+      /\d+(?:\.\d+)?%/g,
+      /\d+(?:\.\d+)?\s*(?:亿元|万元|元|亿|万)/g
+    ];
+    var seen = {}, tokens = [];
+    patterns.forEach(function (re) {
+      var m;
+      while ((m = re.exec(clean)) !== null) {
+        var raw = m[0];
+        var key = raw.replace(/\s+/g, '');
+        if (!seen[key]) { seen[key] = 1; tokens.push(raw); }
+      }
+    });
+    var unsupported = [];
+    tokens.forEach(function (raw) {
+      if (srcNorm.indexOf(raw.replace(/\s+/g, '')) === -1) unsupported.push(raw);
+    });
+    return { checked: tokens.length, supported: tokens.length - unsupported.length,
+             unsupported: unsupported, tokens: tokens };
+  };
+
+  /** 调用 ARK。成功 resolve 文本；失败 reject Error（message 已是中文）。 */
+  TS.askAI = function (question, hits, opts) {
+    opts = opts || {};
+    if (clientSafe()) {
+      return Promise.reject(new Error('客户安全版不发送任何内容'));
+    }
+    var key = (opts.key || '').trim();
+    if (!key) return Promise.reject(new Error('未填写 API Key'));
+    if (!hits || !hits.length) return Promise.reject(new Error('没有可引用的资料'));
+
+    var base = (opts.base || DEFAULT_BASE).replace(/\/+$/, '');
+    if (!TS.isAllowedBase(base)) {
+      return Promise.reject(new Error('AI 端点不在白名单，已拒绝发送 Key'));
+    }
+    var body = {
+      model: opts.model || DEFAULT_MODEL,
+      messages: [
+        { role: 'system', content: SYSTEM },
+        { role: 'user', content: TS.buildPrompt(question, hits, opts.meta) }
+      ],
+      max_tokens: opts.maxTokens || 1200,
+      temperature: 0.2
+    };
+
+    var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = null;
+    var req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key
+      },
+      body: JSON.stringify(body)
+    };
+    if (ctrl) {
+      req.signal = ctrl.signal;
+      timer = setTimeout(function () { ctrl.abort(); }, opts.timeoutMs || 45000);
+    }
+    if (opts.externalSignal && ctrl) {
+      opts.externalSignal.addEventListener('abort', function () { ctrl.abort(); });
+    }
+
+    return fetch(base + '/chat/completions', req).then(function (resp) {
+      if (timer) clearTimeout(timer);
+      if (!resp.ok) {
+        return resp.text().then(function (t) {
+          throw new Error(TS.mapError(resp.status, t));
+        }, function () {
+          throw new Error(TS.mapError(resp.status, ''));
+        });
+      }
+      return resp.json();
+    }, function (err) {
+      if (timer) clearTimeout(timer);
+      if (err && err.name === 'AbortError') throw new Error('45 秒未返回，已取消');
+      throw new Error('网络被拦截（可能是公司网络或浏览器插件）');
+    }).then(function (data) {
+      var content = '';
+      try {
+        content = (data.choices[0].message.content || '').trim();
+      } catch (e) { content = ''; }
+      if (!content) throw new Error('模型返回内容为空，请重试');
+      if (data && data.usage && typeof opts.onUsage === 'function') {
+        try { opts.onUsage(data.usage); } catch (e) { /* ignore */ }
+      }
+      return content;
+    });
+  };
+
+  TS.AI_DEFAULT_BASE = DEFAULT_BASE;
+  TS.AI_DEFAULT_MODEL = DEFAULT_MODEL;
+
+})(window.TS);
+</script>
+</body>
+</html>
