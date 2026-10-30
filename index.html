@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ark.cn-beijing.volces.com; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="税务政策检索工作台：全库检索、税种/年份/地区/效力筛选、原文阅读与数据自动同步">
-<meta name="copyright" content="© 版权所有：默笙夏夏の知書房">
+<meta name="description" content="税务政策目录检索原型：11,548 条政策目录，支持税种/年份/地区/效力筛选与原文跳转（离线快照，2026-10-28）">
+<meta name="copyright" content="© 李霞 · 财务负责人作品集（页面工具名：智析 / ZCode）">
 <meta name="theme-color" content="#F1F2F4">
 <meta name="build" content="2026-10-28T09:07:04+0800">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23B23A2F'/%3E%3Ctext x='16' y='23' font-size='19' font-family='Songti SC,serif' font-weight='700' fill='%23fff' text-anchor='middle'%3E税%3C/text%3E%3C/svg%3E">
-<title>税务政策问答 · 税策智库工作台</title>
+<title>税务政策目录检索 · 税策智库工作台</title>
 <style>/* 税策智库 · 桌面式政策检索工作台 —— 设计系统与版式 */
 /* ============================================================
    税策智库 · 设计系统基础层
@@ -592,6 +592,8 @@ mark {
 .statusbar .grow { flex: 1 1 auto; }
 .statusbar b { color: var(--ink-2); font-weight: 500; }
 .statusbar .sep { width: 1px; height: 12px; background: var(--line); }
+.statusbar .copyright { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.statusbar #stLeft, .statusbar #stMid, .statusbar #stFresh { white-space: nowrap; }
 .statusbar .ind { display: inline-flex; align-items: center; gap: 5px; }
 .statusbar .led { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); }
 .statusbar .led.busy { background: var(--amber); animation: pulse 1.2s infinite; }
@@ -1497,19 +1499,19 @@ html[data-safe="1"] .ai-foot { display: none; }
 <div class="app">
 
   <header class="bar">
-    <a class="brand" href="#" onclick="return false" aria-label="税策智库">
+    <span class="brand" role="img" aria-label="税策智库">
       <span class="seal" aria-hidden="true">税</span>
       <span class="brand-txt"><b>税策智库</b><i>TAX ARCHIVE DESK</i></span>
-    </a>
+    </span>
 
     <button class="omni-trigger" id="omniTrigger" aria-label="打开指令台">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-      <span>搜索政策、文号、问答，或输入指令…</span>
+      <span>搜索政策、文号或发文机关…</span>
       <kbd>⌘K</kbd>
     </button>
 
     <div class="bar-actions">
-      <button class="sync-pill" id="syncPill" data-state="checking" title="数据同步状态：点击立即检查更新">
+      <button class="sync-pill" id="syncPill" data-state="checking" title="数据快照状态：点击立即检查是否有新快照">
         <span class="ring" id="syncRing">
           <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
             <circle class="trk" cx="11" cy="11" r="9"></circle>
@@ -1567,7 +1569,7 @@ html[data-safe="1"] .ai-foot { display: none; }
     <span class="sep"></span>
     <span id="stFresh" hidden>—</span>
     <span class="grow"></span>
-    <span class="copyright">© 版权所有：默笙夏夏の知書房</span>
+    <span class="copyright">李霞 · 财务负责人作品集 ｜ 数据截至 2026-10-30</span>
     <span class="sep"></span>
     <span><b>⌘K</b> 指令台</span>
     <span class="sep"></span>
@@ -2347,15 +2349,15 @@ window.App = App;
   /* 数据状态：freshness 区分「源站没更新」与「停更」，sync_state 区分
      「本轮没跑同步」与「同步失败」。两个都不显示时，过期数据会被当成最新。 */
   var FRESH_TXT = {
-    fresh: ['数据新鲜', 'ok'],
+    fresh: ['离线快照', 'ok'],
     amber: ['数据略有滞后', 'warn'],
     red: ['数据已严重滞后', 'err'],
     unknown: ['数据日期未知', 'warn']
   };
   var SYNC_TXT = {
-    ok: '采集正常',
+    ok: '快照构建正常',
     failed: '上次采集失败',
-    skipped: '本轮跳过采集',
+    skipped: '静态部署，不自动采集',
     unknown: '采集状态未记录'
   };
 
@@ -3113,9 +3115,11 @@ window.App = App;
       body.appendChild(sec);
     } else {
       body.appendChild(h('div', { class: 'brief',
-        text: it.k === 'policy'
-          ? '该文件未收录正文（多为图解、附件或转载页），可点击右上角「原文 ↗」查看发布页面。'
-          : '该条目未收录正文，可点击右上角「原文 ↗」查看发布页面。' }));
+        text: U.safeUrl(it.u)
+          ? (it.k === 'policy'
+            ? '该文件未收录正文（多为图解、附件或转载页），可点击右上角「原文 ↗」查看发布页面。'
+            : '该条目未收录正文，可点击右上角「原文 ↗」查看发布页面。')
+          : '该条目仅收录标题与文号，未收录正文与原文链接，请按标题/文号到税务总局官网检索核对。' }));
       if (U.safeUrl(it.u)) {
         body.appendChild(h('div', { class: 'rd-actions', style: 'margin-top:10px' }, [
           h('button', { class: 'mini-btn', text: '打开原文 ↗', onclick: function () { window.open(U.safeUrl(it.u), '_blank', 'noopener'); } }),
@@ -3345,7 +3349,7 @@ window.App = App;
     ]));
 
     box.appendChild(h('p', { class: 'rd-note',
-      text: '本站为政策检索工具，所有结论以「原文」链接指向的发布页面为准，具体适用请以主管税务机关口径为准。' }));
+      text: '本站为政策目录检索原型（离线快照 2026-10-28，政策 11,548 条、资料 72,053 条），仅提供标题/文号/摘要级信息，部分条目未收录原文链接；引用前请以税务总局及主管税务机关发布的原文为准。' }));
 
     dom.reader.appendChild(box);
   }
@@ -3388,7 +3392,7 @@ window.App = App;
       time.textContent = '读本地缓存';
       setSyncRing(1);
     } else {
-      label.textContent = D.version ? '已同步' : '待同步';
+      label.textContent = D.version ? '快照' : '待载入';
       time.textContent = S.lastSync ? U.clock(new Date(S.lastSync)) + ' 更新' :
         (D.version ? D.version.slice(5, 10) + ' 版' : '—');
       var frac = S.nextAt ? 1 - Math.max(0, (S.nextAt - Date.now()) / S.pollMs) : 1;
@@ -3788,7 +3792,7 @@ window.App = App;
 
   function buildOmni() {
     var input = h('input', {
-      type: 'text', placeholder: '搜索政策、文号、问答，或输入指令…',
+      type: 'text', placeholder: '搜索政策、文号或发文机关…',
       'aria-label': '指令台输入', autocomplete: 'off', spellcheck: 'false'
     });
     var body = h('div', { class: 'omni-body', role: 'listbox' });
