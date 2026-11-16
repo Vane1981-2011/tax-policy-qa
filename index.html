@@ -551,6 +551,22 @@ mark {
 }
 .r-title .q { color: var(--ink-3); font-weight: 400; }
 .r-title mark { background: var(--brand-soft); color: var(--brand); border-radius: 2px; padding: 0 1px; }
+.r-title .new-badge {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 0 5px 1px;
+  font-size: 9.5px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  letter-spacing: .1em;
+  line-height: 1.5;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-2);
+  border-radius: 4px;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
 .r-src {
   flex: 0 0 auto;
   font-size: 10px;
@@ -3168,10 +3184,22 @@ window.App = App;
     ROW_H = parseFloat(v) || 74;
   }
 
+  function dateKey(d) {
+    var m = /(\d{4})\D+(\d{1,2})\D+(\d{1,2})/.exec(d || '');
+    return m ? m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2) : '';
+  }
+  var newDateCut = '';
+
   function renderList() {
     pool.forEach(function (el) { el.remove(); });
     pool = new Map();
     var n = state.results.length;
+    var cut = '';
+    for (var ci = 0; ci < n; ci++) {
+      var ck = dateKey(state.results[ci].d);
+      if (ck && ck > cut) cut = ck;
+    }
+    newDateCut = cut;
     dom.vspacer.style.height = (n * ROW_H) + 'px';
     dom.vlist.scrollTop = Math.min(dom.vlist.scrollTop, Math.max(0, n * ROW_H - 10));
     paintWindow(true);
@@ -3254,6 +3282,9 @@ window.App = App;
 
     var title = h('div', { class: 'r-title' });
     appendHighlighted(title, it.t, state.q);
+    if (newDateCut && dateKey(it.d) === newDateCut) {
+      title.appendChild(h('span', { class: 'new-badge', text: 'NEW' }));
+    }
 
     var meta = h('div', { class: 'r-meta' });
     if (it.n) meta.appendChild(h('span', { class: 'r-no', text: it.n }));
