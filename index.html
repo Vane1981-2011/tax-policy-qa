@@ -50,7 +50,7 @@
 
   --bar-h: 56px;
   --dock-h: 46px;
-  --year-h: 34px;
+  --ctx-h: 30px;
   --status-h: 30px;
   --reader-w: clamp(360px, 32.5vw, 520px);
   --row-h: 74px;
@@ -348,155 +348,106 @@ mark {
 .chip-btn:hover { border-color: var(--ink-4); color: var(--ink); }
 .chip-btn .cnt { font-family: var(--font-mono); font-size: 10px; color: var(--ink-4); }
 .chip-btn[data-on="1"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--surface);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
-.chip-btn[data-on="1"] .cnt { color: rgba(255, 255, 255, .7); }
+.chip-btn[data-on="1"] .cnt { color: var(--brand); }
 .chip-btn .x { font-size: 13px; line-height: 1; opacity: .6; }
 .chip-btn .chip-ico { display: none; flex: 0 0 auto; }
 
-/* ---------------- 档案年轮 ---------------- */
+/* ---------------- 上下文说明行与结果条 ---------------- */
 
-.yearline {
+.context-line {
   flex: 0 0 auto;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 10px;
-  height: var(--year-h);
+  min-height: var(--ctx-h);
   padding: 0 18px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+.ctx-badge {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-3);
+}
+.ctx-badge[data-kind="ok"] { color: var(--jade); background: var(--jade-soft); border-color: transparent; }
+.ctx-badge[data-kind="busy"] { color: var(--amber); background: var(--amber-soft); border-color: transparent; }
+.ctx-badge[data-kind="warn"] { color: var(--amber); background: var(--amber-soft); border-color: transparent; }
+.ctx-badge[data-kind="err"] { color: var(--brand); background: var(--brand-soft); border-color: transparent; }
+.ctx-main { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ctx-main b { color: var(--ink-2); font-weight: 600; }
+.ctx-act {
+  flex: 0 0 auto;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-3);
+  font-size: 10.5px;
+}
+.ctx-act:hover { border-color: var(--brand); color: var(--brand); }
+
+.res-line {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 16px;
   background: var(--surface);
   border-bottom: 1px solid var(--line-2);
-}
-.yearline[hidden] { display: none; }
-
-.year-cap {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink-4);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .12em;
-}
-.year-cap::after {
-  content: "";
-  width: 1px;
-  height: 14px;
-  background: var(--line);
-}
-
-.year-track {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
+  font-size: 11.5px;
+  color: var(--ink-3);
   overflow-x: auto;
-  overscroll-behavior-x: contain;
   scrollbar-width: none;
-  /* 基线：让相邻柱体连成一条连续的收录量轮廓，而不是一排浮动的虚线 */
-  background-image: linear-gradient(var(--line-2), var(--line-2));
-  background-repeat: no-repeat;
-  background-size: 100% 1px;
-  background-position: 0 calc(100% - 14px);
 }
-.year-track::-webkit-scrollbar { display: none; }
-
-.year-hint {
+.res-line::-webkit-scrollbar { display: none; }
+.res-line .hit { flex: 0 0 auto; white-space: nowrap; }
+.res-line .hit b { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink); }
+.res-line .tag {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  color: var(--ink-4);
-  font-size: 10px;
+  gap: 4px;
+  padding: 2px 4px 2px 8px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 11px;
   white-space: nowrap;
 }
-
-.year-tools {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.year-scope {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px var(--line-2);
-}
-
-.year-scope .ys {
-  border: 0;
-  background: transparent;
-  color: var(--ink-4);
-  font-family: var(--font-ui);
-  font-size: 10px;
+.res-line .tag button {
+  width: 15px; height: 15px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-size: 12px;
   line-height: 1;
-  letter-spacing: .02em;
-  padding: 3px 8px;
-  border-radius: 999px;
-  cursor: pointer;
+  color: var(--brand);
+}
+.res-line .tag button:hover { background: var(--brand); color: #fff; }
+.res-line .sp { flex: 1 1 auto; }
+.res-line .mode { flex: 0 0 auto; white-space: nowrap; color: var(--ink-4); font-size: 11px; }
+.res-line .clear {
+  flex: 0 0 auto;
   white-space: nowrap;
-  transition: background .14s var(--ease), color .14s var(--ease);
+  color: var(--ink-3);
+  font-size: 11px;
+  text-decoration: underline;
 }
+.res-line .clear:hover { color: var(--brand); }
 
-.year-scope .ys:hover { color: var(--ink-2); }
-
-.year-scope .ys[aria-pressed="true"] {
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 600;
-  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--line);
-}
-
-.year-scope .ys:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 1px;
-}
-
-/* 近 5 年：只有 5 个数据点，柱子不再拉伸占满整条轴，保持与全量视图一致的柱宽 */
-.yearline[data-span="5"] .year-track { justify-content: space-between; gap: 6px; }
-.yearline[data-span="5"] .yr {
-  flex: 0 0 auto;
-  width: 30px;
-  min-width: 0;
-}
-
-.yr {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 13px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 2px;
-  padding: 4px 0;
-  color: var(--ink-4);
-  font-family: var(--font-mono);
-  font-size: 8.5px;
-  line-height: 1;
-  letter-spacing: -.02em;
-  transition: color .14s;
-}
-.yr .yr-bar {
-  width: 100%;
-  min-width: 2px;
-  border-radius: 1px 1px 0 0;
-  background: color-mix(in srgb, var(--ink-4) 34%, var(--surface));
-  transition: background .18s var(--ease), height .3s var(--ease);
-}
-.yr:hover { color: var(--ink-2); }
-.yr:hover .yr-bar { background: var(--ink-3); }
-.yr[data-on="1"] { color: var(--brand); font-weight: 700; }
-.yr[data-on="1"] .yr-bar { background: var(--brand); }
-.yr .n { position: absolute; top: -1px; font-size: 9px; opacity: 0; transition: opacity .14s; }
-.yr:hover .n { opacity: 1; }
+.chip-btn .caret { font-size: 10px; opacity: .75; }
+.empty-acts { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
 
 /* ---------------- 工作台（列表 + 阅读窗） ---------------- */
 
@@ -530,21 +481,6 @@ mark {
   border-bottom: 1px solid var(--line);
 }
 
-.list-head .count {
-  flex: 0 0 auto;
-  font-size: 11.5px;
-  color: var(--ink-3);
-  white-space: nowrap;
-}
-.list-head .count b { font-family: var(--font-mono); color: var(--ink); font-size: 12.5px; }
-.list-head .crumb {
-  flex: 1 1 auto;
-  min-width: 0;
-  font-size: 11.5px;
-  color: var(--ink-4);
-  display: flex; gap: 6px; align-items: center;
-  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-}
 .list-head-actions { flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 2px; }
 
 .ghost-btn {
@@ -614,6 +550,16 @@ mark {
   letter-spacing: .1px;
 }
 .r-title .q { color: var(--ink-3); font-weight: 400; }
+.r-title mark { background: var(--brand-soft); color: var(--brand); border-radius: 2px; padding: 0 1px; }
+.r-src {
+  flex: 0 0 auto;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--slate-soft);
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+}
 .r-meta {
   margin-top: 4px;
   display: flex;
@@ -1477,6 +1423,32 @@ mark {
 }
 .pop-none { padding: 18px; text-align: center; color: var(--ink-4); font-size: 12px; }
 
+/* 年份增强下拉：多选 + 收录量微条 + 快捷区间 */
+.pop.yrpop { width: 336px; max-height: min(72vh, 560px); }
+.yrp-hd { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line-2); }
+.yrp-hd b { font-size: 12.5px; }
+.yrp-hd .sp { flex: 1 1 auto; }
+.yrp-hd em { font-style: normal; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-4); }
+.yrp-tools { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 8px 10px; border-bottom: 1px solid var(--line-2); }
+.yrp-quick { display: inline-flex; flex: 0 0 auto; align-self: flex-start; padding: 2px; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); }
+.yrp-quick button { border: 0; background: transparent; color: var(--ink-3); font-size: 11px; line-height: 1; padding: 4px 8px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.yrp-quick button[aria-pressed="true"] { background: var(--surface); color: var(--brand); font-weight: 600; box-shadow: var(--shadow-1), inset 0 0 0 1px var(--brand-soft); }
+.yrp-list { overflow-y: auto; flex: 1 1 auto; padding: 4px 6px; max-height: 44vh; }
+.yrp-row { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 7px; cursor: pointer; font-size: 12.5px; color: var(--ink-2); }
+.yrp-row:hover { background: var(--surface-2); }
+.yrp-row[data-on="1"] { color: var(--ink); font-weight: 600; }
+.yrp-row input { margin: 0; accent-color: var(--brand); flex: 0 0 auto; }
+.yrp-y { flex: 0 0 44px; font-family: var(--font-mono); font-size: 12px; }
+.yrp-bar { flex: 1 1 auto; height: 6px; min-width: 40px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.yrp-bar i { display: block; height: 100%; border-radius: 3px; background: color-mix(in srgb, var(--ink-4) 55%, var(--surface)); }
+.yrp-row[data-on="1"] .yrp-bar i { background: var(--brand); }
+.yrp-n { flex: 0 0 auto; min-width: 44px; text-align: right; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-4); }
+.yrp-ft { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-top: 1px solid var(--line-2); background: var(--surface-2); }
+.yrp-ft .info { flex: 1 1 auto; font-size: 11px; color: var(--ink-3); }
+.yrp-ft .btn { height: 28px; padding: 0 11px; font-size: 12px; }
+.yrp-ft .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.yrp-ft .btn.primary:hover { background: var(--brand-2); }
+
 /* ---------------- 设置项开关 ---------------- */
 
 .switch { display: flex; align-items: flex-start; gap: 8px; font-size: 11.5px; color: var(--ink-3); line-height: 1.5; }
@@ -1518,6 +1490,7 @@ mark {
 
 @media (max-width: 860px) {
   .dock-tools .chip-btn .lbl { display: none; }
+  .dock-tools .chip-btn[data-kind="year"] .lbl { display: inline; }
   .dock-tools .chip-btn { padding: 0 7px; gap: 3px; }
   .dock-tools .chip-btn .chip-ico { display: block; }
 }
@@ -1549,13 +1522,10 @@ mark {
   .r-title { font-size: 14px; }
   .r-meta { font-size: 11px; }
   .rel { display: none; }
-  .yearline { height: var(--year-h); padding: 0 10px; gap: 8px; }
-  .year-hint { display: none; }
-  .year-cap { font-size: 9.5px; }
-  .year-tools { gap: 0; }
-  .year-scope { padding: 1.5px; }
-  .year-scope .ys { font-size: 9.5px; padding: 2.5px 6px; }
-  .yr { min-width: 14px; }
+  .context-line { padding: 0 10px; font-size: 10.5px; gap: 6px; }
+  .res-line { padding: 0 10px; min-height: 30px; }
+  .pop.yrpop { left: 8px !important; right: 8px; top: auto !important; bottom: 8px; width: auto; max-height: 78vh; }
+  .yrp-list { max-height: 44vh; }
   .rd-title { font-size: 19px; }
   .rd-body { padding: 16px 16px 80px; }
   .rd-text { font-size: 15.5px; line-height: 1.9; }
@@ -1574,7 +1544,7 @@ mark {
 }
 
 @media print {
-  .bar, .dock, .yearline, .statusbar, .pane-list, .omni, .ai-drawer, .scrim { display: none !important; }
+  .bar, .dock, .context-line, .res-line, .statusbar, .pane-list, .omni, .ai-drawer, .scrim { display: none !important; }
   .pane-reader { position: static; height: auto; border: 0; }
 }
 
@@ -1678,27 +1648,16 @@ html[data-safe="1"] .ai-foot { display: none; }
     <div class="dock-tools" id="dockTools"></div>
   </nav>
 
-  <div class="yearline" id="yearline" hidden aria-label="按年份筛选，柱高表示收录量">
-    <span class="year-cap">年份</span>
-    <div class="year-track" id="yearTrack"></div>
-    <div class="year-tools">
-      <span class="year-hint" aria-hidden="true">柱高 = 收录量</span>
-      <div class="year-scope" role="group" aria-label="年份显示范围">
-        <button type="button" class="ys" data-span="5" aria-pressed="false" title="只显示最近 5 个年份">近5年</button>
-        <button type="button" class="ys" data-span="all" aria-pressed="true" title="显示全部年份">全部</button>
-      </div>
-    </div>
-  </div>
+  <div class="context-line" id="contextLine" aria-label="当前视图与数据状态说明"></div>
 
   <main class="bench" id="main" role="tabpanel" tabindex="-1">
     <section class="pane-list">
+      <div class="res-line" id="resLine" aria-label="检索结果与生效筛选条件"></div>
       <div class="list-head">
         <label class="search">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
           <input id="q" type="search" placeholder="搜索标题、文号、正文…" autocomplete="off" spellcheck="false" aria-label="在当前内容体系内搜索">
         </label>
-        <span class="count" id="count">—</span>
-        <span class="crumb" id="crumb"></span>
         <div class="list-head-actions">
           <button class="ghost-btn" id="sortBtn" title="切换排序方式">
             <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14M5 8l3-3 3 3M16 19V5M13 16l3 3 3-3"></path></svg>
@@ -2538,17 +2497,19 @@ window.App = App;
     q: '',
     filters: { tax: new Set(), year: new Set(), region: new Set(), status: new Set() },
     favOnly: false,
-    sort: 'date',
+    sort: 'auto',
     results: [],
     resMeta: {},
     selId: '',
     theme: 'paper',
     yearSpan: 'all',
+    yearPanelOpen: false,
     seq: 0,
     indexReady: Object.create(null)
   };
 
-  state.yearSpan = App.store.get('tsq3.yearSpan', 'all') === '5' ? '5' : 'all';
+  var _ys = App.store.get('tsq3.yearSpan', 'all');
+  state.yearSpan = (_ys === '5' || _ys === '10') ? _ys : 'all';
 
   var favSet = new Set(App.store.get('tsq3.fav', []));
   var recent = App.store.get('tsq3.recent', []);
@@ -2685,30 +2646,50 @@ window.App = App;
     ]);
   }
 
+  var FACET_ICON = {
+    tax: 'M7 4h10v16l-2-1.4-2 1.4-2-1.4L9 20l-2-1.4zM9 8h6M9 12h5',
+    region: 'M12 21s6-5.2 6-11a6 6 0 10-12 0c0 5.8 6 11 6 11zM12 10h.01',
+    status: 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4'
+  };
+
+  function yearChipText() {
+    var picked = Array.from(state.filters.year).sort().reverse();
+    if (!picked.length) return '全部年份';
+    if (picked.length === 1) return picked[0] + ' 年';
+    return picked[picked.length - 1] + '–' + picked[0] + ' · ' + picked.length + ' 个';
+  }
+
   function renderDockTools() {
     var tools = dom.dockTools;
     clear(tools);
-    if (state.scope === 'policy') {
-      tools.appendChild(chip('税种', state.filters.tax.size > 0, state.filters.tax.size || '',
-        function (e) { openFacet('tax', e.currentTarget); },
-        'M7 4h10v16l-2-1.4-2 1.4-2-1.4L9 20l-2-1.4zM9 8h6M9 12h5'));
-      tools.appendChild(chip('年份', state.filters.year.size > 0, state.filters.year.size || '',
-        function (e) { openFacet('year', e.currentTarget); },
-        'M5 5h14v15H5zM8 3v4M16 3v4M5 10h14'));
-      tools.appendChild(chip('地区', state.filters.region.size > 0, state.filters.region.size || '',
-        function (e) { openFacet('region', e.currentTarget); },
-        'M12 21s6-5.2 6-11a6 6 0 10-12 0c0 5.8 6 11 6 11zM12 10h.01'));
-      tools.appendChild(chip('效力', state.filters.status.size > 0, state.filters.status.size || '',
-        function (e) { openFacet('status', e.currentTarget); },
-        'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4'));
-    } else {
-      tools.appendChild(chip('年份', state.filters.year.size > 0, state.filters.year.size || '',
-        function (e) { openFacet('year', e.currentTarget); },
-        'M5 5h14v15H5zM8 3v4M16 3v4M5 10h14'));
-    }
+    var kinds = state.scope === 'policy' ? ['tax', 'year', 'region', 'status'] : ['year'];
+    kinds.forEach(function (kind) {
+      if (kind === 'year') {
+        tools.appendChild(h('button', {
+          class: 'chip-btn',
+          dataset: { on: state.filters.year.size ? '1' : '0', kind: 'year' },
+          title: '按年份筛选（可多选）',
+          'aria-haspopup': 'dialog',
+          'aria-expanded': state.yearPanelOpen ? 'true' : 'false',
+          onclick: function (e) { openFacet('year', e.currentTarget); }
+        }, [
+          h('span', { class: 'lbl', text: yearChipText() }),
+          h('span', { class: 'caret', text: '▾' })
+        ]));
+        return;
+      }
+      var set = state.filters[kind];
+      tools.appendChild(chip(
+        kind === 'tax' ? '税种' : kind === 'region' ? '地区' : '效力',
+        set.size > 0, set.size || '',
+        function (e) { openFacet(kind, e.currentTarget); },
+        FACET_ICON[kind]
+      ));
+    });
     tools.appendChild(chip('收藏', state.favOnly, '', function () {
       state.favOnly = !state.favOnly;
       renderDockTools();
+      renderContext();
       refresh();
     }, 'M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z'));
     if (hasFilters()) {
@@ -2731,7 +2712,7 @@ window.App = App;
     state.filters.status.clear();
     state.favOnly = false;
     renderDockTools();
-    renderYearline();
+    renderContext();
     refresh();
   }
 
@@ -2741,12 +2722,17 @@ window.App = App;
 
   function closePop() {
     if (popEl) { popEl.remove(); popEl = null; }
+    state.yearPanelOpen = false;
+    var t = dom.dockTools && dom.dockTools.querySelector('.chip-btn[data-kind="year"]');
+    if (t) t.setAttribute('aria-expanded', 'false');
     document.removeEventListener('mousedown', onDocDown, true);
     document.removeEventListener('keydown', onPopKey, true);
   }
 
   function onDocDown(e) {
-    if (popEl && !popEl.contains(e.target)) closePop();
+    if (!popEl || popEl.contains(e.target)) return;
+    if (state.yearPanelOpen && e.target.closest && e.target.closest('.chip-btn[data-kind="year"]')) return;
+    closePop();
   }
 
   function onPopKey(e) { if (e.key === 'Escape') { closePop(); e.stopPropagation(); } }
@@ -2781,6 +2767,10 @@ window.App = App;
   }
 
   function openFacet(kind, anchor) {
+    if (kind === 'year') {
+      if (state.yearPanelOpen) { closePop(); return; }
+      openYearFacet(anchor); return;
+    }
     closePop();
     var selected = kind === 'tax' ? state.filters.tax : kind === 'year' ? state.filters.year
       : kind === 'region' ? state.filters.region : state.filters.status;
@@ -2808,7 +2798,7 @@ window.App = App;
 
     function commit() {
       renderDockTools();
-      renderYearline();
+      renderContext();
       refresh();
     }
 
@@ -2849,57 +2839,192 @@ window.App = App;
     }, 0);
   }
 
-  /* ---------------- 档案年轮 ---------------- */
+  /* ---------------- 年份增强下拉 ---------------- */
 
-  function renderYearline() {
-    var box = dom.yearline;
-    var track = dom.yearTrack;
-    clear(track);
-    var all = facetOptions('year').filter(function (o) { return o.n > 0; });
-    if (all.length < 3) { box.hidden = true; return; }
-    box.hidden = false;
-    // 年份范围：老年代多数只有个位数收录，全量铺开会退化成一条平线；
-    // 「近5年」把横向空间还给近年，筛选口径本身不变。
-    var span = state.yearSpan === '5' ? 5 : 0;
-    var ascAll = all.slice().sort(function (a, b) { return a.v.localeCompare(b.v); });
-    var opts = span ? ascAll.slice(-span) : all;
-    var scopeBtns = box.querySelectorAll('.ys');
-    Array.prototype.forEach.call(scopeBtns, function (b) {
-      b.setAttribute('aria-pressed', b.dataset.span === (span ? '5' : 'all') ? 'true' : 'false');
-    });
-    box.dataset.span = span ? '5' : 'all';
+  function yearCounts() {
+    var items = D.dataset(state.scope) || [];
+    var f = state.filters, map = Object.create(null);
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (state.favOnly && !favSet.has(it.id)) continue;
+      if (f.tax.size && !f.tax.has(it.x) && !f.tax.has(it.c)) continue;
+      if (f.region.size && !f.region.has(it.p)) continue;
+      if (f.status.size && !f.status.has(it.w)) continue;
+      var y = it.y || String(it.d || '').slice(0, 4);
+      if (y) map[y] = (map[y] || 0) + 1;
+    }
+    return map;
+  }
+
+  function syncYearTrigger() {
+    var btn = dom.dockTools.querySelector('.chip-btn[data-kind="year"]');
+    if (!btn) return;
+    btn.querySelector('.lbl').textContent = yearChipText();
+    btn.dataset.on = state.filters.year.size ? '1' : '0';
+  }
+
+  function openYearFacet(anchor) {
+    closePop();
+    var sel = state.filters.year;
+    var counts = yearCounts();
+    var years = Object.keys(counts).sort().reverse();
+    Array.from(sel).forEach(function (y) { if (years.indexOf(y) < 0) years.push(y); });
+    years.sort(function (a, b) { return b.localeCompare(a); });
     var max = 1;
-    opts.forEach(function (o) { if (o.n > max) max = o.n; });
-    var asc = opts.slice().sort(function (a, b) { return a.v.localeCompare(b.v); });
-    asc.forEach(function (o) {
-      var hgt = Math.max(3, Math.round(Math.pow(o.n / max, 0.62) * 15));
-      var on = state.filters.year.has(o.v);
-      var last = o === asc[asc.length - 1];
-      var recent = Number(o.v) >= Number(asc[asc.length - 1].v) - 2;
-      var showLabel = span || on || last || recent || Number(o.v) % 5 === 0;
-      track.appendChild(h('button', {
-        class: 'yr', dataset: { on: on ? '1' : '0', y: o.v },
-        title: o.v + ' 年 · ' + U.fmt(o.n) + ' 条',
-        onclick: function () {
-          if (state.filters.year.has(o.v)) state.filters.year.delete(o.v);
-          else state.filters.year.add(o.v);
-          renderDockTools();
-          renderYearline();
-          refresh();
-        }
-      }, [
-        h('span', { class: 'yr-bar', style: 'height:' + hgt + 'px' }),
-        // 近五年只有 5 个刻度，空间足够，直接写完整年份，避免 22–26 需要心算
-        h('span', { class: 'lb', text: showLabel ? (span ? o.v : o.v.slice(2)) : '' })
-      ]));
+    years.forEach(function (y) { if ((counts[y] || 0) > max) max = counts[y]; });
+    var q = '';
+
+    var listBox = h('div', { class: 'yrp-list' });
+    var quickBox = h('div', { class: 'yrp-quick', role: 'group', 'aria-label': '年份快捷区间' });
+    var info = h('span', { class: 'info' });
+    var pop = h('div', { class: 'pop yrpop', role: 'dialog', 'aria-label': '按年份筛选' }, [
+      h('div', { class: 'yrp-hd' }, [
+        h('b', { text: '按年份筛选' }),
+        h('span', { class: 'sp' }),
+        h('em', { text: years.length + ' 个年份 · 可多选' }),
+        h('button', { class: 'pop-x', text: '×', 'aria-label': '关闭', onclick: closePop })
+      ]),
+      h('div', { class: 'yrp-tools' }, [
+        quickBox,
+        h('input', {
+          class: 'pop-search', type: 'text', placeholder: '输入年份…',
+          style: 'margin:0;width:100%',
+          oninput: function (e) { q = U.norm(e.target.value); renderRows(); }
+        })
+      ]),
+      listBox,
+      h('div', { class: 'yrp-ft' }, [
+        info,
+        h('button', { class: 'btn', text: '清空', onclick: function () { applyQuick(0); } }),
+        h('button', { class: 'btn primary', text: '完成', onclick: closePop })
+      ])
+    ]);
+
+    function commit() {
+      syncYearTrigger();
+      renderContext();
+      refresh().then(function () { if (popEl === pop) syncPanel(); });
+    }
+
+    function applyQuick(n) {
+      sel.clear();
+      if (n) years.slice(0, n).forEach(function (y) { sel.add(y); });
+      state.yearSpan = n === 5 ? '5' : n === 10 ? '10' : 'all';
+      App.store.set('tsq3.yearSpan', state.yearSpan);
+      renderRows();
+      commit();
+    }
+
+    function renderRows() {
+      clear(listBox);
+      var shown = 0;
+      years.forEach(function (y) {
+        if (q && y.indexOf(q) < 0) return;
+        shown++;
+        var n = counts[y] || 0;
+        var w = Math.max(2, Math.round((n / max) * 100));
+        listBox.appendChild(h('label', {
+          class: 'yrp-row', dataset: { on: sel.has(y) ? '1' : '0', y: y },
+          title: y + ' 年 · 当前其他条件下 ' + U.fmt(n) + ' 条'
+        }, [
+          h('input', {
+            type: 'checkbox', checked: sel.has(y) ? 'checked' : null,
+            onchange: function (e) {
+              if (e.target.checked) sel.add(y); else sel.delete(y);
+              state.yearSpan = 'all';
+              App.store.set('tsq3.yearSpan', 'all');
+              syncPanel();
+              commit();
+            }
+          }),
+          h('span', { class: 'yrp-y', text: y }),
+          h('span', { class: 'yrp-bar' }, [h('i', { style: 'width:' + w + '%' })]),
+          h('span', { class: 'yrp-n', text: U.fmt(n) })
+        ]));
+      });
+      if (!shown) listBox.appendChild(h('div', { class: 'pop-none', text: '没有匹配的年份' }));
+    }
+
+    function syncPanel() {
+      Array.prototype.forEach.call(listBox.querySelectorAll('.yrp-row'), function (row) {
+        var on = sel.has(row.dataset.y) ? '1' : '0';
+        row.dataset.on = on;
+        var cb = row.querySelector('input');
+        if (cb) cb.checked = on === '1';
+      });
+      Array.prototype.forEach.call(quickBox.querySelectorAll('button'), function (b) {
+        b.setAttribute('aria-pressed', b.dataset.n === state.yearSpan ? 'true' : 'false');
+      });
+      var picked = Array.from(sel);
+      var hit = picked.length
+        ? picked.reduce(function (a, y) { return a + (counts[y] || 0); }, 0)
+        : (D.dataset(state.scope) || []).length;
+      info.textContent = '已选 ' + picked.length + ' 个年份 · 可选 ' + U.fmt(hit) + ' 条';
+    }
+
+    [['all', '全部'], ['5', '近 5 年'], ['10', '近 10 年']].forEach(function (p) {
+      quickBox.appendChild(h('button', {
+        dataset: { n: p[0] }, text: p[1],
+        onclick: function () { applyQuick(p[0] === 'all' ? 0 : p[0] === '5' ? 5 : 10); }
+      }));
     });
-    requestAnimationFrame(function () {
-      if (track.scrollWidth <= track.clientWidth) return;
-      var selected = track.querySelector('.yr[data-on="1"]');
-      track.scrollLeft = selected
-        ? Math.max(0, selected.offsetLeft - (track.clientWidth - selected.offsetWidth) / 2)
-        : track.scrollWidth;
-    });
+    renderRows();
+    syncPanel();
+
+    document.body.appendChild(pop);
+    popEl = pop;
+    state.yearPanelOpen = true;
+    anchor.setAttribute('aria-expanded', 'true');
+
+    var r = anchor.getBoundingClientRect();
+    pop.style.top = Math.round(r.bottom + 8) + 'px';
+    pop.style.left = Math.max(10, Math.min(Math.round(r.right - pop.offsetWidth), window.innerWidth - pop.offsetWidth - 10)) + 'px';
+
+    setTimeout(function () {
+      document.addEventListener('mousedown', onDocDown, true);
+      document.addEventListener('keydown', onPopKey, true);
+      var first = pop.querySelector('.pop-search');
+      if (first && window.innerWidth > 720) first.focus();
+    }, 0);
+  }
+
+  /* ---------------- 上下文说明行 ---------------- */
+
+  function renderContext() {
+    var box = dom.contextLine;
+    if (!box) return;
+    clear(box);
+    var sc = SCOPES.filter(function (s) { return s.id === state.scope; })[0] || SCOPES[0];
+    var st = dataStatus();
+    var ds = D.dataset(state.scope) || [];
+    var phase = S.phase;
+    var kind = 'ok', badge = '数据就绪', note = st.sub;
+    if (!D.policy && !D.lib) {
+      kind = 'busy'; badge = '载入中'; note = '首次打开需下载数据包，之后走本地缓存';
+    } else if (phase === 'error' || st.bad) {
+      kind = 'err'; badge = '需要核对'; note = '同步异常或数据滞后，建议立即检查更新';
+    } else if (phase === 'updating' || phase === 'checking') {
+      kind = 'busy'; badge = '同步中'; note = '正在检查或同步最新数据';
+    } else if (!ds.length) {
+      kind = 'warn'; badge = '暂无数据'; note = '该内容体系尚未载入，可切换栏目或同步一次';
+    } else if (st.kind === 'warn') {
+      kind = 'warn'; badge = '略有滞后';
+    }
+
+    box.appendChild(h('span', { class: 'ctx-badge', dataset: { kind: kind }, text: badge }));
+    box.appendChild(h('span', { class: 'ctx-main' }, [
+      h('b', { text: sc.label }),
+      document.createTextNode(' · 数据来源：' +
+        (state.scope === 'policy' ? '税务总局政策法规库' : '税务官方公开资料') +
+        ' · 快照 ' + st.maxd + ' · 当前视图 ' + U.fmt(ds.length) + ' 条 · ' + note)
+    ]));
+    box.appendChild(h('button', {
+      class: 'ctx-act', text: kind === 'err' ? '立即重试' : '同步详情',
+      onclick: function () {
+        if (kind === 'err') S.check(true).then(function (ch) { if (!ch) toast('已是最新版本'); });
+        else dom.syncPill.click();
+      }
+    }));
   }
 
   /* ---------------- 数据范围切换 ---------------- */
@@ -2927,7 +3052,7 @@ window.App = App;
 
     ready.then(function () {
       buildDock();
-      renderYearline();
+      renderContext();
       return refresh();
     }).then(function () {
       dom.vlist.scrollTop = 0;
@@ -2957,12 +3082,13 @@ window.App = App;
         filters: state.filters,
         favOnly: state.favOnly,
         ids: state.favOnly ? setToMap(favSet) : null,
-        sort: state.q ? 'rel' : 'date'
+        sort: state.sort === 'auto' ? (state.q ? 'rel' : 'date') : state.sort
       });
       if (seq !== state.seq) return;
       state.results = res.items;
       state.resMeta = res;
       renderHead(res);
+      renderContext();
       renderList();
       syncSelection();
       setStatus('就绪', '');
@@ -2983,29 +3109,51 @@ window.App = App;
   function renderHead(res) {
     var total = res.total || (D.dataset(state.scope).length);
     var shown = res.items.length;
-    dom.count.textContent = '';
-    dom.count.appendChild(h('b', { text: U.fmt(shown) }));
-    if (shown !== total) {
-      dom.count.appendChild(h('span', { class: 'total', text: ' / ' + U.fmt(total) }));
+    clear(dom.resLine);
+    dom.resLine.appendChild(h('span', { class: 'hit' }, [
+      h('b', { text: U.fmt(shown) }),
+      document.createTextNode(' 条命中' + (shown !== total ? ' / 共 ' + U.fmt(total) : ''))
+    ]));
+    [['year', '年份'], ['tax', '税种'], ['region', '地区'], ['status', '效力']].forEach(function (g) {
+      state.filters[g[0]].forEach(function (v) {
+        dom.resLine.appendChild(h('span', { class: 'tag' }, [
+          h('span', { text: g[1] + '：' + v + (g[0] === 'year' ? ' 年' : '') }),
+          h('button', {
+            text: '×', title: '移除该条件', 'aria-label': '移除 ' + g[1] + ' ' + v,
+            onclick: function () {
+              state.filters[g[0]].delete(v);
+              renderDockTools(); renderContext(); refresh();
+            }
+          })
+        ]));
+      });
+    });
+    if (state.favOnly) {
+      dom.resLine.appendChild(h('span', { class: 'tag' }, [
+        h('span', { text: '已收藏' }),
+        h('button', {
+          text: '×', title: '取消只看收藏',
+          onclick: function () { state.favOnly = false; renderDockTools(); renderContext(); refresh(); }
+        })
+      ]));
     }
-    dom.count.appendChild(document.createTextNode(' 条'));
-    dom.count.title = '当前显示 ' + U.fmt(shown) + ' / 共 ' + U.fmt(total) + ' 条';
-
-    clear(dom.crumb);
-    if (hasFilters()) {
-      var parts = [];
-      state.filters.tax.forEach(function (v) { parts.push(v); });
-      state.filters.status.forEach(function (v) { parts.push(v); });
-      state.filters.region.forEach(function (v) { parts.push(v); });
-      state.filters.year.forEach(function (v) { parts.push(v + '年'); });
-      if (state.favOnly) parts.push('已收藏');
-      dom.crumb.appendChild(document.createTextNode(parts.slice(0, 4).join(' · ') +
-        (parts.length > 4 ? ' +' + (parts.length - 4) : '')));
-    } else if (res.nq) {
-      dom.crumb.appendChild(document.createTextNode('关键词「' + state.q.trim() + '」'));
+    if (hasFilters() || state.q.trim()) {
+      dom.resLine.appendChild(h('button', {
+        class: 'clear', text: '清空条件',
+        onclick: function () {
+          resetFilters();
+          state.q = ''; dom.input.value = '';
+          renderContext(); refresh();
+        }
+      }));
     }
-    dom.sortLabel.textContent = state.q ? (state.sort === 'rel' ? '相关度优先' : '最新在前') : '最新在前';
-    dom.sortBtn.title = '当前：' + dom.sortLabel.textContent + '；点击切换排序方式';
+    dom.resLine.appendChild(h('span', { class: 'sp' }));
+    if (state.q.trim()) dom.resLine.appendChild(h('span', { class: 'mode', text: '命中词已高亮' }));
+    var sortTxt = state.sort === 'auto'
+      ? (state.q ? '智能排序 · 相关度' : '智能排序 · 最新')
+      : state.sort === 'rel' ? '相关度优先' : '最新在前';
+    dom.sortLabel.textContent = sortTxt;
+    dom.sortBtn.title = '当前：' + sortTxt + '；点击切换（智能 / 相关度 / 最新）';
     dom.favBtn.dataset.on = state.favOnly ? '1' : '0';
   }
 
@@ -3033,16 +3181,37 @@ window.App = App;
     if (empty) {
       clear(dom.listEmpty);
       var hasQ = !!state.q.trim();
-      dom.listEmpty.appendChild(h('b', { text: hasQ ? '没有匹配的条文' : '这个范围内还没有数据' }));
-      dom.listEmpty.appendChild(h('p', { text: hasQ
-        ? '试试更短的关键词（如「留抵退税」「小规模」），或清空筛选条件。'
-        : '切换上方内容体系，或点击右上角同步一次。' }));
-      if (hasQ && !D.clientSafe) {
-        dom.listEmpty.appendChild(h('button', {
-          class: 'mini-btn', text: '用 AI 回答这个问题',
-          onclick: function () { App.ai.open(state.q); }
-        }));
+      var hasF = hasFilters();
+      var noData = !(D.dataset(state.scope) || []).length;
+      var title, msg;
+      if (!D.policy && !D.lib) {
+        title = '正在载入政策库'; msg = '首次打开需下载数据包，之后走本地缓存，几乎秒开。';
+      } else if (noData) {
+        title = '本栏目尚未载入数据'; msg = '切换上方内容体系，或点击顶栏同步一次。';
+      } else if (hasQ && hasF) {
+        title = '没有同时满足条件的条文'; msg = '移除部分筛选条件，或换用更短的关键词（如「留抵退税」「小规模」）。';
+      } else if (hasQ) {
+        title = '没有匹配的条文'; msg = '试试更短的关键词，或清空筛选条件。';
+      } else if (hasF) {
+        title = '当前筛选下没有结果'; msg = '清空筛选条件即可恢复浏览全部条目。';
+      } else {
+        title = '这个范围内还没有数据'; msg = '切换上方内容体系，或点击右上角同步一次。';
       }
+      dom.listEmpty.appendChild(h('b', { text: title }));
+      dom.listEmpty.appendChild(h('p', { text: msg }));
+      var acts = h('div', { class: 'empty-acts' });
+      if (hasF) acts.appendChild(h('button', {
+        class: 'mini-btn', text: '清空筛选条件', onclick: function () { resetFilters(); }
+      }));
+      if (hasQ) acts.appendChild(h('button', {
+        class: 'mini-btn', text: '清空关键词',
+        onclick: function () { dom.input.value = ''; state.q = ''; refresh(); }
+      }));
+      if (hasQ && !D.clientSafe) acts.appendChild(h('button', {
+        class: 'mini-btn', text: '用 AI 回答这个问题',
+        onclick: function () { App.ai.open(state.q); }
+      }));
+      dom.listEmpty.appendChild(acts);
     }
   }
 
@@ -3088,6 +3257,7 @@ window.App = App;
 
     var meta = h('div', { class: 'r-meta' });
     if (it.n) meta.appendChild(h('span', { class: 'r-no', text: it.n }));
+    if (it.c) meta.appendChild(h('span', { class: 'r-src', text: it.c }));
     if (state.scope === 'policy') {
       if (it.o) meta.appendChild(h('span', { class: 'm', text: it.o }));
       if (it.p) { meta.appendChild(h('span', { class: 'sep', text: '·' })); meta.appendChild(h('span', { text: it.p })); }
@@ -3363,13 +3533,22 @@ window.App = App;
         class: 'mini-btn primary', text: 'AI 解读这篇',
         onclick: function () { App.ai.open('请概括《' + it.t + '》的核心要点、适用条件与办理口径', [it]); }
       }),
+      (it.n || it.t) ? h('button', {
+        class: 'mini-btn', text: '总局检索此件 ↗',
+        title: '带文号到税务总局主站检索同一文件，用于核对原件',
+        onclick: function () {
+          var kw = String(it.n || it.t).replace(/\s+/g, '').slice(0, 40);
+          window.open('https://www.chinatax.gov.cn/search5/html/searchResult.html?siteCode=bm29000002&left_right_index=0&searchSource=0&searchWord=' +
+            encodeURIComponent(kw), '_blank', 'noopener');
+        }
+      }) : null,
       h('button', {
         class: 'mini-btn', text: '搜索同类',
         onclick: function () {
           if (it.x) { state.filters.tax.clear(); state.filters.tax.add(it.x); }
           dom.input.value = '';
           state.q = '';
-          renderDockTools(); renderYearline(); refresh();
+          renderDockTools(); renderContext(); refresh();
         }
       })
     ]));
@@ -3411,7 +3590,7 @@ window.App = App;
     state.filters.tax.clear(); state.filters.year.clear();
     state.filters.region.clear(); state.filters.status.clear();
     state.favOnly = false;
-    renderDockTools(); renderYearline();
+    renderDockTools(); renderContext();
   }
 
   function scrollToSel() {
@@ -3522,7 +3701,7 @@ window.App = App;
     box.appendChild(stats);
 
     var newest = items.slice(0, 6);
-    if (!state.q && state.sort === 'date') {
+    if (!state.q && state.sort !== 'rel') {
       var ql = h('div', { class: 'quick-list' });
       newest.forEach(function (it) {
         ql.appendChild(h('a', {
@@ -3571,6 +3750,7 @@ window.App = App;
   }
 
   function renderSync() {
+    renderContext();
     var pillEl = dom.syncPill;
     renderDataStatus();
     pillEl.dataset.state = S.phase === 'boot' ? 'checking' : S.phase;
@@ -3618,13 +3798,13 @@ window.App = App;
       Q.invalidate();
       SCOPES.forEach(function (s) { state.indexReady[s.id] = false; });
       if (state.scope === 'policy' && payload.scope === 'policy') {
-        renderYearline();
+        renderContext();
         buildDock();
         refresh();
         if (state.selId) renderReader();
       } else if (payload.scope === 'library' && state.scope !== 'policy') {
         buildDock();
-        renderYearline();
+        renderContext();
         refresh();
       }
       if (payload.diff && payload.diff.added > 0) {
@@ -3727,11 +3907,9 @@ window.App = App;
   function cacheDom() {
     dom.dockScroll = document.getElementById('dockScroll');
     dom.dockTools = document.getElementById('dockTools');
-    dom.yearline = document.getElementById('yearline');
-    dom.yearTrack = document.getElementById('yearTrack');
+    dom.contextLine = document.getElementById('contextLine');
+    dom.resLine = document.getElementById('resLine');
     dom.input = document.getElementById('q');
-    dom.count = document.getElementById('count');
-    dom.crumb = document.getElementById('crumb');
     dom.sortBtn = document.getElementById('sortBtn');
     dom.sortLabel = document.getElementById('sortLabel');
     dom.favBtn = document.getElementById('favBtn');
@@ -3755,20 +3933,8 @@ window.App = App;
 
   function bindChrome() {
     dom.themeBtn.addEventListener('click', toggleTheme);
-    Array.prototype.forEach.call(
-      dom.yearline.querySelectorAll('.ys'),
-      function (b) {
-        b.addEventListener('click', function () {
-          var sp = b.dataset.span === '5' ? '5' : 'all';
-          if (state.yearSpan === sp) return;
-          state.yearSpan = sp;
-          App.store.set('tsq3.yearSpan', sp);
-          renderYearline();
-        });
-      }
-    );
     dom.sortBtn.addEventListener('click', function () {
-      state.sort = state.sort === 'rel' ? 'date' : 'rel';
+      state.sort = state.sort === 'auto' ? 'rel' : state.sort === 'rel' ? 'date' : 'auto';
       refresh();
     });
     dom.favBtn.addEventListener('click', function () {
@@ -3883,7 +4049,7 @@ window.App = App;
         if (!D.policy) throw new Error('数据为空');
         dom.vrows.innerHTML = '';
         buildDock();
-        renderYearline();
+        renderContext();
         setStatus('就绪', '');
         dom.stLeft.appendChild(document.createTextNode(
           ' · ' + U.fmt(D.policy.d.length) + ' 份 · 合并 ' + U.fmt((D.policy.m || {}).mg || 0) + ' 条'));
