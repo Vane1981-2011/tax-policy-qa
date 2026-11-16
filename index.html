@@ -1676,6 +1676,23 @@ html[data-safe="1"] .ai-foot { display: none; }
 <a class="skip-link" href="#main">跳到主要内容</a>
 <noscript><p style="padding:16px;font:14px/1.6 sans-serif">本页需要启用 JavaScript 才能检索政策库。</p></noscript>
 
+<!-- 模板护栏：本文件是构建源模板，CSS/JS/版权都由 webexport.render_html 注入。
+     直接双击打开时 data-mode 仍是 "online"，据此给出明确提示，避免被当成成品页。 -->
+<div id="tplWarn" hidden style="margin:0;padding:14px 18px;background:#B23A2F;color:#fff;font:14px/1.7 -apple-system,'PingFang SC',sans-serif">
+  <b>这是模板源文件，不是可运行页面。</b><br>
+  样式、脚本与版权都在构建时写入：请打开由 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">webexport.render_html</code> 生成的 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">index.html</code>，或直接访问线上部署地址。
+</div>
+<script>
+(function () {
+  var m = document.body.getAttribute('data-mode') || '';
+  if (m.indexOf('{') === 0) {
+    var w = document.getElementById('tplWarn');
+    if (w) w.hidden = false;
+    document.title = '【模板源文件】' + document.title;
+  }
+})();
+</script>
+
 <div class="app">
 
   <header class="bar">
