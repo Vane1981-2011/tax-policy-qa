@@ -8,7 +8,7 @@
 <meta name="description" content="税务政策检索工作台：全库检索、税种/年份/地区/效力筛选、原文阅读与数据自动同步">
 <meta name="copyright" content="© 版权所有：默笙夏夏の知書房">
 <meta name="theme-color" content="#F1F2F4">
-<meta name="build" content="2026-11-16T14:00:21+0800">
+<meta name="build" content="2026-11-16T18:21:08+0800">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23B23A2F'/%3E%3Ctext x='16' y='23' font-size='19' font-family='Songti SC,serif' font-weight='700' fill='%23fff' text-anchor='middle'%3E税%3C/text%3E%3C/svg%3E">
 <title>税务政策问答 · 税策智库工作台</title>
 <style>/* 税策智库 · 桌面式政策检索工作台 —— 设计系统与版式 */
@@ -25,7 +25,7 @@
   --font-serif: "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", STSong, SimSun, serif;
   --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
-  --bg: #F1F2F4;
+  --bg: #EFF2F6;
   --surface: #FFFFFF;
   --surface-2: #F7F8F9;
   --surface-3: #ECEEF1;
@@ -53,7 +53,7 @@
   --ctx-h: 30px;
   --status-h: 30px;
   --reader-w: clamp(360px, 32.5vw, 520px);
-  --row-h: 74px;
+  --row-h: 100px;
 
   --shadow-1: 0 1px 2px rgba(16, 24, 40, .05);
   --shadow-2: 0 8px 28px rgba(16, 24, 40, .10);
@@ -310,16 +310,9 @@ mark {
   letter-spacing: -.02em;
 }
 .dock-tab:hover { color: var(--ink); background: var(--surface-2); }
-.dock-tab[aria-selected="true"] { color: var(--ink); font-weight: 600; }
-.dock-tab[aria-selected="true"]::after {
-  content: "";
-  position: absolute;
-  left: 9px; right: 9px; bottom: -8px;
-  height: 2px;
-  background: var(--brand);
-  border-radius: 2px;
-}
-.dock-tab[aria-selected="true"] em { color: var(--brand); }
+.dock-tab[aria-selected="true"] { color: #fff; background: var(--brand); font-weight: 600; }
+.dock-tab[aria-selected="true"]:hover { color: #fff; background: var(--brand); }
+.dock-tab[aria-selected="true"] em { color: rgba(255, 255, 255, .72); }
 
 .dock-tools {
   flex: 0 0 auto;
@@ -446,7 +439,9 @@ mark {
 }
 .res-line .clear:hover { color: var(--brand); }
 
-.chip-btn .caret { font-size: 10px; opacity: .75; }
+.chip-btn .caret { font-size: 10px; opacity: .75; transition: transform .16s var(--ease); }
+.chip-btn[data-open="1"] { border-color: var(--brand); color: var(--brand); }
+.chip-btn[data-open="1"] .caret { transform: rotate(180deg); }
 .empty-acts { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
 
 /* ---------------- 工作台（列表 + 阅读窗） ---------------- */
@@ -606,7 +601,19 @@ mark {
   flex: 0 0 auto;
 }
 .r-date { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); letter-spacing: -.02em; }
+.r-rel { font-size: 10px; color: var(--ink-4); white-space: nowrap; }
 .r-meta { color: var(--ink-3); }
+.r-snip {
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.r-snip mark { background: linear-gradient(180deg, transparent 58%, var(--brand-soft) 58%); color: var(--brand); padding: 0 1px; }
+.row:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 
 .pill {
   font-size: 10px;
@@ -1440,7 +1447,7 @@ mark {
 .pop-none { padding: 18px; text-align: center; color: var(--ink-4); font-size: 12px; }
 
 /* 年份增强下拉：多选 + 收录量微条 + 快捷区间 */
-.pop.yrpop { width: 336px; max-height: min(72vh, 560px); }
+.pop.yrpop { width: 360px; max-height: min(76vh, 600px); }
 .yrp-hd { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line-2); }
 .yrp-hd b { font-size: 12.5px; }
 .yrp-hd .sp { flex: 1 1 auto; }
@@ -1464,6 +1471,50 @@ mark {
 .yrp-ft .btn { height: 28px; padding: 0 11px; font-size: 12px; }
 .yrp-ft .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
 .yrp-ft .btn.primary:hover { background: var(--brand-2); }
+
+/* 年份时间轴：一年一柱，点击勾选 */
+.yrp-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 40px;
+  margin: 9px 12px 0;
+  padding: 0 1px;
+  border-bottom: 1px solid var(--line-2);
+}
+.yrp-spark .yc {
+  flex: 1 1 0;
+  min-width: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 1.5px 1.5px 0 0;
+  background: color-mix(in srgb, var(--ink-4) 45%, var(--surface));
+  transition: background .12s, opacity .12s;
+}
+.yrp-spark .yc[data-zero="1"] { background: var(--line); }
+.yrp-spark .yc:hover { background: var(--ink-3); }
+.yrp-spark .yc[data-on="1"] { background: var(--brand); }
+.yrp-axis {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 12px 0;
+  font-size: 10px;
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+}
+.yrp-axis .sp { flex: 1 1 auto; text-align: center; font-family: var(--font-ui); }
+.yrp-sub { display: flex; justify-content: flex-end; padding: 0 12px 4px; }
+.yrp-toggle { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--ink-4); cursor: pointer; }
+.yrp-toggle input { margin: 0; accent-color: var(--brand); }
+.yrp-row[data-active="1"] { background: var(--surface-2); box-shadow: inset 2px 0 0 var(--brand); }
+.yrp-row[data-zero="1"] { color: var(--ink-4); }
+.yrp-row[data-zero="1"] .yrp-bar { opacity: .35; }
+
+/* 空状态里的最近搜索 */
+.hist { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; max-width: 420px; }
+.hist-lbl { font-size: 11px; color: var(--ink-4); align-self: center; }
+.hist .mini-btn { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---------------- 设置项开关 ---------------- */
 
@@ -1512,7 +1563,7 @@ mark {
 }
 
 @media (max-width: 720px) {
-  :root { --bar-h: 52px; --dock-h: 44px; --status-h: 0px; --row-h: 86px; }
+  :root { --bar-h: 52px; --dock-h: 44px; --status-h: 0px; --row-h: 108px; }
   .bar { gap: 10px; padding: 0 12px; }
   .brand-txt i { display: none; }
   .omni-trigger { padding: 0 8px; }
@@ -1672,9 +1723,13 @@ html[data-safe="1"] .ai-foot { display: none; }
       <div class="list-head">
         <label class="search">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-          <input id="q" type="search" placeholder="搜索标题、文号、正文…" autocomplete="off" spellcheck="false" aria-label="在当前内容体系内搜索">
+          <input id="q" type="search" placeholder="搜索标题、文号、正文（空格分词，多词同时包含）" autocomplete="off" spellcheck="false" aria-label="在当前内容体系内搜索">
         </label>
         <div class="list-head-actions">
+          <button class="ghost-btn" id="titleOnlyBtn" title="只检索标题与文号，去掉正文命中（Shift+Enter 也可切换）" aria-pressed="false">
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"></path></svg>
+            <span>仅标题</span>
+          </button>
           <button class="ghost-btn" id="sortBtn" title="切换排序方式">
             <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14M5 8l3-3 3 3M16 19V5M13 16l3 3 3-3"></path></svg>
             <span id="sortLabel">最新在前</span>
@@ -2346,7 +2401,7 @@ var App = window.App || {};
    * 检索。
    * @param {string} scope 数据集
    * @param {string} q 原始查询
-   * @param {object} opt { filters, favOnly, ids, sort, limit }
+   * @param {object} opt { filters, favOnly, ids, sort, limit, titleOnly }
    */
   Q.run = function (scope, q, opt) {
     opt = opt || {};
@@ -2388,7 +2443,7 @@ var App = window.App || {};
     for (i = 0; i < N; i++) {
       var it = items[i];
       if (!passFilters(it, opt)) continue;
-      var s = scoreOne(it, idx.title[i], exact, nq, toks, idf, idx.body[i]);
+      var s = scoreOne(it, idx.title[i], exact, nq, toks, idf, opt.titleOnly ? '' : idx.body[i]);
       if (s > 0) scored.push({ it: it, s: s });
     }
 
@@ -2458,6 +2513,7 @@ var App = window.App || {};
 
 window.App = App;
 
+
 /* ---- ui.js ---- */
 /* ============================================================
    界面层：外壳 / 列表 / 阅读窗 / 筛选 / 同步状态
@@ -2519,16 +2575,21 @@ window.App = App;
     selId: '',
     theme: 'paper',
     yearSpan: 'all',
+    yearAll: false,
+    titleOnly: false,
     yearPanelOpen: false,
     seq: 0,
     indexReady: Object.create(null)
   };
 
   var _ys = App.store.get('tsq3.yearSpan', 'all');
-  state.yearSpan = (_ys === '5' || _ys === '10') ? _ys : 'all';
+  state.yearSpan = ['1', '3', '5', '10'].indexOf(_ys) >= 0 ? _ys : 'all';
+  state.yearAll = !!App.store.get('tsq3.yearAll', false);
+  state.titleOnly = !!App.store.get('tsq3.titleOnly', false);
 
   var favSet = new Set(App.store.get('tsq3.fav', []));
   var recent = App.store.get('tsq3.recent', []);
+  var history = App.store.get('tsq3.hist', []) || [];
 
   var dom = {};
 
@@ -2675,6 +2736,14 @@ window.App = App;
     return picked[picked.length - 1] + '–' + picked[0] + ' · ' + picked.length + ' 个';
   }
 
+  /* 悬停提示里交代具体选了哪几年，避免 chip 折叠成区间后看不出明细 */
+  function yearChipTitle() {
+    var picked = Array.from(state.filters.year).sort().reverse();
+    if (!picked.length) return '按年份筛选（可多选）';
+    return '已选 ' + picked.length + ' 个年份：' +
+      picked.slice(0, 6).join('、') + (picked.length > 6 ? ' 等' : '');
+  }
+
   function renderDockTools() {
     var tools = dom.dockTools;
     clear(tools);
@@ -2684,7 +2753,7 @@ window.App = App;
         tools.appendChild(h('button', {
           class: 'chip-btn',
           dataset: { on: state.filters.year.size ? '1' : '0', kind: 'year' },
-          title: '按年份筛选（可多选）',
+          title: yearChipTitle(),
           'aria-haspopup': 'dialog',
           'aria-expanded': state.yearPanelOpen ? 'true' : 'false',
           onclick: function (e) { openFacet('year', e.currentTarget); }
@@ -2740,7 +2809,7 @@ window.App = App;
     if (popEl) { popEl.remove(); popEl = null; }
     state.yearPanelOpen = false;
     var t = dom.dockTools && dom.dockTools.querySelector('.chip-btn[data-kind="year"]');
-    if (t) t.setAttribute('aria-expanded', 'false');
+    if (t) { t.setAttribute('aria-expanded', 'false'); t.dataset.open = '0'; }
     document.removeEventListener('mousedown', onDocDown, true);
     document.removeEventListener('keydown', onPopKey, true);
   }
@@ -2888,11 +2957,37 @@ window.App = App;
     years.sort(function (a, b) { return b.localeCompare(a); });
     var max = 1;
     years.forEach(function (y) { if ((counts[y] || 0) > max) max = counts[y]; });
-    var q = '';
 
-    var listBox = h('div', { class: 'yrp-list' });
+    var latest = years.length ? parseInt(years[0], 10) : new Date().getFullYear();
+    var oldest = years.length ? parseInt(years[years.length - 1], 10) : latest;
+    var axis = [];
+    for (var yy = latest; yy >= oldest && axis.length < 160; yy--) axis.push(String(yy));
+
+    var q = '';
+    var active = -1;
+
+    var sparkBox = h('div', { class: 'yrp-spark', role: 'group', 'aria-label': '年份收录量时间轴，点击柱可勾选年份' });
+    var axisRow = h('div', { class: 'yrp-axis' }, [
+      h('span', { text: oldest + ' 年' }),
+      h('span', { class: 'sp', text: '收录量分布' }),
+      h('span', { text: latest + ' 年' })
+    ]);
     var quickBox = h('div', { class: 'yrp-quick', role: 'group', 'aria-label': '年份快捷区间' });
+    var listBox = h('div', { class: 'yrp-list', role: 'listbox', 'aria-multiselectable': 'true' });
     var info = h('span', { class: 'info' });
+    var allToggle = h('label', { class: 'yrp-toggle' }, [
+      h('input', {
+        type: 'checkbox', checked: state.yearAll ? 'checked' : null,
+        onchange: function (e) {
+          state.yearAll = !!e.target.checked;
+          App.store.set('tsq3.yearAll', state.yearAll);
+          renderRows();
+          syncPanel();
+        }
+      }),
+      h('span', { text: '显示无数据年份' })
+    ]);
+
     var pop = h('div', { class: 'pop yrpop', role: 'dialog', 'aria-label': '按年份筛选' }, [
       h('div', { class: 'yrp-hd' }, [
         h('b', { text: '按年份筛选' }),
@@ -2900,15 +2995,18 @@ window.App = App;
         h('em', { text: years.length + ' 个年份 · 可多选' }),
         h('button', { class: 'pop-x', text: '×', 'aria-label': '关闭', onclick: closePop })
       ]),
+      sparkBox,
+      axisRow,
       h('div', { class: 'yrp-tools' }, [
         quickBox,
         h('input', {
-          class: 'pop-search', type: 'text', placeholder: '输入年份…',
+          class: 'pop-search', type: 'text', placeholder: '输入年份，如 2024…',
           style: 'margin:0;width:100%',
-          oninput: function (e) { q = U.norm(e.target.value); renderRows(); }
+          oninput: function (e) { q = U.norm(e.target.value); active = -1; renderRows(); syncPanel(); }
         })
       ]),
       listBox,
+      h('div', { class: 'yrp-sub' }, [allToggle]),
       h('div', { class: 'yrp-ft' }, [
         info,
         h('button', { class: 'btn', text: '清空', onclick: function () { applyQuick(0); } }),
@@ -2916,42 +3014,95 @@ window.App = App;
       ])
     ]);
 
+    /* 时间轴：一年一柱，高度按开方压缩，避免 2026 的 3 千余条把小年份压成一条线 */
+    axis.slice().reverse().forEach(function (y) {
+      var n = counts[y] || 0;
+      var hh = n ? Math.max(4, Math.round(3 + 30 * Math.sqrt(n / max))) : 2;
+      sparkBox.appendChild(h('button', {
+        class: 'yc', type: 'button', tabindex: '-1',
+        dataset: { y: y, on: sel.has(y) ? '1' : '0', zero: n ? '0' : '1' },
+        style: 'height:' + hh + 'px',
+        title: y + ' 年 · ' + U.fmt(n) + ' 条' + (n ? '' : '（无数据）'),
+        onclick: function () { toggleYear(y); }
+      }));
+    });
+
+    function rowEls() {
+      return Array.prototype.slice.call(listBox.querySelectorAll('.yrp-row'));
+    }
+
+    function setActive(i) {
+      var rows = rowEls();
+      if (!rows.length) return;
+      active = Math.max(0, Math.min(rows.length - 1, i));
+      rows.forEach(function (r, k) { r.dataset.active = k === active ? '1' : '0'; });
+      var cb = rows[active].querySelector('input');
+      if (cb) cb.focus();
+      if (rows[active].scrollIntoView) rows[active].scrollIntoView({ block: 'nearest' });
+    }
+
     function commit() {
       syncYearTrigger();
       renderContext();
       refresh().then(function () { if (popEl === pop) syncPanel(); });
     }
 
+    function persistSpan() { App.store.set('tsq3.yearSpan', state.yearSpan); }
+
     function applyQuick(n) {
       sel.clear();
-      if (n) years.slice(0, n).forEach(function (y) { sel.add(y); });
-      state.yearSpan = n === 5 ? '5' : n === 10 ? '10' : 'all';
-      App.store.set('tsq3.yearSpan', state.yearSpan);
+      if (n) {
+        var from = latest - n + 1;
+        axis.forEach(function (y) {
+          if (parseInt(y, 10) >= from && counts[y]) sel.add(y);
+        });
+        if (!sel.size) years.slice(0, n).forEach(function (y) { sel.add(y); });
+      }
+      state.yearSpan = n ? String(n) : 'all';
+      persistSpan();
       renderRows();
+      syncPanel();
       commit();
+    }
+
+    function toggleYear(y) {
+      if (sel.has(y)) sel.delete(y); else sel.add(y);
+      state.yearSpan = 'all';
+      persistSpan();
+      if (!state.yearAll && !(counts[y] || 0)) renderRows();
+      syncPanel();
+      commit();
+    }
+
+    function visibleYears() {
+      var base = [];
+      axis.forEach(function (y) {
+        if (!state.yearAll && !(counts[y] || 0) && !sel.has(y)) return;
+        base.push(y);
+      });
+      Array.from(sel).forEach(function (y) { if (base.indexOf(y) < 0) base.push(y); });
+      base.sort(function (a, b) { return b.localeCompare(a); });
+      return base;
     }
 
     function renderRows() {
       clear(listBox);
+      var total = (D.dataset(state.scope) || []).length || 1;
       var shown = 0;
-      years.forEach(function (y) {
+      visibleYears().forEach(function (y) {
         if (q && y.indexOf(q) < 0) return;
         shown++;
         var n = counts[y] || 0;
-        var w = Math.max(2, Math.round((n / max) * 100));
+        var w = n ? Math.max(2, Math.round((n / max) * 100)) : 0;
         listBox.appendChild(h('label', {
-          class: 'yrp-row', dataset: { on: sel.has(y) ? '1' : '0', y: y },
-          title: y + ' 年 · 当前其他条件下 ' + U.fmt(n) + ' 条'
+          class: 'yrp-row', dataset: { on: sel.has(y) ? '1' : '0', y: y, zero: n ? '0' : '1' },
+          title: y + ' 年 · 当前条件下 ' + U.fmt(n) + ' 条' +
+            (n ? ' · 占全库 ' + (Math.round((n / total) * 1000) / 10) + '%' : ''),
+          onclick: function (e) { if (e.target.tagName !== 'INPUT') active = -1; }
         }, [
           h('input', {
             type: 'checkbox', checked: sel.has(y) ? 'checked' : null,
-            onchange: function (e) {
-              if (e.target.checked) sel.add(y); else sel.delete(y);
-              state.yearSpan = 'all';
-              App.store.set('tsq3.yearSpan', 'all');
-              syncPanel();
-              commit();
-            }
+            onchange: function () { toggleYear(y); }
           }),
           h('span', { class: 'yrp-y', text: y }),
           h('span', { class: 'yrp-bar' }, [h('i', { style: 'width:' + w + '%' })]),
@@ -2968,6 +3119,9 @@ window.App = App;
         var cb = row.querySelector('input');
         if (cb) cb.checked = on === '1';
       });
+      Array.prototype.forEach.call(sparkBox.querySelectorAll('.yc'), function (b) {
+        b.dataset.on = sel.has(b.dataset.y) ? '1' : '0';
+      });
       Array.prototype.forEach.call(quickBox.querySelectorAll('button'), function (b) {
         b.setAttribute('aria-pressed', b.dataset.n === state.yearSpan ? 'true' : 'false');
       });
@@ -2975,15 +3129,19 @@ window.App = App;
       var hit = picked.length
         ? picked.reduce(function (a, y) { return a + (counts[y] || 0); }, 0)
         : (D.dataset(state.scope) || []).length;
-      info.textContent = '已选 ' + picked.length + ' 个年份 · 可选 ' + U.fmt(hit) + ' 条';
+      info.textContent = (picked.length ? '已选 ' + picked.length + ' 年' : '全部年份') +
+        ' · 可选 ' + U.fmt(hit) + ' 条';
     }
 
-    [['all', '全部'], ['5', '近 5 年'], ['10', '近 10 年']].forEach(function (p) {
-      quickBox.appendChild(h('button', {
-        dataset: { n: p[0] }, text: p[1],
-        onclick: function () { applyQuick(p[0] === 'all' ? 0 : p[0] === '5' ? 5 : 10); }
-      }));
-    });
+    [['all', '全部'], ['1', '近 1 年'], ['3', '近 3 年'], ['5', '近 5 年'], ['10', '近 10 年']]
+      .forEach(function (p) {
+        quickBox.appendChild(h('button', {
+          dataset: { n: p[0] }, text: p[1],
+          title: p[0] === 'all' ? '不按年份筛选' : '取最近 ' + p[0] + ' 个自然年（以库内最新年份 ' + latest + ' 为基准）',
+          onclick: function () { applyQuick(p[0] === 'all' ? 0 : parseInt(p[0], 10)); }
+        }));
+      });
+
     renderRows();
     syncPanel();
 
@@ -2991,10 +3149,22 @@ window.App = App;
     popEl = pop;
     state.yearPanelOpen = true;
     anchor.setAttribute('aria-expanded', 'true');
+    anchor.dataset.open = '1';
 
     var r = anchor.getBoundingClientRect();
     pop.style.top = Math.round(r.bottom + 8) + 'px';
     pop.style.left = Math.max(10, Math.min(Math.round(r.right - pop.offsetWidth), window.innerWidth - pop.offsetWidth - 10)) + 'px';
+
+    pop.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (active < 0) { setActive(0); return; }
+        setActive(active + (e.key === 'ArrowDown' ? 1 : -1));
+      } else if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+        e.preventDefault();
+        closePop();
+      }
+    });
 
     setTimeout(function () {
       document.addEventListener('mousedown', onDocDown, true);
@@ -3098,6 +3268,7 @@ window.App = App;
         filters: state.filters,
         favOnly: state.favOnly,
         ids: state.favOnly ? setToMap(favSet) : null,
+        titleOnly: state.titleOnly,
         sort: state.sort === 'auto' ? (state.q ? 'rel' : 'date') : state.sort
       });
       if (seq !== state.seq) return;
@@ -3164,13 +3335,22 @@ window.App = App;
       }));
     }
     dom.resLine.appendChild(h('span', { class: 'sp' }));
-    if (state.q.trim()) dom.resLine.appendChild(h('span', { class: 'mode', text: '命中词已高亮' }));
+    if (state.q.trim()) {
+      dom.resLine.appendChild(h('span', {
+        class: 'mode',
+        text: state.titleOnly ? '仅标题/文号 · 命中词已高亮' : '命中词已高亮 · 多词同时包含'
+      }));
+    }
     var sortTxt = state.sort === 'auto'
       ? (state.q ? '智能排序 · 相关度' : '智能排序 · 最新')
       : state.sort === 'rel' ? '相关度优先' : '最新在前';
     dom.sortLabel.textContent = sortTxt;
     dom.sortBtn.title = '当前：' + sortTxt + '；点击切换（智能 / 相关度 / 最新）';
     dom.favBtn.dataset.on = state.favOnly ? '1' : '0';
+    if (dom.titleBtn) {
+      dom.titleBtn.dataset.on = state.titleOnly ? '1' : '0';
+      dom.titleBtn.setAttribute('aria-pressed', state.titleOnly ? 'true' : 'false');
+    }
   }
 
   /* ---------------- 虚拟列表 ---------------- */
@@ -3240,6 +3420,18 @@ window.App = App;
         onclick: function () { App.ai.open(state.q); }
       }));
       dom.listEmpty.appendChild(acts);
+      if (!hasQ && !hasF && history.length) {
+        var histBox = h('div', { class: 'hist' }, [h('span', { class: 'hist-lbl', text: '最近搜索' })]);
+        history.slice(0, 8).forEach(function (t) {
+          histBox.appendChild(h('button', {
+            class: 'mini-btn', text: t, title: '再次搜索「' + t + '」',
+            onclick: function () {
+              dom.input.value = t; state.q = t; pushHistory(t); refresh();
+            }
+          }));
+        });
+        dom.listEmpty.appendChild(histBox);
+      }
     }
   }
 
@@ -3269,6 +3461,45 @@ window.App = App;
     if (rafPending) return;
     rafPending = true;
     requestAnimationFrame(function () { rafPending = false; paintWindow(); });
+  }
+
+  function pushHistory(t) {
+    t = String(t || '').trim();
+    if (!t || t.length > 60) return;
+    history = [t].concat(history.filter(function (x) { return x !== t; })).slice(0, 8);
+    App.store.set('tsq3.hist', history);
+  }
+
+  /** 结果行摘要：围绕命中词取窗口，命中在正文深处时也能看见上下文。 */
+  function snippetOf(it, q) {
+    var raw = it.kk || it.q || it.s || '';
+    if (!raw) return '';
+    var text = String(raw).replace(/\s+/g, ' ').trim();
+    if (text.length < 12) return '';
+    var nq = U.norm(q || '');
+    var start = 0;
+    if (nq.length >= 2) {
+      var toks = Q.tokens(nq).filter(function (t) { return t.length > 1; }).slice(0, 4);
+      var low = text.toLowerCase();
+      for (var i = 0; i < toks.length; i++) {
+        var idx = low.indexOf(toks[i]);
+        if (idx >= 0) { start = Math.max(0, idx - 24); break; }
+      }
+    }
+    var out = text.slice(start, start + 96);
+    if (start > 0) out = '…' + out;
+    if (start + 96 < text.length) out += '…';
+    return out;
+  }
+
+  function relDate(d) {
+    var dd = U.daysBetween(d);
+    if (dd == null || dd < 0) return '';
+    if (dd === 0) return '今天';
+    if (dd === 1) return '昨天';
+    if (dd < 30) return dd + ' 天前';
+    if (dd < 365) return Math.round(dd / 30) + ' 个月前';
+    return Math.floor(dd / 365) + ' 年前';
   }
 
   function buildRow(it, i) {
@@ -3302,9 +3533,18 @@ window.App = App;
     var side = h('div', { class: 'r-side' }, [
       h('span', { class: 'r-date', text: it.d || '' })
     ]);
+    var rd = relDate(it.d);
+    if (rd) side.appendChild(h('span', { class: 'r-rel', text: rd }));
     if (it._r && !state.resMeta.browse) side.appendChild(relRing(it._r));
 
-    el.appendChild(h('div', { class: 'r-main' }, [title, meta]));
+    var main = h('div', { class: 'r-main' }, [title, meta]);
+    var snip = snippetOf(it, state.q);
+    if (snip) {
+      var snipEl = h('div', { class: 'r-snip' });
+      appendHighlighted(snipEl, snip, state.q);
+      main.appendChild(snipEl);
+    }
+    el.appendChild(main);
     el.appendChild(side);
     return el;
   }
@@ -3944,6 +4184,7 @@ window.App = App;
     dom.sortBtn = document.getElementById('sortBtn');
     dom.sortLabel = document.getElementById('sortLabel');
     dom.favBtn = document.getElementById('favBtn');
+    dom.titleBtn = document.getElementById('titleOnlyBtn');
     dom.vlist = document.getElementById('vlist');
     dom.vspacer = document.getElementById('vspacer');
     dom.vrows = document.getElementById('vrows');
@@ -3973,6 +4214,13 @@ window.App = App;
       renderDockTools();
       refresh();
     });
+    if (dom.titleBtn) {
+      dom.titleBtn.addEventListener('click', function () {
+        state.titleOnly = !state.titleOnly;
+        App.store.set('tsq3.titleOnly', state.titleOnly);
+        refresh();
+      });
+    }
     dom.syncPill.addEventListener('click', function () {
       if (S.phase === 'error' || S.phase === 'offline') {
         S.check(true).then(function (ch) { if (ch) applyUpdate(); else toast('已是最新版本'); });
@@ -3986,7 +4234,14 @@ window.App = App;
       refresh();
     }, 170));
     dom.input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); refresh(); }
+      if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        state.titleOnly = !state.titleOnly;
+        App.store.set('tsq3.titleOnly', state.titleOnly);
+        refresh();
+        return;
+      }
+      if (e.key === 'Enter') { e.preventDefault(); pushHistory(dom.input.value); refresh(); }
       if (e.key === 'Escape') { dom.input.value = ''; state.q = ''; refresh(); }
     });
     dom.vlist.addEventListener('scroll', onScroll, { passive: true });
@@ -4155,6 +4410,7 @@ window.App = App;
   };
 
 })();
+
 
 /* ---- ai.js ---- */
 /* ============================================================
