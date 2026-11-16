@@ -2329,7 +2329,7 @@ var App = window.App || {};
           var it = items[i];
           idx.title[i] = U.norm((it.t || '') + (it.n ? ' ' + it.n : ''));
           idx.body[i] = U.norm((it.n || '') + (it.o || '') + (it.x || '') + (it.p || '') +
-            (it.s || '') + (it.kk ? it.kk.slice(0, 600) : ''));
+            (it.s || '') + (it.kk ? it.kk.slice(0, 3000) : ''));
         }
         if (typeof onProgress === 'function') onProgress(i / items.length);
         if (i < items.length) setTimeout(step, 0);

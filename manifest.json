@@ -1,8 +1,8 @@
 {
   "v": 2,
-  "b": "2026-11-16T14:00:21+0800",
+  "b": "2026-11-16T18:21:08+0800",
   "maxd": "2026-11-10",
-  "built_at": "2026-11-16T14:00:21+0800",
+  "built_at": "2026-11-16T18:21:08+0800",
   "source_maxd": "2026-11-10",
   "stale_days": 6,
   "freshness": "amber",
@@ -823,8 +823,8 @@
   },
   "enc": "gzip",
   "file": "data.json.gz",
-  "bytes": 2853811,
-  "sha256": "d22cd79d6de676a4",
+  "bytes": 7389740,
+  "sha256": "ca2bedf8ff3c6f2c",
   "lib_file": "library.json.gz",
   "lib_enc": "gzip",
   "lib_bytes": 3880371,
@@ -880,5 +880,11 @@
     "since": "",
     "categories": [],
     "only_active": false
+  },
+  "fulltext": {
+    "filled": 3716,
+    "attempted": 6756,
+    "ok": 4241,
+    "at": "2026-11-16T18:21:08+0800"
   }
 }
