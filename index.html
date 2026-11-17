@@ -305,14 +305,15 @@ mark {
 .dock-tab em {
   font-style: normal;
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-4);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
   letter-spacing: -.02em;
 }
 .dock-tab:hover { color: var(--ink); background: var(--surface-2); }
 .dock-tab[aria-selected="true"] { color: #fff; background: var(--brand); font-weight: 600; }
 .dock-tab[aria-selected="true"]:hover { color: #fff; background: var(--brand); }
-.dock-tab[aria-selected="true"] em { color: rgba(255, 255, 255, .72); }
+.dock-tab[aria-selected="true"] em { color: rgba(255, 255, 255, .86); }
 
 .dock-tools {
   flex: 0 0 auto;
@@ -429,7 +430,7 @@ mark {
 }
 .res-line .tag button:hover { background: var(--brand); color: #fff; }
 .res-line .sp { flex: 1 1 auto; }
-.res-line .mode { flex: 0 0 auto; white-space: nowrap; color: var(--ink-4); font-size: 11px; }
+.res-line .mode { flex: 0 0 auto; white-space: nowrap; color: var(--ink-3); font-size: 12px; }
 .res-line .dist {
   flex: 0 0 auto;
   max-width: 52ch;
@@ -1731,6 +1732,7 @@ mark {
   .dock-tools .chip-btn[data-kind="year"] .lbl { display: inline; }
   .dock-tools .chip-btn { padding: 0 7px; gap: 3px; }
   .dock-tools .chip-btn .chip-ico { display: block; }
+  .res-line .mode { display: none; }
 }
 
 @media (max-width: 720px) {
@@ -3929,12 +3931,14 @@ window.App = App;
       }));
     }
     dom.resLine.appendChild(h('span', { class: 'sp' }));
-    if (state.q.trim()) {
-      dom.resLine.appendChild(h('span', {
-        class: 'mode',
-        text: state.titleOnly ? '仅标题/文号 · 命中词已高亮' : '命中词已高亮 · 多词同时包含'
-      }));
-    }
+    // 常驻一行说明：无关键词时交代搜索语法，有结果时交代排序依据与高亮口径
+    var hasQ = !!state.q.trim();
+    var effSort = state.sort === 'auto' ? (hasQ ? 'rel' : 'date') : state.sort;
+    var modeTxt = hasQ
+      ? (effSort === 'rel' ? '相关度排序' : '最新在前') + ' · ' +
+        (state.titleOnly ? '仅标题/文号' : '命中词已高亮 · 多词同时包含')
+      : '空格分词＝同时包含 · Shift+Enter 切仅标题';
+    dom.resLine.appendChild(h('span', { class: 'mode', text: modeTxt }));
     var sortTxt = state.sort === 'auto'
       ? (state.q ? '智能排序 · 相关度' : '智能排序 · 最新')
       : state.sort === 'rel' ? '相关度优先' : '最新在前';
