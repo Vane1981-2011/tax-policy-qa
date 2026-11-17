@@ -430,6 +430,15 @@ mark {
 .res-line .tag button:hover { background: var(--brand); color: #fff; }
 .res-line .sp { flex: 1 1 auto; }
 .res-line .mode { flex: 0 0 auto; white-space: nowrap; color: var(--ink-4); font-size: 11px; }
+.res-line .dist {
+  flex: 0 0 auto;
+  max-width: 52ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
 .res-line .clear {
   flex: 0 0 auto;
   white-space: nowrap;
@@ -570,6 +579,56 @@ mark {
   background: var(--slate-soft);
   color: var(--ink-3);
   border: 1px solid var(--line);
+}
+.kind-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+.kind-badge.k-policy { background: var(--brand-soft); color: var(--brand); }
+.kind-badge.k-interp { background: var(--jade-soft); color: var(--jade); }
+.kind-badge.k-qa { background: var(--amber-soft); color: var(--amber); }
+.kind-badge.k-zsk { background: var(--slate-soft); color: var(--ink-2); }
+.kind-badge.k-ksdy {
+  color: color-mix(in srgb, #7B6BFF 70%, var(--ink));
+  background: color-mix(in srgb, #7B6BFF 12%, var(--surface));
+}
+.kind-badge.k-kj {
+  color: color-mix(in srgb, #3B8FC4 70%, var(--ink));
+  background: color-mix(in srgb, #3B8FC4 12%, var(--surface));
+}
+.kind-badge.k-own {
+  color: color-mix(in srgb, #9A7B45 76%, var(--ink));
+  background: color-mix(in srgb, #9A7B45 14%, var(--surface));
+}
+.av-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  height: 17px;
+  padding: 0 4px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--ink-4);
+  background: var(--surface);
+  white-space: nowrap;
+}
+.av-badge.link { color: var(--amber); background: var(--amber-soft); border-color: transparent; }
+.av-badge.index {
+  color: var(--ink-3);
+  background: var(--surface-3);
+  border-style: dashed;
 }
 .r-meta {
   margin-top: 4px;
@@ -721,6 +780,42 @@ mark {
   text-transform: uppercase;
 }
 .rd-head .sp { flex: 1 1 auto; }
+.rd-kind {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+.rd-kind.k-policy { background: var(--brand-soft); color: var(--brand); }
+.rd-kind.k-interp { background: var(--jade-soft); color: var(--jade); }
+.rd-kind.k-qa { background: var(--amber-soft); color: var(--amber); }
+.rd-kind.k-zsk { background: var(--slate-soft); color: var(--ink-2); }
+.rd-kind.k-ksdy {
+  color: color-mix(in srgb, #7B6BFF 70%, var(--ink));
+  background: color-mix(in srgb, #7B6BFF 12%, var(--surface));
+}
+.rd-kind.k-kj {
+  color: color-mix(in srgb, #3B8FC4 70%, var(--ink));
+  background: color-mix(in srgb, #3B8FC4 12%, var(--surface));
+}
+.rd-kind.k-own {
+  color: color-mix(in srgb, #9A7B45 76%, var(--ink));
+  background: color-mix(in srgb, #9A7B45 14%, var(--surface));
+}
+.rd-nav { display: inline-flex; align-items: center; gap: 4px; }
+.rd-pos {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--ink-4);
+  white-space: nowrap;
+}
 
 .mini-btn {
   height: 26px;
@@ -737,6 +832,9 @@ mark {
 }
 .mini-btn:hover { border-color: var(--ink-4); color: var(--ink); }
 .mini-btn:active { transform: scale(.97); }
+.mini-btn:disabled { opacity: .4; cursor: not-allowed; }
+.mini-btn:disabled:hover { border-color: var(--line); color: var(--ink-2); }
+.mini-btn:disabled:active { transform: none; }
 .mini-btn.primary { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .mini-btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
 .mini-btn[data-on="1"] { color: var(--brand); border-color: var(--brand); background: var(--brand-soft); }
@@ -1526,6 +1624,79 @@ mark {
 .rd-actions { display: flex; gap: 7px; flex-wrap: wrap; margin: 0 0 22px; }
 .rd-close { display: none; }
 
+.rd-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--line-2);
+  background: var(--surface);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.rd-tools::-webkit-scrollbar { display: none; }
+.rd-tools .mini-btn { flex: 0 0 auto; height: 24px; font-size: 11px; }
+.rd-tool-sp { flex: 1 1 auto; min-width: 6px; }
+.rd-fs {
+  flex: 0 0 auto;
+  min-width: 18px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--ink-4);
+}
+
+.rd-toc {
+  margin: 0 22px 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.rd-toc[hidden] { display: none; }
+.rd-toc-i {
+  display: block;
+  width: 100%;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--line-2);
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.rd-toc-i:last-child { border-bottom: 0; }
+.rd-toc-i:hover { color: var(--brand); }
+
+.rd-index-note {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-left: 2px solid var(--amber);
+  border-radius: var(--radius-sm);
+  background: var(--amber-soft);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.rd-index-note b { display: block; margin-bottom: 3px; color: var(--amber); font-weight: 600; }
+.rd-index-note p { margin: 0 0 10px; }
+.rd-index-note .rd-actions { margin: 0; }
+
+.rd-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0 0 18px;
+  padding: 9px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--ink-3);
+}
+.rd-hint b { flex: 0 0 auto; color: var(--brand); font-weight: 600; }
+
 /* ---------------- 响应式 ---------------- */
 
 @media (max-width: 1180px) {
@@ -1596,6 +1767,19 @@ mark {
   .rd-title { font-size: 19px; }
   .rd-body { padding: 16px 16px 80px; }
   .rd-text { font-size: 15.5px; line-height: 1.9; }
+  .rd-head {
+    padding: 8px 12px;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .rd-head::-webkit-scrollbar { display: none; }
+  .rd-head .sp { display: none; }
+  .rd-head .mini-btn { flex: 0 0 auto; height: 24px; padding: 0 7px; font-size: 11px; }
+  .rd-nav { margin-left: auto; }
+  .rd-tools { padding: 6px 12px; }
+  .rd-tools .mini-btn { height: 23px; }
+  .rd-toc { margin: 0 16px 12px; }
   .omni { top: 0; width: 100vw; max-height: 100vh; height: 100vh; border-radius: 0; border: 0; }
   .omni-foot { display: none; }
   .ai-drawer { width: 100vw; }
@@ -1611,8 +1795,33 @@ mark {
 }
 
 @media print {
-  .bar, .dock, .context-line, .res-line, .statusbar, .pane-list, .omni, .ai-drawer, .scrim { display: none !important; }
-  .pane-reader { position: static; height: auto; border: 0; }
+  @page { size: A4; margin: 14mm 16mm; }
+  html, body { height: auto; overflow: visible; background: #fff; }
+  body { color: #111; }
+  .app { height: auto; display: block; padding: 0; overflow: visible; }
+  .bar, .dock, .context-line, .res-line, .statusbar, .pane-list, .omni,
+  .ai-drawer, .scrim, .toasts, .update-bar, .pop,
+  .rd-head, .rd-tools, .rd-toc, .rd-actions, .rd-rel, .rd-tags,
+  .rd-index-note, .rd-hint, .expand-btn { display: none !important; }
+  .bench { display: block; overflow: visible; }
+  .pane-reader {
+    position: static;
+    width: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    background: #fff;
+  }
+  .rd-body { padding: 0; }
+  .rd-title { font-size: 18pt; }
+  .rd-meta { background: #fff; border-color: #ccc; }
+  .rd-text { font-size: 11.5pt; line-height: 1.75; color: #111; }
+  .rd-text.clamp { max-height: none; overflow: visible; }
+  .rd-text.clamp::after { display: none; }
+  .rd-sec { break-inside: auto; }
+  .rd-sec-t { color: #666; }
+  .brief { background: #f5f5f5; border-left-color: #999; }
 }
 
 
@@ -1822,10 +2031,35 @@ var App = window.App || {};
     return U.pad(d.getHours()) + ':' + U.pad(d.getMinutes());
   };
 
+  /**
+   * 归一化日期键：YYYY-MM-DD。
+   * 知识库混有「2026年9月9日」与 ISO 两种写法，直接字符串比较会把中文格式
+   * 全部排到最前/最后，故排序、新鲜度、诊断统一走这里。识别不了返回 ''。
+   */
+  U.dateKey = function (d) {
+    if (!d) return '';
+    var m = /(\d{4})\s*[年\-\/.]\s*(\d{1,2})\s*[月\-\/.]\s*(\d{1,2})/.exec(String(d));
+    if (!m) return '';
+    var yr = Number(m[1]), mo = Number(m[2]), dy = Number(m[3]);
+    if (mo < 1 || mo > 12 || dy < 1 || dy > 31) return '';
+    var probe = new Date(Date.UTC(yr, mo - 1, dy));
+    if (probe.getUTCFullYear() !== yr || probe.getUTCMonth() !== mo - 1 || probe.getUTCDate() !== dy) return '';
+    return m[1] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + dy).slice(-2);
+  };
+
   U.daysBetween = function (a, b) {
-    var t1 = Date.parse(String(a).replace(/(\d{4})年(\d{1,2})月(\d{1,2})日/, '$1-$2-$3'));
-    var t2 = b ? Date.parse(b) : Date.now();
-    if (isNaN(t1)) return null;
+    var k = U.dateKey(a);
+    var t1 = k ? Date.parse(k + 'T00:00:00') : NaN;
+    var t2;
+    if (b) {
+      var kb = U.dateKey(b);
+      t2 = kb ? Date.parse(kb + 'T00:00:00') : Date.parse(b);
+    } else {
+      // 按自然日比较：直接减 Date.now() 会把当天已过小时数四舍五入成额外一天。
+      var now = new Date();
+      t2 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    }
+    if (isNaN(t1) || isNaN(t2)) return null;
     return Math.round((t2 - t1) / 86400000);
   };
 
@@ -2057,6 +2291,20 @@ var App = window.App || {};
     version: ''
   };
 
+  /**
+   * 可读性标记：决定结果行与阅读窗给什么兜底。
+   * ``full``  有足够长的正文（≥40 字，短于此的多是标题重复）
+   * ``link``  没有正文但有可打开的原文地址
+   * ``index`` 只有索引（标题 + 日期），既无正文也无链接
+   */
+  function availability(text, url) {
+    var t = text == null ? '' : String(text).replace(/\s+/g, '');
+    if (t.length >= 40) return 'full';
+    if (U.safeUrl(url)) return 'link';
+    return 'index';
+  }
+  D.availability = availability;
+
   D.init = function (opt) {
     opt = opt || {};
     D.base = opt.base || '';
@@ -2079,6 +2327,7 @@ var App = window.App || {};
       t: rec.t || '(无标题)',
       n: rec.n || '',
       d: rec.d || '',
+      dk: U.dateKey(rec.d),
       y: year,
       u: rec.u || '',
       x: rec.x || rec.c || '',
@@ -2093,7 +2342,8 @@ var App = window.App || {};
       a: rec.a || '',
       at: rec.at || '',
       of: rec.of || '',
-      sc: rec.sc || ''
+      sc: rec.sc || '',
+      av: availability(rec.k || '', rec.u || '')
     };
   }
 
@@ -2108,11 +2358,13 @@ var App = window.App || {};
       c: rec.c || '',
       s: rec.s || '',
       d: rec.d || '',
+      dk: U.dateKey(rec.d),
       u: rec.u || '',
       q: rec.q || '',
       src: rec.src || '',
       srcName: 'src' in rec ? (rec.src || '') : '',
-      kk: rec.q || ''
+      kk: rec.q || '',
+      av: availability(rec.q || '', rec.u || '')
     };
   }
 
@@ -2126,29 +2378,58 @@ var App = window.App || {};
   D.setPolicy = function (payload, version) {
     var list = payload.d || [];
     var docs = new Array(list.length);
-    for (var i = 0; i < list.length; i++) docs[i] = normPolicy(list[i], i);
-    docs.sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+    var seen = Object.create(null);
+    for (var i = 0; i < list.length; i++) {
+      var doc = normPolicy(list[i], i);
+      // 同文号同标题同日期可能来自不同转载：保留首次 id，后续加稳定后缀，
+      // 避免收藏、选中和跳转全部落到同一条。
+      var base = doc.id, n = seen[base] || 0;
+      if (n) doc.id = base + '#' + n;
+      seen[base] = n + 1;
+      docs[i] = doc;
+    }
+    docs.sort(function (a, b) { return (a.dk || '') < (b.dk || '') ? 1 : (a.dk || '') > (b.dk || '') ? -1 : 0; });
     D.policy = { m: payload.m || {}, d: docs, version: version || '' };
+    D._all = null;
     return docs;
   };
 
   D.setLib = function (payload, version) {
     var list = payload.d || [];
-    var byKind = {};
+    var byKind = {}, kindMax = {};
     var all = new Array(list.length);
+    var seen = Object.create(null);
     for (var i = 0; i < list.length; i++) {
       var it = normLib(list[i], i, list[i].y || 'zsk');
+      var base = it.id, n = seen[base] || 0;
+      if (n) it.id = base + '#' + n;
+      seen[base] = n + 1;
       all[i] = it;
       (byKind[it.k] || (byKind[it.k] = [])).push(it);
+      if (it.dk && (!kindMax[it.k] || it.dk > kindMax[it.k])) kindMax[it.k] = it.dk;
     }
-    D.lib = { m: payload.m || {}, d: all, byKind: byKind, version: version || '' };
+    D.lib = { m: payload.m || {}, d: all, byKind: byKind, kindMax: kindMax, version: version || '' };
+    D._all = null;
     return D.lib;
   };
 
   D.dataset = function (scope) {
+    if (scope === 'all') {
+      if (D._all) return D._all;
+      var merged = [];
+      if (D.policy) merged = merged.concat(D.policy.d);
+      if (D.lib) merged = merged.concat(D.lib.d);
+      D._all = merged;
+      return merged;
+    }
     if (scope === 'policy') return D.policy ? D.policy.d : [];
     if (!D.lib) return [];
     return D.lib.byKind[scope] || [];
+  };
+
+  /** 知识库各栏最新快照日期（缺数据返回空对象）——用于「数据说明」。 */
+  D.libKindMax = function () {
+    return (D.lib && D.lib.kindMax) || {};
   };
 
   /* ---------------- 同步引擎 ---------------- */
@@ -2386,15 +2667,24 @@ var App = window.App || {};
   };
 
   var IDX = Object.create(null);
+  var PEND = Object.create(null);
+  var GEN = 0;
 
-  /** 建索引：分片让出主线程，返回 Promise。 */
+  /**
+   * 建索引：分片让出主线程，返回 Promise。
+   * 同一数据集可能被「预热」和「首次输入」同时触发，必须复用进行中的任务，
+   * 否则 9.5 万条会建两份索引（约 2× 内存与主线程时间）。
+   */
   Q.ensure = function (scope, items, onProgress) {
     var cur = IDX[scope];
     if (cur && cur.src === items && cur.n === items.length) return Promise.resolve(cur);
+    var pend = PEND[scope];
+    if (pend && pend.src === items && pend.n === items.length) return pend.promise;
     var idx = { src: items, n: items.length, title: new Array(items.length), body: new Array(items.length) };
     var i = 0, CHUNK = 1200;
+    var gen = GEN;
 
-    return new Promise(function (resolve) {
+    var promise = new Promise(function (resolve) {
       function step() {
         var end = Math.min(items.length, i + CHUNK);
         for (; i < end; i++) {
@@ -2405,20 +2695,42 @@ var App = window.App || {};
         }
         if (typeof onProgress === 'function') onProgress(i / items.length);
         if (i < items.length) setTimeout(step, 0);
-        else { IDX[scope] = idx; resolve(idx); }
+        else {
+          // 构建期间数据被换过（GEN 变化）就不再写缓存，避免用旧数组顶掉新数据
+          if (gen === GEN) IDX[scope] = idx;
+          resolve(idx);
+        }
       }
-      if (!items.length) { IDX[scope] = idx; resolve(idx); return; }
+      if (!items.length) { if (gen === GEN) IDX[scope] = idx; resolve(idx); return; }
       step();
     });
+
+    PEND[scope] = { src: items, n: items.length, promise: promise };
+    promise.then(function () {
+      if (PEND[scope] && PEND[scope].promise === promise) delete PEND[scope];
+    }, function () {
+      if (PEND[scope] && PEND[scope].promise === promise) delete PEND[scope];
+    });
+    return promise;
   };
 
-  Q.invalidate = function (scope) { if (scope) delete IDX[scope]; else IDX = Object.create(null); };
+  Q.invalidate = function (scope) {
+    GEN++;
+    if (scope) { delete IDX[scope]; delete PEND[scope]; }
+    else { IDX = Object.create(null); PEND = Object.create(null); }
+  };
+
+  /** 已缓存的索引是否仍对应当前数据集（构建被打断时不能仅看 UI 标记）。 */
+  Q.isReady = function (scope, items) {
+    var idx = IDX[scope];
+    return !!(idx && idx.src === items && idx.n === items.length);
+  };
 
   /**
    * 检索。
    * @param {string} scope 数据集
    * @param {string} q 原始查询
-   * @param {object} opt { filters, favOnly, ids, sort, limit, titleOnly }
+   * @param {object} opt { filters, favOnly, ids, sort, limit, titleOnly, demoteDead }
    */
   Q.run = function (scope, q, opt) {
     opt = opt || {};
@@ -2461,10 +2773,14 @@ var App = window.App || {};
       var it = items[i];
       if (!passFilters(it, opt)) continue;
       var s = scoreOne(it, idx.title[i], exact, nq, toks, idf, opt.titleOnly ? '' : idx.body[i]);
+      // 仅索引条目往往标题极短、命中容易虚高；在跨栏视图里降权而不是剔除
+      if (s > 0 && opt.demoteDead && it.av === 'index') s *= 0.55;
       if (s > 0) scored.push({ it: it, s: s });
     }
 
-    scored.sort(function (a, b) { return b.s - a.s || (a.it.d < b.it.d ? 1 : -1); });
+    scored.sort(function (a, b) {
+      return b.s - a.s || ((a.it.dk || '') < (b.it.dk || '') ? 1 : (a.it.dk || '') > (b.it.dk || '') ? -1 : 0);
+    });
     var max = scored.length ? scored[0].s : 1;
     var out = new Array(scored.length);
     for (var j = 0; j < scored.length; j++) {
@@ -2512,6 +2828,8 @@ var App = window.App || {};
   function passFilters(it, opt) {
     var f = opt.filters || {};
     if (opt.ids && !opt.ids[it.id]) return false;
+    if (f.kind && f.kind.size && !f.kind.has(it.k)) return false;
+    if (f.avail && f.avail.size && !f.avail.has(it.av)) return false;
     if (f.year && f.year.size && !f.year.has(it.y)) return false;
     if (f.tax && f.tax.size && !f.tax.has(it.x) && !f.tax.has(it.c)) return false;
     if (f.region && f.region.size && !f.region.has(it.p)) return false;
@@ -2521,7 +2839,7 @@ var App = window.App || {};
 
   function sortByDate(list) {
     list.sort(function (a, b) {
-      var ad = a.d || '', bd = b.d || '';
+      var ad = a.dk || '', bd = b.dk || '';
       return ad < bd ? 1 : ad > bd ? -1 : 0;
     });
   }
@@ -2542,6 +2860,7 @@ window.App = App;
   var U = App.util, D = App.data, S = App.sync, Q = App.search;
 
   var SCOPES = [
+    { id: 'all', label: '全部' },
     { id: 'policy', label: '政策法规', tab: '政策' },
     { id: 'interp', label: '官方解读' },
     { id: 'qa', label: '12366 问答' },
@@ -2551,10 +2870,17 @@ window.App = App;
     { id: 'own', label: '实务解读' }
   ];
 
+  var LIB_KINDS = ['interp', 'qa', 'zsk', 'ksdy', 'kj', 'own'];
+  var KIND_ORDER = ['policy', 'interp', 'qa', 'zsk', 'ksdy', 'kj', 'own'];
+  var KIND_LABEL = { policy: '政策', interp: '解读', qa: '问答', zsk: '知识库', ksdy: '视频', kj: '会计', own: '实务' };
+  var KIND_FULL = { policy: '政策法规', interp: '官方解读', qa: '12366 问答', zsk: '税费知识库', ksdy: '可视答疑', kj: '会计类', own: '实务解读' };
+  var AVAIL_LABEL = { full: '全文', link: '原文', index: '仅索引' };
+
   var STATUS_ORDER = ['全文有效', '部分失效', '全文失效', '未标注'];
 
   /* 数据状态：freshness 区分「源站没更新」与「停更」，sync_state 区分
-     「本轮没跑同步」与「同步失败」。两个都不显示时，过期数据会被当成最新。 */
+     「本轮没跑同步」与「同步失败」。两个都不显示时，过期数据会被当成最新。
+     天数必须按「今天」实时算：构建期固化的 stale_days 隔天就会少算一天。 */
   var FRESH_TXT = {
     fresh: ['数据新鲜', 'ok'],
     amber: ['数据略有滞后', 'warn'],
@@ -2570,13 +2896,19 @@ window.App = App;
 
   function dataStatus() {
     var m = (D.policy && D.policy.m) || {};
-    var ft = FRESH_TXT[m.freshness] || FRESH_TXT.unknown;
-    var days = (m.stale_days == null ? null : m.stale_days);
+    var maxd = m.source_maxd || m.maxd || '';
+    var days = maxd ? U.daysBetween(maxd) : null;
+    if (days == null && m.stale_days != null) days = m.stale_days;
+    if (days != null && days < 0) days = 0;
+    var level = days == null ? 'unknown' : days <= 2 ? 'fresh' : days <= 13 ? 'amber' : 'red';
+    var ft = FRESH_TXT[level] || FRESH_TXT.unknown;
     return {
       kind: ft[1],
       head: ft[0] + (days != null && days > 0 ? '（' + days + ' 天）' : ''),
       sub: SYNC_TXT[m.sync_state] || SYNC_TXT.unknown,
-      maxd: m.source_maxd || m.maxd || '—',
+      maxd: maxd || '—',
+      days: days,
+      level: level,
       bad: ft[1] === 'err' || m.sync_state === 'failed'
     };
   }
@@ -2584,7 +2916,10 @@ window.App = App;
   var state = {
     scope: 'policy',
     q: '',
-    filters: { tax: new Set(), year: new Set(), region: new Set(), status: new Set() },
+    filters: {
+      tax: new Set(), year: new Set(), region: new Set(), status: new Set(),
+      kind: new Set(), avail: new Set(['full', 'link'])
+    },
     favOnly: false,
     sort: 'auto',
     results: [],
@@ -2595,6 +2930,7 @@ window.App = App;
     yearAll: false,
     titleOnly: false,
     yearPanelOpen: false,
+    libLoading: false,
     seq: 0,
     indexReady: Object.create(null)
   };
@@ -2607,6 +2943,7 @@ window.App = App;
   var favSet = new Set(App.store.get('tsq3.fav', []));
   var recent = App.store.get('tsq3.recent', []);
   var history = App.store.get('tsq3.hist', []) || [];
+  var fontSize = Number(App.store.get('tsq3.fs', 0)) || 0;
 
   var dom = {};
 
@@ -2703,12 +3040,42 @@ window.App = App;
 
   /* ---------------- Dock ---------------- */
 
+  function isLibScope(id) { return LIB_KINDS.indexOf(id) >= 0; }
+  function kindLabel(id) { return KIND_LABEL[id] || id || '资料'; }
+  function kindFull(id) { return KIND_FULL[id] || id || '资料'; }
+
   function scopeCount(id) {
+    if (id === 'all') {
+      var n = D.policy ? D.policy.d.length : ((D.manifest && D.manifest.n) || 0);
+      if (D.lib) return n + D.lib.d.length;
+      var lc = (D.manifest && D.manifest.lib_counts) || [];
+      for (var j = 0; j < lc.length; j++) n += lc[j].n;
+      return n;
+    }
     if (id === 'policy') return D.policy ? D.policy.d.length : 0;
     if (D.lib) return (D.lib.byKind[id] || []).length;
     var lc = (D.manifest && D.manifest.lib_counts) || [];
     for (var i = 0; i < lc.length; i++) if (lc[i].kind === id) return lc[i].n;
     return 0;
+  }
+
+  function availDefault() {
+    var s = state.filters.avail;
+    return s.size === 2 && s.has('full') && s.has('link');
+  }
+  function usesAvail() { return state.scope !== 'policy'; }
+  function hasAvailFilter() { return usesAvail() && !availDefault(); }
+
+  /** 当前视图对应的数据快照日：政策看源站最新发布日，知识库看栏目内最新条目。 */
+  function scopeSnapshot() {
+    var m = (D.policy && D.policy.m) || {};
+    var pd = m.source_maxd || m.maxd || '';
+    if (state.scope === 'policy') return pd || '—';
+    var km = D.libKindMax();
+    if (state.scope !== 'all') return km[state.scope] || pd || '—';
+    var best = pd;
+    Object.keys(km).forEach(function (k) { if (km[k] > best) best = km[k]; });
+    return best || '—';
   }
 
   function buildDock() {
@@ -2743,8 +3110,64 @@ window.App = App;
   var FACET_ICON = {
     tax: 'M7 4h10v16l-2-1.4-2 1.4-2-1.4L9 20l-2-1.4zM9 8h6M9 12h5',
     region: 'M12 21s6-5.2 6-11a6 6 0 10-12 0c0 5.8 6 11 6 11zM12 10h.01',
-    status: 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4'
+    status: 'M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4',
+    kind: 'M4 5h7v6H4zM13 5h7v6h-7zM4 13h7v6H4zM13 13h7v6h-7z',
+    avail: 'M4 6h16M4 12h10M4 18h7M17 14l3 2.2-3 2.2z'
   };
+
+  /** 当前条件下各可读性档位的条数（用于 chip 文案与浮层计数）。 */
+  function availCounts() {
+    var items = D.dataset(state.scope) || [];
+    var f = state.filters, map = { full: 0, link: 0, index: 0 };
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (state.favOnly && !favSet.has(it.id)) continue;
+      if (f.kind.size && !f.kind.has(it.k)) continue;
+      if (f.year.size && !f.year.has(it.y)) continue;
+      map[it.av] = (map[it.av] || 0) + 1;
+    }
+    return map;
+  }
+
+  function availLabel() {
+    if (availDefault()) {
+      var c = availCounts();
+      return '可读 ' + U.fmt(c.full + c.link);
+    }
+    var s = state.filters.avail;
+    if (!s.size) return '全部条目';
+    if (s.size === 1) return AVAIL_LABEL[s.values().next().value] || '可读性';
+    return '可读 + 仅索引';
+  }
+
+  /** 当前条目分布：跨栏视图要在结果头交代政策 / 问答 / 知识库各占多少。 */
+  function kindDist(items) {
+    var map = Object.create(null);
+    for (var i = 0; i < items.length; i++) map[items[i].k] = (map[items[i].k] || 0) + 1;
+    return map;
+  }
+
+  function readableCount(items) {
+    var n = 0;
+    for (var i = 0; i < items.length; i++) if (items[i].av !== 'index') n++;
+    return n;
+  }
+
+  /** 当前作用域真正生效的筛选。政策单栏没有「类型 / 可读性」两个维度，
+      若把默认的可读性筛选也套上去，会把只有索引的政策条目全部误排除。 */
+  function effectiveFilters() {
+    var f = state.filters;
+    if (state.scope === 'policy') {
+      return {
+        tax: f.tax, year: f.year, region: f.region, status: f.status,
+        kind: new Set(), avail: new Set()
+      };
+    }
+    return {
+      tax: f.tax, year: f.year, region: f.region, status: f.status,
+      kind: f.kind, avail: f.avail
+    };
+  }
 
   function yearChipText() {
     var picked = Array.from(state.filters.year).sort().reverse();
@@ -2764,7 +3187,8 @@ window.App = App;
   function renderDockTools() {
     var tools = dom.dockTools;
     clear(tools);
-    var kinds = state.scope === 'policy' ? ['tax', 'year', 'region', 'status'] : ['year'];
+    var kinds = state.scope === 'policy' ? ['tax', 'year', 'region', 'status']
+      : state.scope === 'all' ? ['kind', 'year', 'avail'] : ['year', 'avail'];
     kinds.forEach(function (kind) {
       if (kind === 'year') {
         tools.appendChild(h('button', {
@@ -2778,6 +3202,23 @@ window.App = App;
           h('span', { class: 'lbl', text: yearChipText() }),
           h('span', { class: 'caret', text: '▾' })
         ]));
+        return;
+      }
+      if (kind === 'kind') {
+        tools.appendChild(chip(
+          state.filters.kind.size ? '类型 ' + state.filters.kind.size : '类型',
+          state.filters.kind.size > 0, '',
+          function (e) { openFacet('kind', e.currentTarget); },
+          FACET_ICON.kind
+        ));
+        return;
+      }
+      if (kind === 'avail') {
+        tools.appendChild(chip(
+          availLabel(), hasAvailFilter(), '',
+          function (e) { openFacet('avail', e.currentTarget); },
+          FACET_ICON.avail
+        ));
         return;
       }
       var set = state.filters[kind];
@@ -2804,7 +3245,8 @@ window.App = App;
 
   function hasFilters() {
     return !!(state.filters.tax.size || state.filters.year.size ||
-      state.filters.region.size || state.filters.status.size || state.favOnly);
+      state.filters.region.size || state.filters.status.size ||
+      state.filters.kind.size || hasAvailFilter() || state.favOnly);
   }
 
   function resetFilters() {
@@ -2812,6 +3254,9 @@ window.App = App;
     state.filters.year.clear();
     state.filters.region.clear();
     state.filters.status.clear();
+    state.filters.kind.clear();
+    state.filters.avail.clear();
+    if (usesAvail()) { state.filters.avail.add('full'); state.filters.avail.add('link'); }
     state.favOnly = false;
     renderDockTools();
     renderContext();
@@ -2847,6 +3292,17 @@ window.App = App;
     else if (kind === 'region') list = f.regions || [];
     else if (kind === 'year') list = f.years || [];
     else if (kind === 'status') list = f.status || [];
+    else if (kind === 'kind') {
+      list = [['policy', D.policy ? D.policy.d.length : ((D.manifest && D.manifest.n) || 0)]];
+      if (D.lib) {
+        LIB_KINDS.forEach(function (k) { list.push([k, (D.lib.byKind[k] || []).length]); });
+      } else {
+        ((D.manifest && D.manifest.lib_counts) || []).forEach(function (c) { list.push([c.kind, c.n]); });
+      }
+    } else if (kind === 'avail') {
+      var c = availCounts();
+      list = [['full', c.full], ['link', c.link], ['index', c.index]];
+    }
     if (kind === 'status' && !list.length) {
       list = [['全文有效', 0], ['部分失效', 0], ['全文失效', 0], ['未标注', 0]];
     }
@@ -2855,6 +3311,7 @@ window.App = App;
     }
     var arr = list.map(function (p) { return { v: String(p[0]), n: p[1] }; });
     if (kind === 'year') arr.sort(function (a, b) { return b.v.localeCompare(a.v); });
+    else if (kind === 'avail') { /* 固定 全文 → 原文 → 仅索引 的语义顺序 */ }
     else arr.sort(function (a, b) { return b.n - a.n; });
     return arr;
   }
@@ -2875,7 +3332,8 @@ window.App = App;
     }
     closePop();
     var selected = kind === 'tax' ? state.filters.tax : kind === 'year' ? state.filters.year
-      : kind === 'region' ? state.filters.region : state.filters.status;
+      : kind === 'region' ? state.filters.region : kind === 'kind' ? state.filters.kind
+      : kind === 'avail' ? state.filters.avail : state.filters.status;
     var opts = facetOptions(kind);
     var q = '';
 
@@ -2883,7 +3341,8 @@ window.App = App;
     var pop = h('div', { class: 'pop', role: 'dialog' }, [
       h('div', { class: 'pop-hd' }, [
         h('b', { text: kind === 'tax' ? '按税种筛选' : kind === 'year' ? '按年份筛选' :
-          kind === 'region' ? '按地区筛选' : '按效力筛选' }),
+          kind === 'region' ? '按地区筛选' : kind === 'kind' ? '按内容类型筛选' :
+          kind === 'avail' ? '按可读性筛选' : '按效力筛选' }),
         h('span', { class: 'sp' }),
         h('button', { class: 'pop-x', onclick: closePop, 'aria-label': '关闭' }, '×')
       ]),
@@ -2893,7 +3352,15 @@ window.App = App;
       }) : null,
       listBox,
       h('div', { class: 'pop-ft' }, [
-        h('button', { class: 'btn', text: '清空', onclick: function () { selected.clear(); render(); commit(); } }),
+        h('button', {
+          class: 'btn', text: '清空',
+          onclick: function () {
+            selected.clear();
+            // 可读性没有「空集」语义：空集会把仅索引条目也放出来，与「清空」预期不符
+            if (kind === 'avail') { selected.add('full'); selected.add('link'); }
+            render(); commit();
+          }
+        }),
         h('button', { class: 'btn primary', text: '完成', onclick: function () { closePop(); } })
       ])
     ]);
@@ -2911,6 +3378,7 @@ window.App = App;
         if (q && U.norm(o.v).indexOf(q) < 0) return;
         shown++;
         var on = selected.has(o.v);
+        var label = kind === 'kind' ? kindFull(o.v) : kind === 'avail' ? AVAIL_LABEL[o.v] : o.v;
         listBox.appendChild(h('label', { class: 'pop-item', dataset: { on: on ? '1' : '0' } }, [
           h('input', {
             type: 'checkbox', checked: on ? 'checked' : null,
@@ -2919,7 +3387,7 @@ window.App = App;
               commit();
             }
           }),
-          h('span', { class: 'v', text: o.v }),
+          h('span', { class: 'v', text: label || o.v }),
           h('em', { text: o.n ? U.fmt(o.n) : '' })
         ]));
       });
@@ -3201,9 +3669,11 @@ window.App = App;
     var st = dataStatus();
     var ds = D.dataset(state.scope) || [];
     var phase = S.phase;
-    var kind = 'ok', badge = '数据就绪', note = st.sub;
+    var kind = 'ok', badge = '数据就绪', note = st.head + ' · ' + st.sub;
     if (!D.policy && !D.lib) {
       kind = 'busy'; badge = '载入中'; note = '首次打开需下载数据包，之后走本地缓存';
+    } else if (state.libLoading) {
+      kind = 'busy'; badge = '载入知识库'; note = '知识库按需载入中，先显示已就绪的内容';
     } else if (phase === 'error' || st.bad) {
       kind = 'err'; badge = '需要核对'; note = '同步异常或数据滞后，建议立即检查更新';
     } else if (phase === 'updating' || phase === 'checking') {
@@ -3214,12 +3684,20 @@ window.App = App;
       kind = 'warn'; badge = '略有滞后';
     }
 
+    var sourceTxt = state.scope === 'policy' ? '税务总局政策法规库'
+      : state.scope === 'all' ? '政策法规库 + 税务官方公开资料' : '税务官方公开资料';
+    var countTxt;
+    if (state.scope === 'all' && !D.lib) {
+      countTxt = '合计约 ' + U.fmt(scopeCount('all')) + ' 条（知识库按需载入）';
+    } else {
+      countTxt = '当前视图 ' + U.fmt(ds.length) + ' 条';
+    }
+
     box.appendChild(h('span', { class: 'ctx-badge', dataset: { kind: kind }, text: badge }));
     box.appendChild(h('span', { class: 'ctx-main' }, [
       h('b', { text: sc.label }),
-      document.createTextNode(' · 数据来源：' +
-        (state.scope === 'policy' ? '税务总局政策法规库' : '税务官方公开资料') +
-        ' · 快照 ' + st.maxd + ' · 当前视图 ' + U.fmt(ds.length) + ' 条 · ' + note)
+      document.createTextNode(' · 数据来源：' + sourceTxt +
+        ' · 快照 ' + scopeSnapshot() + ' · ' + countTxt + ' · ' + note)
     ]));
     box.appendChild(h('button', {
       class: 'ctx-act', text: kind === 'err' ? '立即重试' : '同步详情',
@@ -3245,36 +3723,93 @@ window.App = App;
     state.filters.year.clear();
     state.filters.region.clear();
     state.filters.status.clear();
+    state.filters.kind.clear();
+    state.filters.avail.clear();
+    if (usesAvail()) {
+      state.filters.avail.add('full');
+      state.filters.avail.add('link');
+    }
     buildDock();
-    setStatus('载入「' + sc.label + '」…', 'busy');
+    setStatus(id === 'all' ? '载入全部内容…' : '载入「' + sc.label + '」…', 'busy');
 
-    var ready = id === 'policy' ? Promise.resolve() : S.loadLib().catch(function (e) {
-      toast('知识库载入失败：' + e.message, 'err');
-      return null;
-    });
+    var ready;
+    if (id === 'policy') {
+      ready = Promise.resolve();
+    } else {
+      state.libLoading = !D.lib;
+      if (state.libLoading) renderContext();
+      ready = S.loadLib().then(function () {
+        state.libLoading = false;
+      }, function (e) {
+        state.libLoading = false;
+        toast('知识库载入失败：' + e.message, 'err');
+        throw e;
+      });
+    }
 
-    ready.then(function () {
+    return ready.then(function () {
       buildDock();
       renderContext();
       return refresh();
     }).then(function () {
       dom.vlist.scrollTop = 0;
+      renderReader();
       if (window.innerWidth <= 1180) closeReader();
+    }).catch(function (e) {
+      setStatus('「' + sc.label + '」载入失败：' + (e.message || e), 'err');
     });
   }
 
   /* ---------------- 检索与渲染 ---------------- */
 
   function ensureIndex() {
-    if (state.indexReady[state.scope]) return Promise.resolve();
-    var items = D.dataset(state.scope);
+    // 进入知识库 / 全部栏目时数据可能尚未下载：先补载，避免用空集建出一份「全部」索引
+    if (state.scope !== 'policy' && !D.lib) {
+      return S.loadLib().catch(function (e) {
+        toast('知识库载入失败：' + e.message, 'err');
+        throw e;
+      }).then(function () {
+        if (!D.lib) return;
+        return ensureIndex();
+      });
+    }
+    var scope = state.scope;
+    var items = D.dataset(scope);
+    // 索引可能因数据更新被打断而丢弃，不能只信 UI 上的 ready 标记
+    if (state.indexReady[scope] && Q.isReady(scope, items)) return Promise.resolve();
     if (!items.length) return Promise.resolve();
-    setStatus('建立索引 ' + U.fmt(items.length) + ' 条…', 'busy');
-    return Q.ensure(state.scope, items, function (p) {
+    setStatus('建立' + (scope === 'all' ? '全库' : '栏目') + '索引 ' + U.fmt(items.length) + ' 条…', 'busy');
+    return Q.ensure(scope, items, function (p) {
       dom.stMid.textContent = '建立索引 ' + Math.round(p * 100) + '%';
     }).then(function () {
-      state.indexReady[state.scope] = true;
+      state.indexReady[scope] = Q.isReady(scope, items);
     });
+  }
+
+  /* 「全部」要下载知识库并建 9.5 万条索引。桌面端空闲时预热，移动端等首次搜索再建，
+     弱网 / 省流量 / 低内存设备一律不预热。 */
+  function schedulePrewarm() {
+    if (state.prewarm) return;
+    state.prewarm = true;
+    if (window.innerWidth < 1180) return;
+    var c = navigator.connection || {};
+    if (c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) return;
+    if (navigator.deviceMemory && navigator.deviceMemory < 4) return;
+    var run = function () {
+      if (D.lib || state.scope !== 'policy') return;
+      S.loadLib().then(function () {
+        var items = D.dataset('all');
+        if (!items.length || Q.isReady('all', items)) {
+          state.indexReady.all = Q.isReady('all', items);
+          return;
+        }
+        return Q.ensure('all', items).then(function () {
+          state.indexReady.all = Q.isReady('all', items);
+        });
+      }).catch(function () { /* 预热失败不影响正常使用 */ });
+    };
+    if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 8000 });
+    else setTimeout(run, 6000);
   }
 
   function refresh() {
@@ -3282,10 +3817,11 @@ window.App = App;
     return ensureIndex().then(function () {
       if (seq !== state.seq) return;
       var res = Q.run(state.scope, state.q, {
-        filters: state.filters,
+        filters: effectiveFilters(),
         favOnly: state.favOnly,
         ids: state.favOnly ? setToMap(favSet) : null,
         titleOnly: state.titleOnly,
+        demoteDead: state.scope === 'all',
         sort: state.sort === 'auto' ? (state.q ? 'rel' : 'date') : state.sort
       });
       if (seq !== state.seq) return;
@@ -3316,8 +3852,49 @@ window.App = App;
     clear(dom.resLine);
     dom.resLine.appendChild(h('span', { class: 'hit' }, [
       h('b', { text: U.fmt(shown) }),
-      document.createTextNode(' 条命中' + (shown !== total ? ' / 共 ' + U.fmt(total) : ''))
+      document.createTextNode((res.browse ? ' 条' : ' 条命中') +
+        (shown !== total ? ' / 共 ' + U.fmt(total) : ''))
     ]));
+    // 跨栏视图先交代结果来源，避免把问答当政策、把索引当全文
+    if (state.scope === 'all' && shown) {
+      var dist = kindDist(res.items), parts = [];
+      KIND_ORDER.forEach(function (k) {
+        if (dist[k]) parts.push(kindLabel(k) + ' ' + U.fmt(dist[k]));
+      });
+      if (parts.length) {
+        dom.resLine.appendChild(h('span', {
+          class: 'dist', title: '本次结果的内容来源分布', text: parts.join(' · ')
+        }));
+      }
+    }
+    state.filters.kind.forEach(function (v) {
+      dom.resLine.appendChild(h('span', { class: 'tag' }, [
+        h('span', { text: '类型：' + kindFull(v) }),
+        h('button', {
+          text: '×', title: '移除该条件', 'aria-label': '移除类型 ' + kindFull(v),
+          onclick: function () {
+            state.filters.kind.delete(v);
+            renderDockTools(); renderContext(); refresh();
+          }
+        })
+      ]));
+    });
+    if (hasAvailFilter()) {
+      var av = state.filters.avail;
+      var avTxt = av.size === 1 ? (AVAIL_LABEL[av.values().next().value] || '可读性')
+        : av.size >= 3 ? '全部条目' : '可读 + 仅索引';
+      dom.resLine.appendChild(h('span', { class: 'tag' }, [
+        h('span', { text: '可读性：' + avTxt }),
+        h('button', {
+          text: '×', title: '恢复默认（全文 + 原文）', 'aria-label': '恢复默认可读性筛选',
+          onclick: function () {
+            state.filters.avail.clear();
+            state.filters.avail.add('full'); state.filters.avail.add('link');
+            renderDockTools(); renderContext(); refresh();
+          }
+        })
+      ]));
+    }
     [['year', '年份'], ['tax', '税种'], ['region', '地区'], ['status', '效力']].forEach(function (g) {
       state.filters[g[0]].forEach(function (v) {
         dom.resLine.appendChild(h('span', { class: 'tag' }, [
@@ -3422,9 +3999,37 @@ window.App = App;
       } else {
         title = '这个范围内还没有数据'; msg = '切换上方内容体系，或点击右上角同步一次。';
       }
+      // 默认只显示可读条目；若命中只落在「仅索引」条目上，给一键纳入而不是让用户以为没结果
+      var indexElsewhere = 0;
+      if (state.scope !== 'policy' && !state.filters.avail.has('index')) {
+        try {
+          var f2 = effectiveFilters();
+          f2.avail = new Set(state.filters.avail);
+          f2.avail.add('index');
+          var alt = Q.run(state.scope, state.q, {
+            filters: f2,
+            favOnly: state.favOnly,
+            ids: state.favOnly ? setToMap(favSet) : null,
+            titleOnly: state.titleOnly,
+            sort: state.sort === 'auto' ? (state.q ? 'rel' : 'date') : state.sort
+          });
+          indexElsewhere = alt.items.length;
+        } catch (e) { indexElsewhere = 0; }
+        if (indexElsewhere) {
+          title = '可读条目里没有匹配';
+          msg = '另有 ' + U.fmt(indexElsewhere) + ' 条只有索引的条目命中，可纳入查看标题、日期与检索入口。';
+        }
+      }
       dom.listEmpty.appendChild(h('b', { text: title }));
       dom.listEmpty.appendChild(h('p', { text: msg }));
       var acts = h('div', { class: 'empty-acts' });
+      if (indexElsewhere) acts.appendChild(h('button', {
+        class: 'mini-btn primary', text: '纳入仅索引（' + U.fmt(indexElsewhere) + ' 条）',
+        onclick: function () {
+          state.filters.avail.add('index');
+          renderDockTools(); renderContext(); refresh();
+        }
+      }));
       if (hasF) acts.appendChild(h('button', {
         class: 'mini-btn', text: '清空筛选条件', onclick: function () { resetFilters(); }
       }));
@@ -3535,14 +4140,24 @@ window.App = App;
     }
 
     var meta = h('div', { class: 'r-meta' });
+    if (state.scope === 'all') {
+      meta.appendChild(h('span', {
+        class: 'kind-badge k-' + it.k, text: kindLabel(it.k), title: kindFull(it.k)
+      }));
+    }
     if (it.n) meta.appendChild(h('span', { class: 'r-no', text: it.n }));
     if (it.c) meta.appendChild(h('span', { class: 'r-src', text: it.c }));
+    if (it.av && it.av !== 'full') {
+      meta.appendChild(h('span', {
+        class: 'av-badge ' + it.av, text: AVAIL_LABEL[it.av] || it.av,
+        title: it.av === 'index' ? '源站只提供简短摘要或标题，无正文与链接' : '未收录正文，可打开原文页面'
+      }));
+    }
     if (state.scope === 'policy') {
       if (it.o) meta.appendChild(h('span', { class: 'm', text: it.o }));
       if (it.p) { meta.appendChild(h('span', { class: 'sep', text: '·' })); meta.appendChild(h('span', { text: it.p })); }
       if (it.w) meta.appendChild(pill(it.w));
     } else {
-      if (it.c) meta.appendChild(h('span', { class: 'm', text: it.c }));
       if (it.s) { meta.appendChild(h('span', { class: 'sep', text: '·' })); meta.appendChild(h('span', { text: it.s })); }
       if (it.src) { meta.appendChild(h('span', { class: 'sep', text: '·' })); meta.appendChild(h('span', { class: 'm', text: it.src })); }
     }
@@ -3675,18 +4290,87 @@ window.App = App;
     }
   }
 
+  var FS_STEPS = [14.5, 16, 18];
+
+  function fsNow() { return fontSize || 16; }
+
+  function stepFont(dir) {
+    var i = FS_STEPS.indexOf(fsNow());
+    if (i < 0) i = 1;
+    i = Math.max(0, Math.min(FS_STEPS.length - 1, i + dir));
+    fontSize = FS_STEPS[i];
+    App.store.set('tsq3.fs', fontSize);
+    var box = dom.reader.querySelector('.rd-text');
+    if (box) box.style.fontSize = fontSize + 'px';
+    syncFont();
+  }
+
+  /** 字号到上下限时禁用对应按钮，避免连点无反应。 */
+  function syncFont() {
+    var lab = dom.reader.querySelector('.rd-fs');
+    if (lab) lab.textContent = String(Math.round(fontSize));
+    var i = FS_STEPS.indexOf(fsNow());
+    var dn = dom.reader.querySelector('.rd-tools [data-fs="-1"]');
+    var up = dom.reader.querySelector('.rd-tools [data-fs="1"]');
+    if (dn) dn.disabled = i <= 0;
+    if (up) up.disabled = i >= FS_STEPS.length - 1;
+  }
+
+  var HEAD_PAT = [
+    /^[一二三四五六七八九十百]+[、.．]/,
+    /^[（(][一二三四五六七八九十百]+[）)]/,
+    /^第[一二三四五六七八九十百千零〇\d]+条/,
+    /^\d{1,2}[、.．]/
+  ];
+
+  /** 目录只认短标题行，避免把整段以「一、」开头的正文误当章节。 */
+  function isHeading(text) {
+    if (!text || text.length > 48) return false;
+    for (var i = 0; i < HEAD_PAT.length; i++) if (HEAD_PAT[i].test(text)) return true;
+    return false;
+  }
+
+  function searchMainSite(kw) {
+    kw = String(kw || '').replace(/\s+/g, '').slice(0, 40);
+    if (!kw) return;
+    window.open('https://www.chinatax.gov.cn/search5/html/searchResult.html?siteCode=bm29000002&left_right_index=0&searchSource=0&searchWord=' +
+      encodeURIComponent(kw), '_blank', 'noopener');
+  }
+
+  function searchAlike(it) {
+    if (it.x) { state.filters.tax.clear(); state.filters.tax.add(it.x); }
+    if (it.k !== 'policy' && usesAvail()) {
+      state.filters.kind.clear();
+      state.filters.kind.add(it.k);
+    }
+    dom.input.value = '';
+    state.q = '';
+    renderDockTools(); renderContext(); refresh();
+  }
+
   function renderReader() {
     var it = currentItem();
     clear(dom.reader);
     if (!it) { renderOverview(); return; }
 
+    var idx = state.results.findIndex(function (r) { return r.id === it.id; });
+    var total = state.results.length;
+    var posTxt = idx >= 0 ? U.fmt(idx + 1) + ' / ' + U.fmt(total) : '不在当前结果';
+
     var head = h('div', { class: 'rd-head' }, [
-      h('span', { class: 'tag', text: it.k === 'policy' ? '政策文本' : '资料条目' }),
+      h('span', { class: 'rd-kind k-' + it.k, text: kindFull(it.k) }),
       h('span', { class: 'sp' }),
-      h('button', {
-        class: 'mini-btn rd-close', text: '关闭', style: 'display:none',
-        onclick: closeReader
-      }),
+      h('div', { class: 'rd-nav' }, [
+        h('button', {
+          class: 'mini-btn', text: '↑', title: '上一条（K）', 'aria-label': '上一条',
+          onclick: function () { moveSel(-1); }
+        }),
+        h('span', { class: 'rd-pos', text: posTxt, title: '当前条在结果中的位置' }),
+        h('button', {
+          class: 'mini-btn', text: '↓', title: '下一条（J）', 'aria-label': '下一条',
+          onclick: function () { moveSel(1); }
+        })
+      ]),
       h('button', { class: 'mini-btn', title: '收藏 / 取消收藏', dataset: { on: favSet.has(it.id) ? '1' : '0' },
         onclick: function (e) {
           toggleFav(it.id);
@@ -3696,9 +4380,10 @@ window.App = App;
           btn.firstChild.textContent = on ? '★ 已收藏' : '☆ 收藏';
         } }, [h('span', { text: favSet.has(it.id) ? '★ 已收藏' : '☆ 收藏' })]),
       U.safeUrl(it.u) ? h('button', {
-        class: 'mini-btn', text: '原文 ↗',
+        class: 'mini-btn', text: it.k === 'ksdy' ? '原站观看视频 ↗' : '原文 ↗',
         onclick: function () { window.open(U.safeUrl(it.u), '_blank', 'noopener'); }
-      }) : null
+      }) : null,
+      h('button', { class: 'mini-btn rd-close', text: '关闭', onclick: closeReader })
     ]);
 
     var body = h('div', { class: 'rd-body' });
@@ -3735,9 +4420,13 @@ window.App = App;
     addMeta('资料来源', it.src || it.sc);
     if (dl.children.length) body.appendChild(dl);
 
-    // 要点
+    // 正文 / 摘要片段的数据来源（仅索引条目的 q 是源站截断摘要，不是正文）
+    var bodyText = it.k === 'policy' ? it.kk : (it.q || it.s);
+
+    // 要点：仅索引条目的 brief 从 kk（=== q）里抽，与下方「摘要片段」同源，不能展示两次
     var brief = briefOf(it);
-    if (brief) {
+    if (brief && !(it.av === 'index' && !it.s) &&
+        U.norm(brief) !== U.norm(bodyText || '')) {
       body.appendChild(h('section', { class: 'rd-sec' }, [
         h('div', { class: 'rd-sec-t' }, [h('span', { text: it.s ? 'AI 摘要' : '关键摘录' })]),
         h('div', { class: 'brief' }, [
@@ -3747,13 +4436,59 @@ window.App = App;
       ]));
     }
 
+    // 可视答疑：原站带 X-Frame-Options，内嵌必然失败，明确引导到原站
+    if (it.k === 'ksdy') {
+      body.appendChild(h('div', { class: 'rd-hint' }, [
+        h('b', { text: '原站视频' }),
+        h('span', { text: '官方页面禁止嵌入播放，本站不内嵌视频；点击右上角「原站观看视频 ↗」在官方页面观看。' })
+      ]));
+    }
+
     // 正文
-    var bodyText = it.k === 'policy' ? it.kk : (it.q || it.s);
-    if (bodyText) {
-      var paras = String(bodyText).split(/\n{1,}/).filter(function (p) { return p.trim(); });
+    var paras = bodyText
+      ? String(bodyText).split(/\n{1,}/).filter(function (p) { return p.trim(); })
+      : [];
+    var heads = [];
+    paras.forEach(function (p, i) {
+      var t = p.trim();
+      if (isHeading(t)) heads.push({ i: i, t: t });
+    });
+    if (heads.length > 30) heads = heads.slice(0, 30);
+
+    /** 仅索引条目的兜底说明；有截断摘要时文案要区分，不能把摘要说成正文。 */
+    function indexNote(hasExcerpt) {
+      return h('div', { class: 'rd-index-note' }, [
+        h('b', { text: '该条目只有索引' }),
+        h('p', { text: (hasExcerpt
+          ? '源站只给出截断摘要，未提供正文或可用链接。'
+          : '源站未提供正文或可用链接，只能用标题、日期定位。') +
+          '可复制标题到税务总局站点检索，或在同类条目中继续查找。' }),
+        h('div', { class: 'rd-actions' }, [
+          h('button', { class: 'mini-btn', text: '复制标题', onclick: function () { copy(it.t, '标题已复制'); } }),
+          h('button', { class: 'mini-btn', text: '总局检索此标题 ↗', onclick: function () { searchMainSite(it.t); } }),
+          h('button', { class: 'mini-btn', text: '搜索同类', onclick: function () { searchAlike(it); } })
+        ])
+      ]);
+    }
+
+    // 列表把这类条目标为「仅索引」，阅读窗就不能把 30 来字的截断摘要当「内容」展示
+    if (bodyText && it.av === 'index') {
+      var exBox = h('div', { class: 'rd-text', text: String(bodyText) });
+      if (fontSize) exBox.style.fontSize = fontSize + 'px';
+      body.appendChild(h('section', { class: 'rd-sec' }, [
+        h('div', { class: 'rd-sec-t' }, [h('span', { text: '摘要片段' })]), exBox
+      ]));
+      body.appendChild(indexNote(true));
+    } else if (bodyText) {
       var textBox = h('div', { class: 'rd-text' });
+      if (fontSize) textBox.style.fontSize = fontSize + 'px';
       paras.forEach(function (p, i) {
-        textBox.appendChild(h('p', { class: i === 0 && /公告|通知|规定|办法/.test(p) ? 'lead' : '', text: p.trim() }));
+        var el = h('p', {
+          class: i === 0 && /公告|通知|规定|办法/.test(p) ? 'lead' : '',
+          text: p.trim()
+        });
+        if (heads.some(function (hd) { return hd.i === i; })) el.id = 'rdh' + i;
+        textBox.appendChild(el);
       });
       var sec = h('section', { class: 'rd-sec' }, [
         h('div', { class: 'rd-sec-t' }, [h('span', { text: it.k === 'policy' ? '全文' : '内容' })]),
@@ -3770,6 +4505,8 @@ window.App = App;
         }));
       }
       body.appendChild(sec);
+    } else if (it.av === 'index') {
+      body.appendChild(indexNote(false));
     } else {
       body.appendChild(h('div', { class: 'brief',
         text: it.k === 'policy'
@@ -3815,37 +4552,32 @@ window.App = App;
       ]));
     }
 
-    // 操作
-    body.appendChild(h('div', { class: 'rd-actions' }, [
-      D.clientSafe ? null : h('button', {
-        class: 'mini-btn primary', text: 'AI 解读这篇',
-        onclick: function () { App.ai.open('请概括《' + it.t + '》的核心要点、适用条件与办理口径', [it]); }
-      }),
-      (it.n || it.t) ? h('button', {
-        class: 'mini-btn', text: '总局检索此件 ↗',
-        title: '带文号到税务总局主站检索同一文件，用于核对原件',
-        onclick: function () {
-          var kw = String(it.n || it.t).replace(/\s+/g, '').slice(0, 40);
-          window.open('https://www.chinatax.gov.cn/search5/html/searchResult.html?siteCode=bm29000002&left_right_index=0&searchSource=0&searchWord=' +
-            encodeURIComponent(kw), '_blank', 'noopener');
-        }
-      }) : null,
-      h('button', {
-        class: 'mini-btn', text: '搜索同类',
-        onclick: function () {
-          if (it.x) { state.filters.tax.clear(); state.filters.tax.add(it.x); }
-          dom.input.value = '';
-          state.q = '';
-          renderDockTools(); renderContext(); refresh();
-        }
-      })
-    ]));
+    // 操作（仅索引条目已在上面给出专属入口，避免重复按钮）
+    if (it.av !== 'index') {
+      body.appendChild(h('div', { class: 'rd-actions' }, [
+        D.clientSafe || !bodyText ? null : h('button', {
+          class: 'mini-btn primary', text: 'AI 解读这篇',
+          onclick: function () { App.ai.open('请概括《' + it.t + '》的核心要点、适用条件与办理口径', [it]); }
+        }),
+        (it.n || it.t) ? h('button', {
+          class: 'mini-btn', text: '总局检索此件 ↗',
+          title: '带文号到税务总局主站检索同一文件，用于核对原件',
+          onclick: function () { searchMainSite(it.n || it.t); }
+        }) : null,
+        h('button', {
+          class: 'mini-btn', text: '搜索同类',
+          onclick: function () { searchAlike(it); }
+        })
+      ]));
+    }
 
     // 相关
     var rel = related(it);
     if (rel.length) {
       var relBox = h('section', { class: 'rd-sec rd-rel' }, [
-        h('div', { class: 'rd-sec-t' }, [h('span', { text: '相关条文' })])
+        h('div', { class: 'rd-sec-t' }, [
+          h('span', { text: state.scope === 'policy' ? '相关条文' : '同栏目最近 5 条' })
+        ])
       ]);
       rel.forEach(function (r) {
         relBox.appendChild(h('a', {
@@ -3856,7 +4588,61 @@ window.App = App;
       body.appendChild(relBox);
     }
 
+    var tools = h('div', { class: 'rd-tools' }, [
+      heads.length >= 3 ? h('button', {
+        class: 'mini-btn', text: '目录 ' + heads.length, title: '显示 / 隐藏正文目录',
+        onclick: function () {
+          var t = dom.reader.querySelector('.rd-toc');
+          if (t) t.hidden = !t.hidden;
+        }
+      }) : null,
+      h('span', { class: 'rd-tool-sp' }),
+      h('button', {
+        class: 'mini-btn', text: 'A−', title: '缩小正文字号', dataset: { fs: '-1' },
+        onclick: function () { stepFont(-1); }
+      }),
+      h('button', {
+        class: 'mini-btn', text: 'A', title: '恢复默认字号',
+        onclick: function () {
+          fontSize = 16; App.store.set('tsq3.fs', fontSize);
+          var b = dom.reader.querySelector('.rd-text');
+          if (b) b.style.fontSize = '16px';
+          syncFont();
+        }
+      }),
+      h('button', {
+        class: 'mini-btn', text: 'A+', title: '放大正文字号', dataset: { fs: '1' },
+        onclick: function () { stepFont(1); }
+      }),
+      h('span', { class: 'rd-fs', text: String(Math.round(fsNow())), title: '当前正文字号（px）' }),
+      h('button', {
+        class: 'mini-btn', text: '复制全文',
+        onclick: function () { copy(it.t + (bodyText ? '\n\n' + bodyText : ''), '全文已复制'); }
+      }),
+      h('button', { class: 'mini-btn', text: '打印 / PDF', title: '打印当前条目或另存为 PDF', onclick: function () { window.print(); } })
+    ]);
+
+    var toc = null;
+    if (heads.length >= 3) {
+      toc = h('div', { class: 'rd-toc', hidden: true, role: 'navigation', 'aria-label': '正文目录' });
+      heads.forEach(function (hd) {
+        toc.appendChild(h('button', {
+          class: 'rd-toc-i', text: hd.t,
+          onclick: function () {
+            var p = dom.reader.querySelector('#rdh' + hd.i);
+            if (p) {
+              dom.reader.scrollTo({ top: Math.max(0, p.offsetTop - 96), behavior: 'smooth' });
+            }
+            toc.hidden = true;
+          }
+        }));
+      });
+    }
+
     dom.reader.appendChild(head);
+    dom.reader.appendChild(tools);
+    syncFont();
+    if (toc) dom.reader.appendChild(toc);
     dom.reader.appendChild(body);
     dom.reader.scrollTop = 0;
   }
@@ -3901,12 +4687,23 @@ window.App = App;
   function related(it) {
     var poolItems = D.dataset(state.scope);
     var out = [];
-    for (var i = 0; i < poolItems.length && out.length < 40; i++) {
+    function byDate(a, b) {
+      var ad = a.dk || '', bd = b.dk || '';
+      return ad < bd ? 1 : ad > bd ? -1 : 0;
+    }
+    for (var i = 0; i < poolItems.length; i++) {
       var x = poolItems[i];
       if (x.id === it.id) continue;
-      if (it.x && x.x === it.x) out.push(x);
+      if (x.k !== it.k) continue;
+      if (it.k === 'policy') {
+        if (it.x && x.x === it.x) out.push(x);
+      } else {
+        out.push(x);
+      }
+      // 同栏目可能有几万条：只保留最近的候选，避免每次渲染都全量排序
+      if (out.length > 40) { out.sort(byDate); out = out.slice(0, 5); }
     }
-    out.sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+    out.sort(byDate);
     return out.slice(0, 5);
   }
 
@@ -3956,22 +4753,37 @@ window.App = App;
 
   function renderOverview() {
     var items = D.dataset(state.scope);
-    var m = D.policy ? D.policy.m : {};
-    var maxd = (m && (m.source_maxd || m.maxd)) || '—';
-    var valid = 0, yearNew = 0;
+    var pm = (D.policy && D.policy.m) || {};
+    var maxd = scopeSnapshot();
+    var valid = 0, yearNew = 0, readable = 0;
     var thisYear = String(new Date().getFullYear());
     for (var i = 0; i < items.length; i++) {
       if (items[i].w === '全文有效') valid++;
-      if ((items[i].d || '').slice(0, 4) === thisYear) yearNew++;
+      if ((items[i].dk || '').slice(0, 4) === thisYear) yearNew++;
+      if (items[i].av !== 'index') readable++;
     }
 
     var box = h('div', { class: 'rd-empty' }, [
       h('h2', { text: '档案速览' }),
-      h('p', { class: 'sub', text: '数据截至 ' + maxd + ' · 同文合并 ' +
-        U.fmt(m.mg) + ' 条 · 版本 ' + (D.version || '—') })
+      h('p', { class: 'sub', text: '数据截至 ' + maxd +
+        (state.scope === 'policy' ? ' · 同文合并 ' + U.fmt(pm.mg || 0) + ' 条' : '') +
+        ' · 版本 ' + (D.version || '—') })
     ]);
 
+    // 政策看采集新鲜度；知识库 / 全部按栏目快照日算天数，不能沿用政策的 stale_days
     var st = dataStatus();
+    if (state.scope !== 'policy') {
+      var days = maxd && maxd !== '—' ? U.daysBetween(maxd) : null;
+      if (days != null && days < 0) days = 0;
+      var level = days == null ? 'unknown' : days <= 2 ? 'fresh' : days <= 13 ? 'amber' : 'red';
+      st = {
+        kind: level === 'red' ? 'err' : level === 'amber' || level === 'unknown' ? 'warn' : 'ok',
+        head: level === 'unknown' ? '快照日期未知' :
+          '栏目快照' + (days > 0 ? '（' + days + ' 天前）' : '（今天）'),
+        sub: state.scope === 'all' ? '政策法规 + 税务公开资料合并视图' : '税务官方公开资料',
+        maxd: maxd
+      };
+    }
     box.appendChild(h('div', { class: 'fresh-line', dataset: { kind: st.kind } }, [
       h('span', { class: 'dot' }),
       h('b', { text: st.head }),
@@ -3982,14 +4794,35 @@ window.App = App;
     function stat(v, label) {
       stats.appendChild(h('div', { class: 'stat' }, [h('b', { text: v }), h('i', { text: label })]));
     }
-    stat(U.fmt(scopeCount(state.scope)), state.scope === 'policy' ? '收录文件' : '条目');
-    stat(U.fmt(valid || '—'), '现行有效');
-    stat(U.fmt(yearNew), thisYear + ' 年新增');
+    if (state.scope === 'all') {
+      stat(U.fmt(scopeCount('all')), '全部条目');
+      stat(U.fmt(scopeCount('policy')), '政策文件');
+      stat(U.fmt(scopeCount('all') - scopeCount('policy')), '公开资料');
+    } else if (state.scope === 'policy') {
+      stat(U.fmt(scopeCount('policy')), '收录文件');
+      stat(U.fmt(valid || '—'), '现行有效');
+      stat(U.fmt(yearNew), thisYear + ' 年新增');
+    } else {
+      stat(U.fmt(scopeCount(state.scope)), '栏目条目');
+      stat(U.fmt(readable), '含正文 / 链接');
+      stat(U.fmt(yearNew), thisYear + ' 年新增');
+    }
     stat(D.version ? D.version.slice(0, 10) : '—', '数据版本');
     box.appendChild(stats);
 
-    var newest = items.slice(0, 6);
-    if (!state.q && state.sort !== 'rel') {
+    function byDate(a, b) {
+      var ad = a.dk || '', bd = b.dk || '';
+      return ad < bd ? 1 : ad > bd ? -1 : 0;
+    }
+    if (!state.q && state.sort !== 'rel' && items.length) {
+      // 知识库未按日期排序：扫描一遍取最近 6 条，不整表排序
+      var top = [];
+      for (var k = 0; k < items.length; k++) {
+        top.push(items[k]);
+        if (top.length > 60) { top.sort(byDate); top = top.slice(0, 6); }
+      }
+      top.sort(byDate);
+      var newest = top.slice(0, 6);
       var ql = h('div', { class: 'quick-list' });
       newest.forEach(function (it) {
         ql.appendChild(h('a', {
@@ -4000,6 +4833,33 @@ window.App = App;
       box.appendChild(h('section', { class: 'rd-sec' }, [
         h('div', { class: 'rd-sec-t' }, [h('span', { text: '最近更新' })]), ql
       ]));
+    }
+
+    if (recent.length) {
+      var rl = h('div', { class: 'quick-list' });
+      var shown = 0;
+      for (var r = 0; r < recent.length && shown < 6; r++) {
+        var rid = recent[r], hit = null;
+        for (var j = 0; j < items.length; j++) {
+          if (items[j].id === rid) { hit = items[j]; break; }
+        }
+        if (!hit) continue;
+        shown++;
+        (function (item) {
+          rl.appendChild(h('a', {
+            href: '#',
+            onclick: function (e) { e.preventDefault(); select(item.id, true); }
+          }, [
+            h('span', { text: item.t }),
+            h('time', { text: item.d || '' })
+          ]));
+        })(hit);
+      }
+      if (shown) {
+        box.appendChild(h('section', { class: 'rd-sec' }, [
+          h('div', { class: 'rd-sec-t' }, [h('span', { text: '最近浏览' })]), rl
+        ]));
+      }
     }
 
     var kg = h('div', { class: 'kbd-grid' }, [
@@ -4085,15 +4945,15 @@ window.App = App;
     if (payload.scope === 'policy' || payload.scope === 'library') {
       Q.invalidate();
       SCOPES.forEach(function (s) { state.indexReady[s.id] = false; });
-      if (state.scope === 'policy' && payload.scope === 'policy') {
+      var affectsCurrent = (payload.scope === 'policy' &&
+          (state.scope === 'policy' || state.scope === 'all')) ||
+        (payload.scope === 'library' && state.scope !== 'policy');
+      if (affectsCurrent) {
         renderContext();
         buildDock();
-        refresh();
-        if (state.selId) renderReader();
-      } else if (payload.scope === 'library' && state.scope !== 'policy') {
-        buildDock();
-        renderContext();
-        refresh();
+        refresh().then(function () {
+          if (state.selId) renderReader();
+        });
       }
       if (payload.diff && payload.diff.added > 0) {
         toast('数据已更新 · 新增 ' + U.fmt(payload.diff.added) + ' 条', 'ok');
@@ -4361,7 +5221,8 @@ window.App = App;
       .then(function () {
         S.start();
         renderReader();
-        // 预载知识库的索引只在切换时按需构建，避免首屏下载 3.3MB
+        // 知识库不在首屏下载；桌面空闲时再预热「全部」视图
+        schedulePrewarm();
         if (!D.version) S.set('idle');
       })
       .catch(function (e) {
@@ -4461,6 +5322,7 @@ window.App = App;
   };
 
   var SCOPES = [
+    { id: 'all', label: '全部' },
     { id: 'policy', label: '政策法规' },
     { id: 'interp', label: '官方解读' },
     { id: 'qa', label: '12366 问答' },
