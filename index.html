@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ark.cn-beijing.volces.com; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.deepseek.com https://ark.cn-beijing.volces.com; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="description" content="税务政策检索工作台：全库检索、税种/年份/地区/效力筛选、原文阅读与数据自动同步">
 <meta name="copyright" content="© 版权所有：默笙夏夏の知書房">
 <meta name="theme-color" content="#F1F2F4">
@@ -5305,9 +5305,19 @@ window.App = App;
   var U = App.util, D = App.data, Q = App.search;
   var h = null, clearEl = null, toast = null;
 
-  var AI_DEFAULT_BASE = 'https://ark.cn-beijing.volces.com/api/v3';
-  var AI_DEFAULT_MODEL = 'deepseek-v4-pro-260425';
-  var ALLOWED_HOSTS = ['ark.cn-beijing.volces.com'];
+  // 默认走 DeepSeek 官方（deepseek-flash = DeepSeek-V4.1-Flash-1017），火山方舟保留为可选
+  var AI_DEFAULT_BASE = 'https://api.deepseek.com';
+  var AI_DEFAULT_MODEL = 'deepseek-flash';
+  var AI_ARK_BASE = 'https://ark.cn-beijing.volces.com/api/v3';
+  var AI_ARK_MODEL = 'deepseek-v4-pro-260425';
+  var ALLOWED_HOSTS = ['api.deepseek.com', 'ark.cn-beijing.volces.com'];
+
+  var MODEL_LABEL = {
+    'deepseek-flash': 'DeepSeek V4.1 Flash',
+    'deepseek-v4-pro': 'DeepSeek V4 Pro',
+    'deepseek-v4-flash': 'DeepSeek V4.1 Flash'
+  };
+  function modelLabel(m) { return MODEL_LABEL[m] || m || AI_DEFAULT_MODEL; }
 
   var SYSTEM = [
     '你是严谨的财税政策检索助手。只能依据用户消息中给出的「政策资料」作答，',
@@ -5341,6 +5351,19 @@ window.App = App;
   function loadCfg() {
     cfg.base = App.store.get('tsq3.base', AI_DEFAULT_BASE);
     cfg.model = App.store.get('tsq3.model', AI_DEFAULT_MODEL);
+    // 一次性迁移：火山方舟的地址/模型 ID 在 DeepSeek 官方不可用，且「deepseek-v4.1 flash」不是任何一家的模型 ID。
+    // 迁移只做一次，避免把用户手动切回方舟的配置反复改掉。
+    if (!App.store.get('tsq3.dsMigrated', false)) {
+      if (cfg.base === AI_ARK_BASE) {
+        cfg.base = AI_DEFAULT_BASE;
+        App.store.set('tsq3.base', cfg.base);
+      }
+      if (cfg.model === AI_ARK_MODEL || /^deepseek[-_ ]?v?4\.1[-_ ]?flash$/i.test(cfg.model)) {
+        cfg.model = AI_DEFAULT_MODEL;
+        App.store.set('tsq3.model', cfg.model);
+      }
+      App.store.set('tsq3.dsMigrated', true);
+    }
     cfg.remember = App.store.get('tsq3.remember', false);
     var persisted = App.store.get('tsq3.key', '');
     var session = '';
@@ -5554,7 +5577,7 @@ window.App = App;
       h('div', { class: 'ai-head' }, [
         h('span', {}, svgIcon('M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z', 16)),
         h('span', { class: 'ttl', text: 'AI 顾问' }),
-        h('span', { class: 'mdl', text: cfg.model }),
+        h('span', { class: 'mdl', text: modelLabel(cfg.model) }),
         h('span', { class: 'sp' }),
         h('button', { class: 'mini-btn', text: '清空', onclick: function () { clearEl(body); } }),
         h('button', { class: 'mini-btn', text: '关闭', onclick: function () { closeAI(); } })
@@ -5589,7 +5612,7 @@ window.App = App;
     App.ui.dom.scrim.dataset.for = 'ai';
     ai.el.hidden = false;
     document.body.classList.add('no-scroll');
-    ai.el.querySelector('.mdl').textContent = cfg.model;
+    ai.el.querySelector('.mdl').textContent = modelLabel(cfg.model);
     if (question) {
       ai.hits = hits || null;
       ai.input.value = '';
@@ -5666,8 +5689,8 @@ window.App = App;
   }
 
   function mapError(status, detail) {
-    if (status === 401 || status === 403) return 'Key 无效或未开通该模型';
-    if (status === 404) return '模型名不存在，请在设置里核对';
+    if (status === 401 || status === 403) return 'Key 无效、已失效，或与当前服务商不匹配（DeepSeek 官方 Key 需在 platform.deepseek.com 签发）';
+    if (status === 404) return '模型名不存在，请在设置里核对（DeepSeek 官方填 deepseek-flash）';
     if (status === 429) return '请求过于频繁，请稍后再试';
     if (status >= 500) return '服务端暂时不可用（HTTP ' + status + '）';
     return '调用失败（HTTP ' + status + '）' + (detail ? '：' + String(detail).slice(0, 80) : '');
@@ -5805,7 +5828,7 @@ window.App = App;
   function netHint(base) {
     return fetch(base + '/models', { method: 'GET', mode: 'no-cors', cache: 'no-store' })
       .then(function () {
-        return '接口拒绝了请求（网络可达）：多为 Key 无效、Key 不属于火山方舟或模型名不存在，请到设置里核对';
+        return '接口拒绝了请求（网络可达）：多为 Key 无效、Key 与服务商不匹配或模型名不存在，请到设置里核对';
       })
       .catch(function () {
         return '请求无法发出（可能是公司网络代理或浏览器插件拦截），可按 F12 查看控制台报错';
@@ -5864,7 +5887,7 @@ window.App = App;
     if (sheet) sheet.remove();
     loadCfg();
 
-    var keyInput = h('input', { type: 'password', value: cfg.key, placeholder: 'ARK API Key（sk-…）', autocomplete: 'off' });
+    var keyInput = h('input', { type: 'password', value: cfg.key, placeholder: 'API Key（sk-…，DeepSeek 或火山方舟签发）', autocomplete: 'off' });
     var baseInput = h('input', { type: 'text', value: cfg.base });
     var modelInput = h('input', { type: 'text', value: cfg.model });
     var remember = h('input', { type: 'checkbox', checked: cfg.remember ? 'checked' : null });
@@ -5879,18 +5902,20 @@ window.App = App;
         clientSafe() ? h('div', { class: 'field' }, [
           h('div', { class: 'ai-warn', text: '客户安全版：不接收、不保存、不外发任何密钥，AI 相关配置已移除。' })
         ]) : h('div', { class: 'field' }, [
-          h('label', { text: 'ARK API Key' }), keyInput,
+          h('label', { text: 'API Key' }), keyInput,
+          h('div', { class: 'hint', text: '默认走 DeepSeek 官方，Key 需在 platform.deepseek.com 签发；方舟 Key 只在改回方舟地址时可用。' }),
           h('div', { class: 'hint', text: '仅存于本机。默认写入 sessionStorage（关标签页即失效）；勾选「记住」才写入 localStorage。' }),
           h('div', { class: 'field row', style: 'margin-top:8px' }, [
             remember, h('label', { text: '记住 Key', style: 'margin:0' })
           ])
         ]),
         clientSafe() ? null : h('div', { class: 'field' }, [
-          h('label', { text: '接口地址（仅允许白名单域名）' }), baseInput
+          h('label', { text: '接口地址（仅允许白名单域名）' }), baseInput,
+          h('div', { class: 'hint', text: '默认 https://api.deepseek.com；切回火山方舟填 https://ark.cn-beijing.volces.com/api/v3。' })
         ]),
         clientSafe() ? null : h('div', { class: 'field' }, [
           h('label', { text: '模型名称' }), modelInput,
-          h('div', { class: 'hint', text: '填火山方舟的模型 ID 或接入点 ID（ep-…）；名称不存在时接口返回 404，会被报成调用失败。' })
+          h('div', { class: 'hint', text: 'DeepSeek 官方：deepseek-flash（即 V4.1 Flash）、deepseek-v4-pro；火山方舟：模型 ID 或 ep-… 接入点。名称不存在时接口返回 404。' })
         ]),
         h('div', { class: 'field' }, [
           h('label', { text: '数据自动同步' }),
@@ -5945,12 +5970,12 @@ window.App = App;
             cfg.base = baseInput.value.trim() || AI_DEFAULT_BASE;
             cfg.model = modelInput.value.trim() || AI_DEFAULT_MODEL;
             cfg.remember = !!remember.checked;
-            if (!hostAllowed(cfg.base)) { toast('接口地址必须是 https://ark.cn-beijing.volces.com', 'err'); return; }
+            if (!hostAllowed(cfg.base)) { toast('接口地址仅支持 https://api.deepseek.com 或 https://ark.cn-beijing.volces.com/api/v3', 'err'); return; }
             saveKey();
             App.store.set('tsq3.base', cfg.base);
             App.store.set('tsq3.model', cfg.model);
             App.store.set('tsq3.remember', cfg.remember);
-            if (ai.el) ai.el.querySelector('.mdl').textContent = cfg.model;
+            if (ai.el) ai.el.querySelector('.mdl').textContent = modelLabel(cfg.model);
             closeSheet();
             toast('设置已保存');
           }
