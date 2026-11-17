@@ -5784,9 +5784,28 @@ window.App = App;
       })();
     }).catch(function (e) {
       if (e && e.name === 'AbortError') throw new Error('已取消');
-      if (e instanceof TypeError) throw new Error('网络被拦截（可能是公司网络或浏览器插件）');
+      if (e instanceof TypeError) {
+        return netHint(base).then(function (msg) { throw new Error(msg); });
+      }
       throw e;
     });
+  }
+
+  /**
+   * fetch 抛 TypeError 时浏览器不给出原因，而它至少对应两种完全不同的故障：
+   *   1) 请求根本没发出去（DNS / 公司代理 / 插件拦截）；
+   *   2) 请求到了、也返回了，但响应缺 CORS 头 —— Ark 的 401/404 就不带
+   *      Access-Control-Allow-Origin，于是 Key 失效、模型名写错同样报 TypeError。
+   * 用一次 no-cors 探针把两者分开，避免把配置错误一律说成「网络被拦截」。
+   */
+  function netHint(base) {
+    return fetch(base + '/models', { method: 'GET', mode: 'no-cors', cache: 'no-store' })
+      .then(function () {
+        return '接口拒绝了请求（网络可达）：多为 Key 无效、Key 不属于火山方舟或模型名不存在，请到设置里核对';
+      })
+      .catch(function () {
+        return '请求无法发出（可能是公司网络代理或浏览器插件拦截），可按 F12 查看控制台报错';
+      });
   }
 
   function renderAnswer(box, text, hits) {
@@ -5866,7 +5885,8 @@ window.App = App;
           h('label', { text: '接口地址（仅允许白名单域名）' }), baseInput
         ]),
         clientSafe() ? null : h('div', { class: 'field' }, [
-          h('label', { text: '模型名称' }), modelInput
+          h('label', { text: '模型名称' }), modelInput,
+          h('div', { class: 'hint', text: '填火山方舟的模型 ID 或接入点 ID（ep-…）；名称不存在时接口返回 404，会被报成调用失败。' })
         ]),
         h('div', { class: 'field' }, [
           h('label', { text: '数据自动同步' }),
