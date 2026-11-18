@@ -1211,6 +1211,35 @@ mark {
 .ai-head .mdl { font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-4); }
 .ai-head .sp { flex: 1 1 auto; }
 
+.ai-back, .omni-back { display: none; }
+
+.ai-guide {
+  display: none;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line-2);
+  background: var(--brand-soft);
+  color: var(--ink-3);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.ai-guide.on { display: flex; }
+.ai-guide .gsp { flex: 1 1 auto; min-width: 0; }
+.ai-guide button, .ai-guide a {
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--brand);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ai-guide button:hover, .ai-guide a:hover { text-decoration: underline; }
+
 .ai-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 16px 24px; }
 
 .ai-q {
@@ -1784,6 +1813,27 @@ mark {
   .rd-toc { margin: 0 16px 12px; }
   .omni { top: 0; width: 100vw; max-height: 100vh; height: 100vh; border-radius: 0; border: 0; }
   .omni-foot { display: none; }
+  .ai-back, .omni-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px; height: 44px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-2);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ai-back:active, .omni-back:active { background: var(--surface-2); }
+  .ai-head { padding: 4px 10px 4px 4px; gap: 6px; }
+  .ai-head .ai-close { display: none; }
+  .omni-in { padding: 6px 12px 6px 4px; gap: 6px; }
+  .omni-in .esc { display: none; }
+  .sheet-hd .icon-btn { width: 44px; height: 44px; }
+  .rd-head .rd-close { height: 38px; min-width: 48px; padding: 0 12px; }
+  .ai-foot { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .ai-guide { font-size: 11.5px; padding: 9px 12px; }
   .ai-drawer { width: 100vw; }
   .toasts { bottom: 16px; }
   .update-bar { bottom: 12px; left: 10px; right: 10px; transform: none; }
@@ -4282,10 +4332,12 @@ window.App = App;
     dom.scrim.hidden = false;
     dom.scrim.dataset.for = 'reader';
     document.body.classList.add('no-scroll');
+    if (App.ui.nav) App.ui.nav.push('reader');
   }
 
-  function closeReader() {
+  function closeReader(opts) {
     if (!dom.reader.classList.contains('open')) return;
+    if (!(opts && opts.fromNav) && App.ui.nav) App.ui.nav.drop('reader');
     dom.reader.classList.remove('open');
     if (dom.scrim.dataset.for === 'reader') {
       dom.scrim.hidden = true;
@@ -5399,6 +5451,10 @@ window.App = App;
     var body = h('div', { class: 'omni-body', role: 'listbox' });
     var el = h('div', { class: 'omni', role: 'dialog', 'aria-label': '指令台' }, [
       h('div', { class: 'omni-in' }, [
+        h('button', {
+          class: 'omni-back', type: 'button', 'aria-label': '返回',
+          onclick: function () { closeOmni(); }
+        }, svgIcon('M15 6l-6 6 6 6', 20)),
         h('span', {}, svgIcon('M11 18a7 7 0 100-14 7 7 0 000 14zm9 3l-3.6-3.6', 16)),
         input,
         h('span', { class: 'esc', text: 'ESC' })
@@ -5428,13 +5484,15 @@ window.App = App;
     App.ui.dom.scrim.dataset.for = 'omni';
     omni.el.hidden = false;
     document.body.classList.add('no-scroll');
+    navPush('omni');
     omni.input.value = '';
     renderOmni('');
     setTimeout(function () { omni.input.focus(); }, 30);
   }
 
-  function closeOmni() {
+  function closeOmni(opts) {
     if (!omni.el) return;
+    if (!(opts && opts.fromNav)) navDrop('omni');
     omni.el.hidden = true;
     if (App.ui.dom.scrim.dataset.for === 'omni') {
       App.ui.dom.scrim.hidden = true;
@@ -5565,34 +5623,108 @@ window.App = App;
     });
   }
 
+  /* ---------------- 浮层导航（手机返回键与页面返回按钮共用一套逻辑） ---------------- */
+
+  var navStack = [];        // 当前打开的浮层，后进先出
+  var navOn = false;        // 浏览器历史里是否已有属于浮层的记录
+  var navBackPending = false;
+
+  function navSync() {
+    try {
+      if (!navStack.length) {
+        if (navOn) { navOn = false; navBackPending = true; history.back(); }
+        return;
+      }
+      var top = navStack[navStack.length - 1];
+      if (navOn) history.replaceState({ tsqOverlay: top }, '', location.href);
+      else { navOn = true; history.pushState({ tsqOverlay: top }, '', location.href); }
+    } catch (e) { /* file:// 等不支持 history API 的环境：降级为只用页面内返回按钮 */ }
+  }
+
+  function navPush(id) {
+    if (navStack[navStack.length - 1] === id) return;
+    var i = navStack.indexOf(id);
+    if (i >= 0) navStack.splice(i, 1);
+    navStack.push(id);
+    navSync();
+  }
+
+  function navDrop(id) {
+    var i = navStack.lastIndexOf(id);
+    if (i < 0) return;
+    navStack.splice(i, 1);
+    navSync();
+  }
+
+  var NAV_CLOSE = {
+    ai: function () { closeAI({ fromNav: true }); },
+    omni: function () { closeOmni({ fromNav: true }); },
+    settings: function () { closeSheet({ fromNav: true }); },
+    reader: function () { App.ui.closeReader({ fromNav: true }); }
+  };
+
+  window.addEventListener('popstate', function () {
+    if (navBackPending) { navBackPending = false; return; }
+    if (!navStack.length) return;
+    navOn = false;
+    var id = navStack.pop();
+    var fn = NAV_CLOSE[id];
+    if (fn) fn();
+    navSync();
+  });
+
+  // 阅读器在主模块（上一个 IIFE）里，通过这里暴露的接口共用同一套导航栈
+  App.ui.nav = { push: navPush, drop: navDrop };
+
   /* ---------------- AI 顾问 ---------------- */
 
-  var ai = { el: null, body: null, input: null, send: null, hits: [], busy: false, ctrl: null };
+  var ai = { el: null, body: null, input: null, send: null, guide: null, hits: [], busy: false, ctrl: null };
 
   function buildAI() {
     var body = h('div', { class: 'ai-body' });
     var input = h('textarea', { placeholder: '追问…（Enter 发送，Shift+Enter 换行）', rows: '1' });
     var send = h('button', { class: 'send', text: '发送' });
+    var guide = h('div', { class: 'ai-guide' }, [
+      h('span', { class: 'gsp', text: '未配置 Key · 已可检索引用，但不会生成回答' }),
+      h('button', { type: 'button', text: '去填写', onclick: function () { openSettings(); } }),
+      h('a', {
+        href: 'https://platform.deepseek.com/api_keys', target: '_blank',
+        rel: 'noopener noreferrer', text: '申请 Key ↗'
+      })
+    ]);
     var el = h('div', { class: 'ai-drawer', role: 'dialog', 'aria-label': 'AI 顾问', hidden: 'hidden' }, [
       h('div', { class: 'ai-head' }, [
+        h('button', {
+          class: 'ai-back', type: 'button', 'aria-label': '返回',
+          onclick: function () { closeAI(); }
+        }, svgIcon('M15 6l-6 6 6 6', 20)),
         h('span', {}, svgIcon('M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z', 16)),
         h('span', { class: 'ttl', text: 'AI 顾问' }),
         h('span', { class: 'mdl', text: modelLabel(cfg.model) }),
         h('span', { class: 'sp' }),
         h('button', { class: 'mini-btn', text: '清空', onclick: function () { clearEl(body); } }),
-        h('button', { class: 'mini-btn', text: '关闭', onclick: function () { closeAI(); } })
+        h('button', { class: 'mini-btn ai-close', text: '关闭', onclick: function () { closeAI(); } })
       ]),
       body,
+      guide,
       h('div', { class: 'ai-foot' }, [input, send])
     ]);
     document.body.appendChild(el);
-    ai.el = el; ai.body = body; ai.input = input; ai.send = send;
+    ai.el = el; ai.body = body; ai.input = input; ai.send = send; ai.guide = guide;
+    syncGuide();
 
     send.addEventListener('click', function () { submitAI(); });
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitAI(); }
       if (e.key === 'Escape') closeAI();
     });
+  }
+
+  function syncGuide() {
+    if (!ai.guide) return;
+    var on = !clientSafe() && !cfg.key;
+    if (on) ai.guide.classList.add('on');
+    else ai.guide.classList.remove('on');
   }
 
   function openAI(question, hits) {
@@ -5602,6 +5734,8 @@ window.App = App;
       App.ui.dom.scrim.dataset.for = 'ai';
       ai.el.hidden = false;
       document.body.classList.add('no-scroll');
+      navPush('ai');
+      syncGuide();
       clearEl(ai.body);
       ai.body.appendChild(h('div', { class: 'ai-warn',
         text: '客户安全版：本站不向任何外部服务发送内容，AI 问答已停用。全部检索与阅读功能不受影响。' }));
@@ -5612,6 +5746,8 @@ window.App = App;
     App.ui.dom.scrim.dataset.for = 'ai';
     ai.el.hidden = false;
     document.body.classList.add('no-scroll');
+    navPush('ai');
+    syncGuide();
     ai.el.querySelector('.mdl').textContent = modelLabel(cfg.model);
     if (question) {
       ai.hits = hits || null;
@@ -5622,8 +5758,9 @@ window.App = App;
     }
   }
 
-  function closeAI() {
+  function closeAI(opts) {
     if (!ai.el) return;
+    if (!(opts && opts.fromNav)) navDrop('ai');
     if (ai.ctrl) { try { ai.ctrl.abort(); } catch (e) {} ai.ctrl = null; }
     ai.el.hidden = true;
     if (App.ui.dom.scrim.dataset.for === 'ai') {
@@ -5975,6 +6112,7 @@ window.App = App;
             App.store.set('tsq3.base', cfg.base);
             App.store.set('tsq3.model', cfg.model);
             App.store.set('tsq3.remember', cfg.remember);
+            syncGuide();
             if (ai.el) ai.el.querySelector('.mdl').textContent = modelLabel(cfg.model);
             closeSheet();
             toast('设置已保存');
@@ -5987,10 +6125,12 @@ window.App = App;
     App.ui.dom.scrim.hidden = false;
     App.ui.dom.scrim.dataset.for = 'settings';
     document.body.classList.add('no-scroll');
+    navPush('settings');
     setTimeout(function () { keyInput.focus(); }, 30);
   }
 
-  function closeSheet() {
+  function closeSheet(opts) {
+    if (!(opts && opts.fromNav)) navDrop('settings');
     if (sheet) { sheet.remove(); sheet = null; }
     if (App.ui.dom.scrim.dataset.for === 'settings') {
       App.ui.dom.scrim.hidden = true;
