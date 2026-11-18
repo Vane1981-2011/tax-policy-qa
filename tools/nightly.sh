@@ -78,31 +78,39 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" != "gh-pages" ]; then
 fi
 
 # ---- 4. 有变化才提交（只加数据三件套）----
+AHEAD=$(git rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)
 git add -- "${DATA_FILES[@]}"
 if git diff --cached --quiet -- "${DATA_FILES[@]}"; then
   log "· [4/5] 数据无变化，不产生提交"
-  log "===== 夜间更新结束（无变化）====="
-  exit 0
-fi
-
-STAMP="$(date '+%Y-%m-%d')"
-N="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["n"])')"
-MAXD="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["maxd"])')"
-if git diff --cached --name-only | grep -qx 'data.json.gz'; then
-  MSG="数据包每日更新 ${STAMP}：${N} 条 / 最新 ${MAXD}（仅数据更新，UI 未变）"
-  CHANGED="1"
+  if [ "${AHEAD:-0}" -eq 0 ]; then
+    log "===== 夜间更新结束（无变化）====="
+    exit 0
+  fi
+  log "· 检测到 ${AHEAD} 个上次没推成功的本地提交，本轮补推"
+  CHANGED="2"
+  MAXD="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["maxd"])')"
+  N="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["n"])')"
 else
-  MSG="数据无新增，刷新文库与新鲜度标记 ${STAMP}（仅数据更新，UI 未变）"
-  CHANGED="0"
+  STAMP="$(date '+%Y-%m-%d')"
+  N="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["n"])')"
+  MAXD="$(/opt/homebrew/bin/python3 -c 'import json;print(json.load(open("manifest.json"))["maxd"])')"
+  if git diff --cached --name-only | grep -qx 'data.json.gz'; then
+    MSG="数据包每日更新 ${STAMP}：${N} 条 / 最新 ${MAXD}（仅数据更新，UI 未变）"
+    CHANGED="1"
+  else
+    MSG="数据无新增，刷新文库与新鲜度标记 ${STAMP}（仅数据更新，UI 未变）"
+    CHANGED="0"
+  fi
+  git commit -q -m "$MSG" || fail "本地提交失败"
+  log "· [4/5] 已提交：$MSG"
+  AHEAD=1
 fi
-git commit -q -m "$MSG" || fail "本地提交失败"
-log "· [4/5] 已提交：$MSG"
 
 # ---- 5. 推送（先探针；最多 2 次尝试，符合「失败两次即止损」）----
 code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 \
   'https://github.com/vane1981-2011/tax-policy-qa.git/info/refs?service=git-receive-pack' 2>/dev/null || echo 000)
 if [ "$code" = "000" ]; then
-  log "· [5/5] git 端点无响应（\($code\)），保留本地提交，等待网络恢复"
+  log "· [5/5] git 端点无响应（$code），保留本地提交，等待网络恢复"
   fail "GitHub 链路不通，已保留本地提交（下次运行会自动补推）" 4
 fi
 
@@ -121,7 +129,7 @@ fi
 log "· [5/5] 已推送 origin/gh-pages"
 
 # ---- 收尾：线上确认（Pages 有缓存，最多等 3×15 秒；失败不影响本地结果）----
-if [ "$CHANGED" = "1" ]; then
+if [ "$CHANGED" != "0" ]; then
   for i in 1 2 3; do
     sleep 15
     live=$(curl -sS --max-time 20 \
