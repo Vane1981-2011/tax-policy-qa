@@ -48,6 +48,30 @@ def doc_key(d: dict) -> str:
     return (d.get("u") or "").strip() or f"{d.get('t', '')}\u0000{d.get('d', '')}"
 
 
+#: 判断「内容变了没有」时忽略的字段：
+#:   - b / built_at / stale_days / freshness / sync_state：构建期时间戳与状态；
+#:   - lib：文库快照计数，跟随 library.json.gz 变化，不该连累 7.3MB 政策包；
+#:   - ai / hls：元信息与另一数据源状态，构建产物里根本没有。
+#: 不忽略它们，每晚都会生成「字节不同、内容相同」的假变更。
+VOLATILE_M = ("b", "built_at", "stale_days", "freshness", "sync_state", "lib", "ai", "hls")
+
+
+def payload_core(obj: dict) -> str:
+    """内容指纹：去掉易变字段后的规范化 JSON。用于判断「真的变了没有」。"""
+    m = {k: v for k, v in (obj.get("m") or {}).items() if k not in VOLATILE_M}
+    return json.dumps({"m": m, "d": obj.get("d") or []},
+                      ensure_ascii=False, sort_keys=True)
+
+
+def lib_core(raw: bytes) -> str:
+    """库快照的内容指纹：只忽略构建时间戳 ``m.b``。"""
+    obj = json.loads(gzip.decompress(raw).decode("utf-8"))
+    m = dict(obj.get("m") or {})
+    m.pop("b", None)
+    obj["m"] = m
+    return json.dumps(obj, ensure_ascii=False, sort_keys=True)
+
+
 def merge(new: dict, old: dict) -> tuple[dict, dict]:
     new_docs = new.get("d") or []
     old_map = {doc_key(d): d for d in (old.get("d") or [])}
@@ -71,6 +95,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--site-dir", required=True, help="taxsync 构建产物目录（含 data.json.gz / manifest.json）")
     ap.add_argument("--dry-run", action="store_true", help="只报告，不写文件")
+    ap.add_argument("--sync-state", default=None,
+                    help="覆盖清单里的 sync_state（夜间任务在源站采集成功时传 ok）")
     args = ap.parse_args()
 
     site = Path(args.site_dir)
@@ -99,7 +125,38 @@ def main() -> int:
         print(f"× 中止：合并后 {n} 条，低于线上 {stats['old_n']} 条的 {MIN_KEEP_RATIO:.0%}")
         return 3
 
-    data_bytes = dump_gz(merged)
+    # ---- 文库：内容一致就不重写（3.8MB 不值得每晚白推）----
+    lib_out = None
+    lib_changed = False
+    new_lib = site / "library.json.gz"
+    live_lib = ROOT / "library.json.gz"
+    if new_lib.exists() and (manifest.get("optional_state") == "ok"):
+        new_lib_bytes = new_lib.read_bytes()
+        same = live_lib.exists() and lib_core(live_lib.read_bytes()) == lib_core(new_lib_bytes)
+        if not same:
+            lib_out = new_lib_bytes
+            lib_changed = True
+            manifest["lib_bytes"] = len(new_lib_bytes)
+            manifest["lib_sha256"] = hashlib.sha256(new_lib_bytes).hexdigest()[:16]
+        elif live_man:                           # 内容一致 → 沿用线上体积/哈希/计数
+            for k in ("lib_bytes", "lib_sha256", "lib", "lib_counts", "lib_enc", "lib_file"):
+                if k in live_man:
+                    manifest[k] = live_man[k]
+
+    # ---- 真的变了才重写：忽略时间戳/文库计数比内容 ----
+    data_changed = not live_path.exists() or payload_core(merged) != payload_core(old)
+    merged_m = merged.setdefault("m", {})
+    if data_changed:
+        counts = manifest.get("lib_counts") or manifest.get("lib") or merged_m.get("lib")
+        if counts:
+            merged_m["lib"] = counts             # 让包内计数与实际发布的文库一致
+        if "ai" not in merged_m and (old.get("m") or {}).get("ai"):
+            merged_m["ai"] = old["m"]["ai"]      # 构建产物不产出 ai 块，沿用线上
+    else:
+        for k in ("lib", "ai", "hls"):           # 内容没变 → 这些元信息也沿用线上
+            if k in (old.get("m") or {}):
+                merged_m[k] = old["m"][k]
+    data_bytes = dump_gz(merged) if data_changed else live_path.read_bytes()
 
     # ---- manifest：以新构建为准，只打补丁 ----
     manifest.update({
@@ -112,20 +169,20 @@ def main() -> int:
     for k in ("fulltext",):                      # 正文回填管线的统计只存在于线上清单
         if k in live_man and k not in manifest:
             manifest[k] = live_man[k]
-
-    lib_out = None
-    new_lib = site / "library.json.gz"
-    if new_lib.exists() and (manifest.get("optional_state") == "ok"):
-        new_lib_bytes = new_lib.read_bytes()
-        if not (ROOT / "library.json.gz").exists() or (ROOT / "library.json.gz").read_bytes() != new_lib_bytes:
-            lib_out = new_lib_bytes
-            manifest["lib_bytes"] = len(new_lib_bytes)
-            manifest["lib_sha256"] = hashlib.sha256(new_lib_bytes).hexdigest()[:16]
+    if not data_changed and live_man:            # 内容没变 → 时间戳沿用线上，避免假变更
+        for k in ("b", "built_at", "optional_at"):
+            if k in live_man:
+                manifest[k] = live_man[k]
+        if "optional" in live_man:
+            manifest["optional"] = live_man["optional"]
+    if args.sync_state:
+        manifest["sync_state"] = args.sync_state
 
     print(f"· 线上 {stats['old_n']} 条 → 新构建 {stats['new_n']} 条 → 合并 {n} 条")
     print(f"· 保留回填正文 {stats['kept_fulltext']} 条（其余走新构建摘录）")
     print(f"· 数据包 {len(data_bytes):,}B sha256={manifest['sha256']} maxd={new_maxd} "
           f"freshness={manifest.get('freshness')} stale_days={manifest.get('stale_days')}")
+    print(f"· 内容变化：数据 {'有' if data_changed else '无（不重写）'} / 文库 {'有' if lib_changed else '无（不重写）'}")
     print(f"· library {'更新 ' + str(len(lib_out)) + 'B' if lib_out else '无变化，跳过'}")
 
     if args.dry_run:
@@ -133,18 +190,24 @@ def main() -> int:
         return 0
 
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    stamp = time.strftime("%Y%m%d-%H%M%S")
-    if live_path.exists():
-        shutil.copy2(live_path, BACKUP_DIR / f"data.json.gz.{stamp}")
-    tmp = live_path.with_suffix(".gz.tmp")
-    tmp.write_bytes(data_bytes)
-    tmp.replace(live_path)
+    if data_changed:
+        stamp = time.strftime("%Y%m%d-%H%M%S")
+        if live_path.exists():
+            shutil.copy2(live_path, BACKUP_DIR / f"data.json.gz.{stamp}")
+        tmp = live_path.with_suffix(".gz.tmp")
+        tmp.write_bytes(data_bytes)
+        tmp.replace(live_path)
     if lib_out:
         (ROOT / "library.json.gz").write_bytes(lib_out)
     man_tmp = live_man_path.with_suffix(".json.tmp")
     man_tmp.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     man_tmp.replace(live_man_path)
-    print(f"√ 已写入 data.json.gz / manifest.json{' / library.json.gz' if lib_out else ''}（备份在 {BACKUP_DIR}）")
+    wrote = ["manifest.json"]
+    if data_changed:
+        wrote.insert(0, "data.json.gz")
+    if lib_out:
+        wrote.append("library.json.gz")
+    print(f"√ 已写入 {' / '.join(wrote)}（备份在 {BACKUP_DIR}）")
     return 0
 
 

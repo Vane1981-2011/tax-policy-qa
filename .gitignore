@@ -1,0 +1,10 @@
+# 本地备份（7MB 级，绝不入库）
+data.json.gz.prev
+
+# 定时任务日志与临时文件
+tools/logs/
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
