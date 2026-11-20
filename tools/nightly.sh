@@ -1,5 +1,5 @@
 #!/bin/zsh
-# 每晚 20:00 数据更新流水线（launchd: com.vane.taxsync.nightly）
+# 每日三次定时更新（launchd: com.vane.taxsync.publish → 08:10 / 12:30 / 20:00）
 #
 # 只做一件事：把源站新增政策同步进线上数据包。
 #   sync(yingtax) → web-build(不产 standalone) → daily_data.py 合并 → 有变化才提交推送
@@ -30,7 +30,7 @@ notify() {
     >/dev/null 2>&1 || true
 }
 
-fail() { log "× $1"; notify "税策智库·夜间更新失败" "$1"; exit "${2:-1}"; }
+fail() { log "× $1"; notify "税策智库·定时更新失败" "$1"; exit "${2:-1}"; }
 
 # ---- 单实例：上一轮没跑完就跳过（超过 90 分钟的锁视为残留）----
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
@@ -51,7 +51,7 @@ if [ -f "$LOG" ] && [ "$(stat -f %z "$LOG")" -gt 5242880 ]; then
   tail -n 2000 "$LOG" > "$LOG.rot" && mv "$LOG.rot" "$LOG"
 fi
 
-log "===== 夜间更新开始 ====="
+log "===== 定时更新开始 ====="
 
 # ---- 1. 采集（只跑 yingtax；HLS 站点自身 403，不阻塞）----
 cd "$AGENT" || fail "采集目录不存在"
@@ -83,7 +83,7 @@ git add -- "${DATA_FILES[@]}"
 if git diff --cached --quiet -- "${DATA_FILES[@]}"; then
   log "· [4/5] 数据无变化，不产生提交"
   if [ "${AHEAD:-0}" -eq 0 ]; then
-    log "===== 夜间更新结束（无变化）====="
+    log "===== 定时更新结束（无变化）====="
     exit 0
   fi
   log "· 检测到 ${AHEAD} 个上次没推成功的本地提交，本轮补推"
@@ -140,6 +140,6 @@ if [ "$CHANGED" != "0" ]; then
   done
 fi
 
-log "===== 夜间更新完成：${N} 条 / 最新 ${MAXD} ====="
+log "===== 定时更新完成：${N} 条 / 最新 ${MAXD} ====="
 notify "税策智库·已更新" "${N} 条 · 最新 ${MAXD}"
 exit 0
