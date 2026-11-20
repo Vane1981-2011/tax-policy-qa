@@ -156,6 +156,11 @@ def main() -> int:
         for k in ("lib", "ai", "hls"):           # 内容没变 → 这些元信息也沿用线上
             if k in (old.get("m") or {}):
                 merged_m[k] = old["m"][k]
+    # 包内 m.sync_state 必须与 --sync-state 一致：页面状态条读的是包内副本，
+    # 只改 manifest.json 会让「源站采集成功」的包仍显示「上次采集失败」。
+    if args.sync_state and merged_m.get("sync_state") != args.sync_state:
+        merged_m["sync_state"] = args.sync_state
+        data_changed = True                      # sync_state 在 VOLATILE_M 里，不影响内容指纹
     data_bytes = dump_gz(merged) if data_changed else live_path.read_bytes()
 
     # ---- manifest：以新构建为准，只打补丁 ----
