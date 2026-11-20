@@ -1940,8 +1940,11 @@ html[data-safe="1"] .ai-foot { display: none; }
 <!-- 模板护栏：本文件是构建源模板，CSS/JS/版权都由 webexport.render_html 注入。
      直接双击打开时 data-mode 仍是 "online"，据此给出明确提示，避免被当成成品页。 -->
 <div id="tplWarn" hidden style="margin:0;padding:14px 18px;background:#B23A2F;color:#fff;font:14px/1.7 -apple-system,'PingFang SC',sans-serif">
-  <b>这是模板源文件，不是可运行页面。</b><br>
-  样式、脚本与版权都在构建时写入：请打开由 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">webexport.render_html</code> 生成的 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">index.html</code>，或直接访问线上部署地址。
+  <b>这是构建源的模板文件，不是可运行页面。</b><br>
+  成品是构建生成的 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">index.html</code>，两种打开方式：<br>
+  ① 线上：<code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">https://vane1981-2011.github.io/tax-policy-qa/</code><br>
+  ② 本地：在本目录执行 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">python3 -m http.server 8765</code>，再打开 <code style="background:rgba(255,255,255,.18);padding:1px 4px;border-radius:3px">http://127.0.0.1:8765/</code><br>
+  注意：双击 index.html（file://）会被浏览器禁止读取数据包，只会显示"数据未能载入"。
 </div>
 <script>
 (function () {
@@ -5307,17 +5310,36 @@ window.App = App;
 
   function renderRecovery(err) {
     clear(dom.reader);
-    dom.reader.appendChild(h('div', { class: 'rd-empty' }, [
+    var bar = document.querySelector('.sk-load');
+    if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+    var skRows = document.querySelectorAll('.sk-row');
+    for (var i = 0; i < skRows.length; i++) { skRows[i].parentNode.removeChild(skRows[i]); }
+    if (dom.listEmpty) {
+      dom.listEmpty.hidden = false;
+      clear(dom.listEmpty);
+      dom.listEmpty.appendChild(h('b', { text: '数据未能载入' }));
+      dom.listEmpty.appendChild(h('p', { text: (err && err.message) || '未知错误' }));
+    }
+    var isFile = location.protocol === 'file:';
+    var kids = [
       h('h2', { text: '数据未能载入' }),
-      h('p', { class: 'sub', text: (err && err.message) || '未知错误' }),
-      h('button', { class: 'mini-btn primary', text: '重试', onclick: function () { location.reload(); } }),
-      h('button', {
-        class: 'mini-btn', text: '清空本地缓存后重试', style: 'margin-left:8px',
-        onclick: function () {
-          App.idb.asset.put('policy', null).then(function () { location.reload(); });
-        }
-      })
-    ]));
+      h('p', { class: 'sub', text: (err && err.message) || '未知错误' })
+    ];
+    if (isFile) {
+      kids.push(h('p', {
+        class: 'sub', style: 'color:#B23A2F',
+        text: '检测到你是双击打开（file://）：浏览器禁止读取本地 data.json.gz，所以这里必然失败。' +
+          '请在本目录执行 python3 -m http.server 8765，再访问 http://127.0.0.1:8765/ ，或直接使用线上地址。'
+      }));
+    }
+    kids.push(h('button', { class: 'mini-btn primary', text: '重试', onclick: function () { location.reload(); } }));
+    kids.push(h('button', {
+      class: 'mini-btn', text: '清空本地缓存后重试', style: 'margin-left:8px',
+      onclick: function () {
+        App.idb.asset.put('policy', null).then(function () { location.reload(); });
+      }
+    }));
+    dom.reader.appendChild(h('div', { class: 'rd-empty' }, kids));
   }
 
   if (document.readyState === 'loading') {
