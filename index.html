@@ -4647,6 +4647,12 @@ window.App = App;
       body.appendChild(relBox);
     }
 
+    // 免责：条文以官方发布为准（手机端阅读窗全屏，正文末尾是唯一稳定可见处）
+    body.appendChild(h('div', { class: 'rd-hint' }, [
+      h('b', { text: '声明' }),
+      h('span', { text: '内容来自公开渠道，仅供参考；请以官方原文为准。' })
+    ]));
+
     var tools = h('div', { class: 'rd-tools' }, [
       heads.length >= 3 ? h('button', {
         class: 'mini-btn', text: '目录 ' + heads.length, title: '显示 / 隐藏正文目录',
@@ -6112,6 +6118,10 @@ window.App = App;
           }),
           h('div', { class: 'hint', text: '缓存版本：' + (D.version || '—') + ' · 记录数：' +
             U.fmt(D.policy ? D.policy.d.length : 0) })
+        ]),
+        h('div', { class: 'field' }, [
+          h('label', { text: '免责与出处' }),
+          h('div', { class: 'hint', text: '本工具仅作政策检索与阅读辅助，条文以国家税务总局及各地税务机关官方发布为准；AI 内容仅供参考，不构成税务意见或法律意见。' })
         ])
       ]),
       h('div', { class: 'sheet-ft' }, [
