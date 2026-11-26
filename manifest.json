@@ -1,10 +1,10 @@
 {
   "v": 2,
-  "b": "2026-11-25T20:01:12+0800",
+  "b": "2026-11-26T08:11:10+0800",
   "maxd": "2026-11-25",
-  "built_at": "2026-11-25T20:01:12+0800",
+  "built_at": "2026-11-26T08:11:10+0800",
   "source_maxd": "2026-11-25",
-  "stale_days": 0,
+  "stale_days": 1,
   "freshness": "fresh",
   "sync_state": "ok",
   "access_mode": "public",
@@ -798,7 +798,7 @@
     {
       "kind": "qa",
       "label": "12366问答",
-      "n": 14666
+      "n": 14726
     },
     {
       "kind": "zsk",
@@ -827,12 +827,12 @@
   },
   "enc": "gzip",
   "file": "data.json.gz",
-  "bytes": 7640653,
-  "sha256": "18d88e169b6abddd",
+  "bytes": 7640658,
+  "sha256": "6fd69102c582400b",
   "lib_file": "library.json.gz",
   "lib_enc": "gzip",
-  "lib_bytes": 3950200,
-  "lib_sha256": "4084e32ea30e14fd",
+  "lib_bytes": 3954311,
+  "lib_sha256": "f48df9320494f31f",
   "lib_counts": [
     {
       "kind": "interp",
@@ -842,7 +842,7 @@
     {
       "kind": "qa",
       "label": "12366问答",
-      "n": 14666
+      "n": 14726
     },
     {
       "kind": "zsk",
@@ -868,12 +868,12 @@
   "optional_state": "ok",
   "optional_ok": true,
   "optional_error": "",
-  "optional_at": "2026-11-25T20:01:07+0800",
+  "optional_at": "2026-11-26T08:11:05+0800",
   "optional": {
     "state": "ok",
     "ok": true,
     "error": "",
-    "at": "2026-11-25T20:01:07+0800"
+    "at": "2026-11-26T08:11:05+0800"
   },
   "standalone": false,
   "client_safe": false,
