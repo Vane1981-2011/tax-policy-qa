@@ -1,8 +1,8 @@
 {
   "v": 2,
-  "b": "2026-11-26T08:11:10+0800",
+  "b": "2026-11-26T12:31:11+0800",
   "maxd": "2026-11-25",
-  "built_at": "2026-11-26T08:11:10+0800",
+  "built_at": "2026-11-26T12:31:11+0800",
   "source_maxd": "2026-11-25",
   "stale_days": 1,
   "freshness": "fresh",
@@ -803,7 +803,7 @@
     {
       "kind": "zsk",
       "label": "税费知识库",
-      "n": 46812
+      "n": 46318
     },
     {
       "kind": "ksdy",
@@ -828,11 +828,11 @@
   "enc": "gzip",
   "file": "data.json.gz",
   "bytes": 7640658,
-  "sha256": "6fd69102c582400b",
+  "sha256": "a287dcf19ce22152",
   "lib_file": "library.json.gz",
   "lib_enc": "gzip",
-  "lib_bytes": 3954311,
-  "lib_sha256": "f48df9320494f31f",
+  "lib_bytes": 3939468,
+  "lib_sha256": "a20c8a3bc3cc6d3d",
   "lib_counts": [
     {
       "kind": "interp",
@@ -847,7 +847,7 @@
     {
       "kind": "zsk",
       "label": "税费知识库",
-      "n": 46812
+      "n": 46318
     },
     {
       "kind": "ksdy",
@@ -868,12 +868,12 @@
   "optional_state": "ok",
   "optional_ok": true,
   "optional_error": "",
-  "optional_at": "2026-11-26T08:11:05+0800",
+  "optional_at": "2026-11-26T12:31:06+0800",
   "optional": {
     "state": "ok",
     "ok": true,
     "error": "",
-    "at": "2026-11-26T08:11:05+0800"
+    "at": "2026-11-26T12:31:06+0800"
   },
   "standalone": false,
   "client_safe": false,
